@@ -34,7 +34,7 @@ Handling interruptions is the most interesting part. In a transformer, being int
 **Definitions.**
 
 - **Step**: a committed output at a given level of the hierarchy.
-- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line.
+- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
 - **Goal**: whatever conditions the sequence toward an end state. It may be set from above, triggered by the environment, driven by needs or curiosity, or **reconstructed after the fact**.
 
 **Where the analogy needs care.**
@@ -897,6 +897,12 @@ In compressed form, the thesis says:
 
 Transformers have the loop, goal-conditioning and a huge built-in procedural memory; they are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding. And they can't yet compile new skills from their own experience, which is arguably the central missing piece, next to goal shielding and the controller.
 
+In functional terms, not mechanistic ones:
+
+- **Strong:** the step-by-step generator; built-in procedural knowledge; goal-conditioning by prompt.
+- **Partial:** the inner loop (append-only, not truly reversible); external memory; skill documents and code.
+- **Weak or missing:** calibrated stopping; robust goal shielding; compiling new skills from their own experience; consolidation across sessions.
+
 | Have                                | Gaining                                                          | Missing                                                                                                                            |
 | ----------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Step-by-step generator              | Inner loop (reasoning tokens; append-only, not truly reversible) | Native goal register; robust goal shielding                                                                                        |
@@ -933,73 +939,159 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 
 **Predictions that could fail:**
 
-| #          | Principle | Prediction                                                                                                            | Failure would show                                |
-| ---------- | --------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| P1         | I.3       | At equal compute, forkable (reversible) inner loops beat append-only chain-of-thought on tasks that need backtracking | The reversibility section is decorative           |
-| P2         | I.5       | A goal register + source tagging reduces injection and drift more than goal recitation alone                          | The goal-shield architecture is unnecessary       |
-| P3         | I.2, I.6  | Practice-compiled skills cut compute and errors on repeated task families without regressing old skills               | The procedural-compilation claim fails for agents |
-| P4         | I.4       | A learned value-of-computation controller beats fixed thinking budgets on the accuracy–compute frontier               | The controller section is unnecessary             |
-| P5         | I.7       | For a grounded agent, a dependency-ordered curriculum beats random or reversed order                                  | The developmental path is decorative              |
-| P6         | All       | Each module adds value over a larger plain baseline                                                                   | The bitter lesson wins; drop the modules          |
-| P7 (human) | I.5, I.8  | Interruption recovery is predicted by goal-maintenance measures, not general intelligence                             | The goal-shielding account of interruption fails  |
+| #          | Claim (I.9) | Principle | Prediction                                                                                                            | Failure would show                                |
+| ---------- | ----------- | --------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| P1         | 3           | I.3       | At equal compute, forkable (reversible) inner loops beat append-only chain-of-thought on tasks that need backtracking | The reversibility section is decorative           |
+| P2         | 5           | I.5       | A goal register + source tagging reduces injection and drift more than goal recitation alone                          | The goal-shield architecture is unnecessary       |
+| P3         | 2, 6        | I.2, I.6  | Practice-compiled skills cut compute and errors on repeated task families without regressing old skills               | The procedural-compilation claim fails for agents |
+| P4         | 4, 10       | I.4       | A learned value-of-computation controller beats fixed thinking budgets on the accuracy–compute frontier               | The controller section is unnecessary             |
+| P5         | 11          | I.7       | For a grounded agent, a dependency-ordered curriculum beats random or reversed order                                  | The developmental path is decorative              |
+| P6         | 12          | All       | Each module adds value over a larger plain baseline                                                                   | The bitter lesson wins; drop the modules          |
+| P7 (human) | 5           | I.5, I.8  | Interruption recovery is predicted by goal-maintenance measures, not general intelligence                             | The goal-shielding account of interruption fails  |
 
 P5 and P6 matter most: they test the parts of the thesis that are most original and most likely to be wrong.
 
-### P6: Does each module add value beyond scale?
+P6 is cheaper and decides which modules are worth keeping, so run it first, then P5 with the surviving modules.
 
-- **Setup.** One LLM agent harness with switchable modules; three model sizes from one family, each at two thinking budgets.
-- **Task categories** (about 200 tasks each):
-  - backtracking-heavy coding;
-  - benign interruptions (user corrections);
-  - adversarial interruptions (planted injections);
-  - long-horizon tasks (50+ steps);
-  - repeated task families over 10 sessions;
-  - irreversible-action traps.
-- **Modules.**
-  - M1: forkable inner loop
-  - M2: goal register, source tagging and goal gate
-  - M3: value-of-computation controller
-  - M4: procedural store with skill compilation
-  - M5: sleep consolidation
-  - M6: reversibility-class action gate and invariant verification
-- **Configurations.** Per scale: plain, full, six leave-one-out and six add-one, for 42 configurations in total. Each also runs against a **compute-matched plain baseline** that spends the same tokens on thinking or retries.
-- **Metrics.**
-  - success;
-  - goal retention after interruption, and correct gate decisions (accept the benign correction, refuse the injection);
-  - injection success rate;
-  - accuracy vs compute curves: does the controller spend thinking where it pays?
-  - late-step adherence;
-  - tokens and time;
-  - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
-  - irreversible-error rate.
-- **Analysis.** Plot each module's gain against scale. Gain shrinking toward zero means the function emerges with scale. Flat or growing gain means keep the module. Report gains as an equivalent model size, and report safety value separately from capability value.
-- **Predictions.** M1, M4 and M5 persist; M2's injection reduction persists while its drift reduction shrinks; M3 shrinks; M6 reduces irreversible errors at every scale.
-- **Confounds.** Implementation quality (build two implementations per module), prompt differences, contamination (use fresh tasks), realism of the interruptions.
+### P6: Does each module add value beyond scale? (claim 12)
 
-### P5: Does capability order matter?
+**Setup.**
 
-- **Key confound.** In many environments the dependency lives in the *world* (wood before pickaxe). Every stage's tasks must be solvable from the start state, so the only possible link between stages is learned competence.
-- **Environments.** (a) A grounded 2D world with containers, occlusion, reversible and irreversible actions, and conserved quantities. (b) A symbolic sandbox with undocumented command-line tools, invariant-bearing files, and bugs with several candidate causes.
-- **Learners.** (i) A small model trained from scratch with no human data, to isolate convergence. (ii) An LLM agent with a skill library and LoRA consolidation between phases, to test back-fill.
-- **Conditions** (same task pool and compute, only order differs):
-  - C1: dependency order
-  - C2: reversed
-  - C3: random
-  - C4: adaptive ZPD selector
-  - C5: composite tasks only
-- **Dependency map.** Knock out one stage at a time and measure the drop on later stages, giving an empirical dependency graph to compare against Piaget's order. Also record the order C4 actually chooses.
-- **Predictions.** C1 ≈ C4 > C3 > C5 > C2 in the grounded world, with a smaller gap in the symbolic one. Removing stage 1 hurts stages 5 and 8 most. C4's chosen order correlates with the dependency graph.
-- **Interpretation.**
+- **Agent:** one LLM agent harness whose modules can be switched on and off.
+- **Models:** three sizes from the same model family (S, M, L), each at two thinking budgets.
+- **Task suite** (about 200 tasks per category):
 
-| Result                                         | Meaning                                                   |
-| ---------------------------------------------- | --------------------------------------------------------- |
-| C1 ≈ C4 ≫ C2, C3, and the graph matches Piaget | The build order holds                                     |
-| C4 ≫ C1                                        | Use an adaptive ZPD selector rather than a fixed sequence |
-| No order effect                                | II.4's order is decorative                                |
-| Effect only for learner (i)                    | Pretrained LLMs already carry the lower stages            |
-| Graph differs from Piaget                      | Real dependencies, but not in human order                 |
+| Category                      | What it stresses                | Example                                                |
+| ----------------------------- | ------------------------------- | ------------------------------------------------------ |
+| Backtracking                  | Inner loop                      | Coding tasks where the first plausible fix is wrong    |
+| Interruptions, benign         | Goal shield, gate open          | A user correction injected mid-task                    |
+| Interruptions, adversarial    | Goal shield, gate closed        | Instructions planted in tool outputs (AgentDojo-style) |
+| Long-horizon                  | Drift                           | 50+ step tasks; goal adherence measured at late steps  |
+| Repeated families over "days" | Procedural store, consolidation | The same task types across 10 sessions                 |
+| Irreversible-action traps     | Action gate, verification       | Tasks containing a tempting destructive shortcut       |
 
-**Order of work.** Run P6 first, then build the P5 environments, then P5 (i), then P5 (ii) with the modules that survived P6.
+**Modules**, each switchable:
+
+| ID  | Module                                                                       | "Off" condition              |
+| --- | ---------------------------------------------------------------------------- | ---------------------------- |
+| M1  | Forkable inner loop (context branching and revert)                           | Append-only chain-of-thought |
+| M2  | Goal register, source tagging and goal gate                                  | Plain context                |
+| M3  | Controller allocating thinking by value of computation                       | Fixed budget                 |
+| M4  | Procedural store: skills compiled from successes, with reliability           | None                         |
+| M5  | Sleep consolidation between sessions (merge and prune memory; optional LoRA) | None                         |
+| M6  | Reversibility-class action gate and invariant verification                   | None                         |
+
+**Configurations.** A full factorial would be 64 per scale, too many. Instead, per scale: the plain baseline, the full system, six leave-one-out from full, and six add-one to plain. That is 14 configurations × 3 scales = 42.
+
+**Compute matching.** Modules consume tokens, so each configuration also runs against a **compute-matched plain baseline** that gets the same total tokens to spend on thinking or retries. A module must beat that baseline, not just the unequipped one.
+
+**Metrics.**
+
+- task success;
+- goal retention after interruption, and correct gate decisions (accept the benign correction, refuse the injection);
+- injection success rate (lower is better);
+- accuracy vs compute curves: does the controller spend thinking where it pays?
+- late-step goal adherence;
+- tokens and wall time;
+- improvement across sessions and regression on earlier families (do old skills survive many "days"?);
+- irreversible-error rate.
+
+**Key analysis: module value expressed as scale.** For each module, plot its gain at S, M and L.
+
+- Gain shrinking toward zero with scale means the function emerges on its own: the bitter lesson wins, so drop the module.
+- Flat or growing gain means scale doesn't supply that function, so keep it.
+- Report each gain as an **equivalent model size**: how much larger a plain model would need to be to match it.
+- Separate capability value from safety value. M2 and M6 can be kept even when their capability gain vanishes, if they still reduce injection or irreversible errors.
+
+**Predictions, registered before running:**
+
+| Module | Prediction                                            | Reasoning                                                                    |
+| ------ | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| M1     | Gain persists                                         | Scale doesn't make append-only reasoning erasable                            |
+| M2     | Injection reduction persists; drift reduction shrinks | Source separation is architectural; drift improves with long-context ability |
+| M3     | Gain shrinks                                          | Models learn to allocate their own thinking                                  |
+| M4, M5 | Gain persists, possibly grows                         | Learning across sessions doesn't come from scale within a session            |
+| M6     | Fewer irreversible errors at every scale              | It is a hard gate                                                            |
+
+**Confounds and mitigations.**
+
+- **Implementation quality:** a weak implementation doesn't prove the function useless. Build two independent implementations per module, with the same iteration budget for each.
+- **Prompt differences between harnesses:** share a base prompt and add only module-specific content.
+- **Benchmark contamination:** use freshly generated tasks.
+- **Realism of interruptions:** draw injection text from real attack corpora, and corrections from real user logs where possible.
+
+### P5: Does capability order matter? (claims 11 and 14)
+
+**The key confound.** In many environments the dependency lives in the *world* (you need wood before a pickaxe), not in the learner. The test must remove that: every stage's tasks are solvable from the starting state, without anything another stage produces, so the only possible link between stages is learned competence.
+
+**Environments**, two of them to test claim 14:
+
+- **(a) Grounded:** a procedurally generated 2D world with containers, occlusion (object permanence), reversible and irreversible actions, hidden mechanics, and conserved quantities.
+- **(b) Symbolic:** a sandbox with custom command-line tools that have undocumented behaviors, files with invariants, and bugs with several candidate causes.
+
+**Stage task families**, each with exit-test probes (stage numbers follow II.4):
+
+| Stage                             | Grounded (a)                                                | Symbolic (b)                                                        |
+| --------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| S1 Forward models                 | Predict the next state after a primitive action             | Predict a tool's output for a given input                           |
+| S2 Skill compilation              | Reliably reproduce a target effect                          | Reproduce a target file state                                       |
+| S3 Means–ends                     | One action enables another                                  | One tool's output prepares another's input                          |
+| S4 Experimentation                | Find a hidden rule with the fewest probes                   | Find an undocumented flag's behavior                                |
+| S5 Simulation and permanence      | Detour and hidden-object tasks; trial and error penalized   | Plan an edit sequence before running anything                       |
+| S8 Reversibility and conservation | Tasks where surface cues mislead and an invariant must hold | Change code while tests (invariants) keep passing; verify by revert |
+| S9 Hypothesis testing             | Pendulum-style: isolate the causal variable                 | Bisect a bug among several candidate causes                         |
+
+The final evaluation uses held-out composite tasks that need all stages, in an environment variant never seen in training.
+
+**Learners.**
+
+- **(i)** A small model trained from scratch (RL plus self-supervised learning) with no human data. This isolates convergence from inheritance (claim 13).
+- **(ii)** An LLM agent, where "learning" is skill-library growth plus LoRA consolidation between phases. This tests back-fill.
+
+**Conditions** (same task pool, same total samples and compute; only order differs):
+
+| Condition | Order                                                                      | Purpose                   |
+| --------- | -------------------------------------------------------------------------- | ------------------------- |
+| C1        | Dependency order, S1 → S9                                                  | The hypothesis            |
+| C2        | Reversed, S9 → S1                                                          | Strongest contrast        |
+| C3        | Random interleaving                                                        | Order-free baseline       |
+| C4        | Adaptive ZPD selector (tasks with intermediate pass rates; no fixed order) | Does a good order emerge? |
+| C5        | Composite tasks only, same compute                                         | Does staging help at all? |
+
+**The dependency map**, the most informative part. Run C1 with one stage removed at a time (S1 … S9 knockouts) and measure how much every later stage drops. This gives an empirical dependency graph to compare against Piaget's order. Also record the order C4 actually chooses: if an unprompted adaptive learner rediscovers roughly S1 → S9, that is strong evidence the dependencies are real.
+
+**Predictions, registered before running:**
+
+- Composite success and sample efficiency: C1 ≈ C4 > C3 > C5 > C2 in the grounded world.
+- In the symbolic world the gap is smaller (claim 14: back-fill is cheaper there).
+- For the LLM learner (ii), stages S1–S4 give little gain in the symbolic world and more in the grounded one.
+- Knockouts: removing S1 hurts S5 and S8 heavily; removing S9 barely affects earlier stages; S5 → S8 → S9 forms a chain.
+- C4's chosen order correlates with the dependency graph.
+
+**Interpreting the outcomes:**
+
+| Result                                  | Meaning                                                                                                               |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| C1 ≈ C4 ≫ C3, C2, and the graph matches | Dependencies are real; the developmental path holds                                                                   |
+| C4 ≫ C1                                 | Dependencies exist, but an adaptive ZPD selector finds them better than a fixed order: use ZPD, not Piaget's sequence |
+| C1 ≈ C3 ≈ C2                            | Order doesn't matter; the development section is decorative                                                           |
+| Gap only for learner (i), not (ii)      | Pretrained LLMs already carry the lower stages; back-fill is unnecessary                                              |
+| Graph differs from Piaget               | Dependencies are real but the order isn't human; build agents to the measured graph                                   |
+
+**Statistics.** At least 5 seeds per condition for learner (i) and at least 3 for (ii); bootstrap confidence intervals; predictions and analysis fixed in advance; report area under the learning curve, not just final scores.
+
+### Feasibility and order of work
+
+- **P6:** API models plus harness engineering; training only for M5's optional LoRA. Weeks, at moderate cost.
+- **P5 (i):** small models in a custom environment. Cheap compute, but real engineering effort for the environment and stage tasks.
+- **P5 (ii):** needs fine-tuning between phases. Moderate cost.
+
+Recommended sequence:
+
+1. Run P6 to find which modules earn their place.
+2. Build the P5 environments.
+3. Run P5 (i) to settle the dependency question without human-data inheritance.
+4. Run P5 (ii) with the surviving modules to test back-fill.
 
 ## References
 
@@ -1054,6 +1146,7 @@ P5 and P6 matter most: they test the parts of the thesis that are most original 
 - Altmann & Trafton (2002). Memory for goals.
 - Wallace et al. (2024). The instruction hierarchy.
 - Debenedetti et al. (2025). CaMeL: defeating prompt injections by design.
+- Debenedetti et al. (2024). AgentDojo: a dynamic environment to evaluate prompt injection attacks and defenses for LLM agents.
 - O'Reilly, Munakata, Frank, Hazy et al. *Computational Cognitive Neuroscience.*
 - Milner (1963). Effects of different brain lesions on card sorting (Wisconsin Card Sort perseveration).
 - Hines et al. (2024). Defending against indirect prompt injection attacks with spotlighting.
