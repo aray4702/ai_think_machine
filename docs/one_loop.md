@@ -1,6 +1,6 @@
 ![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg)
 
-# One Loop: Perception, Reasoning, Action, Language and Transformers
+# One Loop: Minds and Transformers
 
 *The goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
 
