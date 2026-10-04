@@ -110,15 +110,33 @@ Each level runs its own step-by-step loop on its own timescale. The brain has a 
 
 **Evidence: procedural memory.**
 
-- **Definition.** Knowing *how* rather than knowing *that* (Ryle). It is acquired by practice, hard to verbalize, and a separate memory system: the amnesic patient H.M. improved at mirror drawing without remembering any practice.
+- **Definition.** Knowing *how* rather than knowing *that* (Ryle, 1949): skills, habits, motor programs, cognitive routines (reading, arithmetic, grammar) and perceptual skills, including expert saccade strategies. It is acquired by practice, hard to put into words ("we know more than we can tell": Polanyi), and very durable.
+- **A separate system.** The amnesic patient H.M. improved at mirror drawing over days with no memory of ever practicing it (Milner, 1962). In Squire's taxonomy, *declarative* memory is episodic plus semantic, and *non-declarative* memory is procedural, priming and conditioning. Semantic and procedural memory learn differently and belong in separate stores (I.6).
 - **Formation.**
-  - Skills move from cognitive to associative to autonomous (Fitts & Posner).
-  - Declarative steps get compiled into single procedures (ACT-R knowledge compilation; Soar chunking).
-  - The basal ganglia learn which action fits which context through dopamine prediction errors.
-  - The cerebellum learns **forward models** that predict an action's consequences.
-- **Reach.** Expertise in perception and reasoning is largely procedural too: chess masters see positions as chunks, and radiologists' saccades go straight to anomalies.
-- **Lashley's problem.** Chunking answers Lashley's (1951) problem of serial order: behavior isn't a flat chain, it's nested.
-- **Failure mode: habit capture.** A habit fires after the goal has changed (salt in the coffee, driving to the old office), so a compiled skill needs a veto.
+  - The **basal ganglia** learn which action fits which context, by reinforcement through dopamine prediction errors. With practice, control shifts from the goal-directed dorsomedial striatum to the habitual dorsolateral striatum (Yin & Knowlton, 2006).
+  - The **cerebellum** learns **forward models** that predict an action's sensory consequences, along with fine timing and error-driven correction.
+  - Skills move through stages (Fitts & Posner): **cognitive** (following explicit instructions; slow, effortful) → **associative** → **autonomous** (fast, parallel, no attention needed).
+  - Declarative steps are **compiled** into single procedures (Anderson's ACT-R; Newell & Rosenbloom's chunking), and performance speeds up along the power law of practice.
+
+**Why procedural memory is central to the thesis.**
+
+- **It supplies the steps.** Every step in the seven processes is itself a procedure: a saccade program, the articulation of a word, a grasp, a familiar inference move, a turn on a known route. The loop composes procedures. Without them each step would need deliberation, and the combinatorial problem of I.1 would come back at full force.
+- **It makes the hierarchy possible.** Chunking turns a sequence at one level into a single step at the level above: letters → words → phrases; reach + grasp + lift → "pick up the cup." This answers Lashley's (1951) problem of serial order: behavior isn't a flat chain, it's nested, and each level of the TOTE hierarchy runs over the compiled procedures of the level below. Higher-level thinking is affordable because lower levels are automatic.
+- **It frees the controller and working memory.** Automatic skills run without supervision, so the four-item working memory and the controller can attend to what's new. That is how you can talk while walking, or plan while driving.
+- **It is the destination of consolidation.** The deliberation → habit pipeline of I.6 (practice, Dyna, distillation) produces procedural memory. Planning is how you act before you have a skill; procedural memory is what planning leaves behind.
+- **It supplies the predictions.** Cerebellar forward models predict what each action should produce, and the mismatch is the surprise signal the controller of I.4 relies on.
+- **It covers perception and reasoning too.** Chess masters perceive positions as chunks (Chase & Simon, 1973), expert radiologists' saccades go straight to anomalies, and mathematicians apply proof moves automatically. Expertise in all seven processes is mostly procedural.
+- **Its failure mode is habit capture.** A habit can fire after the goal has changed: salt in the coffee, driving to the old office (Norman; Reason's "action slips"). It is the internal version of utilization behavior (I.5). The controller must be able to veto a running habit (prefrontal inhibition, stop signals), so goal shielding works in both directions: against external distractors and against one's own habits.
+
+**Machines: an inversion.** LLMs are mostly procedural memory. Grammar, reasoning patterns and coding style live in the weights as know-how, and next-token generation is itself a skill. But after deployment they can't acquire new procedures natively. Their three substitutes line up with Fitts & Posner's stages:
+
+| Form                                           | Stage                                                            | Example                                                    |
+| ---------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| Instructions or skill documents in context     | Cognitive: a novice reading the manual; slow, costs attention    | Prompted procedures; skill files loaded by agent harnesses |
+| Executable code and tools                      | Externalized automaticity: runs without deliberation             | Voyager's code-skill library; scripts; APIs                |
+| Adapters or weights trained by practice        | Autonomous: true procedural memory                               | Fine-tuning or distillation from successful trajectories   |
+
+The missing piece is **practice-driven compilation**: moving a procedure from the first row to the second and third automatically through repetition, with forward models and reliability estimates attached (R5).
 
 ## I.3 Some outputs can't be taken back → put a reversible inner loop in front
 
@@ -297,12 +315,13 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 
 **Consequence.** Use **separate stores** that learn at different speeds, and **consolidate** selectively from fast to slow:
 
-| Store      | Brain                     | Role                                       | Learns by               |
-| ---------- | ------------------------- | ------------------------------------------ | ----------------------- |
-| Working    | Prefrontal cortex         | Goal stack and belief; small and protected | Gated updates           |
-| Episodic   | Hippocampus               | One-shot events, cue-based recall          | Logging                 |
-| Semantic   | Neocortex                 | Gist, world knowledge, invariants          | Consolidation           |
-| Procedural | Basal ganglia, cerebellum | Skills: the steps of the loop              | Practice, reward, error |
+| Store        | Kind                  | Brain                     | Role                                       | Learns by                                      |
+| ------------ | --------------------- | ------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| Working W    | Active                | Prefrontal cortex         | Goal stack and belief; small and protected | Gated updates                                  |
+| Episodic E   | Declarative           | Hippocampus               | One-shot events, cue-based recall          | One-shot logging                               |
+| Semantic M   | Declarative           | Neocortex                 | Gist, world knowledge, invariants          | Consolidation into gist                        |
+| Procedural P | Non-declarative       | Basal ganglia, cerebellum | Skills: the steps of the loop (I.2)        | Practice, reward and error-driven compilation  |
+| Weights θ    | Substrate for M and P | Synapses                  | Long-term storage of knowledge and skill   | Slow distillation                              |
 
 **Compress, or keep everything?** In a POMDP the optimal agent doesn't need the raw history, only the **belief state**: a summary sufficient to act optimally (formally, a probability distribution over hidden world states). "Later steps depend on previous steps" really means they depend on *a belief built from previous steps* (I.1). There are two ways to approximate it:
 
@@ -409,14 +428,15 @@ On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest t
 | Offline pre-thinking           | Sleep-time compute (2025): process context while idle to pre-compute what future queries will need                 |
 | Moving into weights            | Context distillation; LoRA updates on session data                                                                 |
 
-**The design this implies** is the brain's four-part memory:
+**The design this implies** is the brain's memory system, with procedural memory kept separate from world knowledge:
 
 1. a **small, protected working state** holding the goal and current belief, which is where the goal register of I.5 belongs;
 2. a **large associative store** read through attention or retrieval;
-3. **slow weights** for skills and world knowledge;
-4. **consolidation** that moves what was learned during a session into lasting form.
+3. **slow semantic knowledge** of the world;
+4. a **procedural store** of compiled skills, the steps of the loop (I.2);
+5. **consolidation** that moves what was learned during a session into lasting form, turning experience into knowledge and deliberation into skill.
 
-Transformers have 2 and 3; agent scaffolding fakes 1 and 4. Getting 1 and 4 natively into the architecture would likely close the remaining gaps: goal drift, overthinking, and not learning from experience.
+Transformers have 2 and 3, and a huge built-in version of 4; agent scaffolding fakes 1, 5 and the acquisition of new skills. Getting these natively into the architecture would likely close the remaining gaps: goal drift, overthinking, and not learning from experience.
 
 **The loop runs at three timescales**, each with its own form of backtracking:
 
@@ -442,15 +462,44 @@ Sleep is the revisable inner loop applied to a whole day of experience. Today's 
 
 **Evidence.**
 
-- **Piaget gives the mechanism.**
-  - Thought is internalized action.
+- **Piaget gives the mechanism** (Piaget & Inhelder, *The Psychology of the Child*, 1969).
+  - Thought is internalized action: operations are actions carried out in the head.
   - Schemes are *assimilated* (applied) and *accommodated* (revised) under **equilibration**, a self-regulation driven by disequilibrium that is close to prediction-error minimization.
-  - Development runs from sensorimotor, through semiotic and concrete operations, to formal operations.
+  - Development runs from sensorimotor, through semiotic and concrete operations, to formal operations. Each stage builds on and integrates the structures of the previous one, which gives the **dependency order** the rest of the thesis lacked: so far it described a mature agent.
+  - **Four drivers of development:** maturation, experience with objects, social transmission, and equilibration, which Piaget considered the most fundamental. For an agent: architecture capacity, interaction with the environment, human teaching and data, and intrinsic self-regulation.
+  - **Two kinds of experience:** *physical* (learning about objects) and *logico-mathematical* (learning about the coordination of one's own actions). The second is what self-reflection and self-play give an agent.
+
+**Piaget already runs through the framework.** Most of his concepts have a counterpart in the earlier sections:
+
+| Piaget                                                                                                        | Where it appears in the thesis                                                                              |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Thought is internalized action                                                                                | The inner loop is the outer action loop moved inside (I.3); Piaget says this is how the inner loop develops |
+| Schemes: repeatable, generalizable action patterns                                                            | Procedural memory: skills with triggers (I.2)                                                               |
+| Assimilation: apply an existing scheme to a new situation                                                     | The fast path: running a habit or skill                                                                     |
+| Accommodation: modify the scheme when it doesn't fit                                                          | Decompile → relearn → recompile (R5)                                                                        |
+| Equilibration: self-regulation triggered by disequilibrium                                                    | The controller: surprise reopens the loop, satisfaction ends it (I.4); also active inference                |
+| Circular reactions: repeat an action to reproduce its effect                                                  | Practice → skill compilation; learning forward models                                                       |
+| Tertiary circular reactions: vary actions to see what changes                                                 | Curiosity / information gain                                                                                |
+| Coordination of schemes (8–12 months): one scheme as the means to another's goal; intentionality appears      | TOTE hierarchy and chunking; the goal stack                                                                 |
+| Invention through mental combination (~18 months): solving problems in the head instead of by trial and error | The inner loop; Craik's small-scale model; replay as planning                                               |
+| Object permanence                                                                                             | The belief state: representing what is no longer perceived (I.1)                                            |
+| Memory improves as schemes develop                                                                            | Reconstructive memory: recall is regenerated using current schemas (I.6)                                    |
+| Perceptual activity: exploring, centering, comparing, maturing with age                                       | Saccades as active, skilled sampling                                                                        |
+| Affect as the energetics of behavior, cognition as its structure                                              | Emotion as controller (I.4)                                                                                 |
+| Reflective abstraction: abstracting structure from one's own actions                                          | Consolidation into gist; compression → abstraction (I.6)                                                    |
+| Horizontal décalage: the same structure mastered in different domains at different times                      | LLMs' uneven ("jagged") competence                                                                          |
+
+**What Piaget adds.**
+
+- **Reversibility and conservation**, the biggest addition. Mature thinking requires operations that have inverses (pour the water back) and that preserve invariants (the amount stays the same). This makes I.3 precise: the inner loop is the domain of reversible operations, the outer loop the domain of irreversible actions. Mental reversibility makes backtracking free and allows verification by inversion.
+- **The semiotic function.** Symbols, language, mental images, deferred imitation and pretend play give the inner loop a medium for representing absent things. Pretend play is safe simulation; deferred imitation is learning from a demonstration seen earlier.
+- **Decentration.** Young children are *centered*, fixating on one salient dimension, and *egocentric*, unable to take another's perspective. Development is decentration. This adds perspective-taking and theory of mind, and puts source tagging (self vs other, I.5) on a developmental footing. LLMs anchoring on surface features is a form of centration.
+- **Formal operations.** Hypothetico-deductive reasoning over possibilities, not just what is actual, plus thinking about one's own thinking. This is the mature form of the inner loop: systematic hypothesis search and metareasoning.
 - **Vygotsky gives the social source.**
   - Every higher function appears twice: first between people, then within.
   - Private speech becomes inner speech. Chain-of-thought is private speech; its compression into latent reasoning is inner speech.
   - Everyday concepts grow upward from experience; scientific concepts grow downward from instruction; development is where they meet.
-- **Caveats.** Infants show some competences earlier than Piaget thought, stages are uneven (décalage), and culture matters more than he allowed. Read the stages as a dependency order of capabilities, not fixed ages.
+- **Caveats.** Infants show some competences earlier than Piaget thought (Baillargeon; Spelke's core knowledge), stages are less uniform than he claimed (décalage), and social and cultural learning matter more than he allowed (Vygotsky). Read the stages as a dependency order of capabilities, not fixed ages; core-knowledge priors can be built in at stage 0.
 
 ## I.8 The analogy makes predictions about humans
 
@@ -649,12 +698,19 @@ Fixes available today, mapped to the brain mechanisms of I.5:
 
 **R5. Give every skill a life cycle.**
 
-- **Compile:** deliberate, succeed repeatedly, then cache.
-- **Run:** monitor the forward model.
-- **Veto:** stop it when the goal has changed.
+- **Compile:** deliberate, succeed repeatedly, then cache as a skill; it becomes a single step for the level above.
+- **Run:** on the fast path, the controller only monitors the forward model.
+- **Veto:** if the goal has changed and the habit no longer fits, the controller inhibits it (protection against capture).
 - **Decompile:** when it keeps producing surprises, drop back to deliberation, relearn, and compile again.
 
-Each skill records its trigger, body, inverse or compensation, the invariants it preserves, a forward model and a reliability score.
+Each skill in P records:
+
+- **trigger:** the context or goal it applies to (basal-ganglia-style selection);
+- **body:** code, an adapter, or a compiled sub-policy;
+- **inverse or compensation**, and the **invariants** it preserves (R1, R3);
+- **forward model:** the expected outcome, for surprise detection (cerebellar);
+- **reliability:** its track record, which sets how much supervision it needs;
+- **level:** which layer of the hierarchy it is a step for.
 
 **R6. Gate consolidation more strictly than action.** Untrusted content consolidated into weights becomes a **persistent injection** that survives every future context, much as brains consolidate false memories (Loftus). So the source-aware gate of R4 sits in front of consolidation too: only verified experience from trusted sources gets promoted, the gate gets stricter the higher the layer (memory → weights), and changes that touch values or goals go to human review.
 
@@ -682,43 +738,62 @@ Each skill records its trigger, body, inverse or compensation, the invariants it
 
 ## II.4 Build order
 
-Build capabilities in dependency order. Each stage ends with an exit test.
+Build capabilities in Piaget's dependency order (I.7). Each stage adds one component and ends with a Piagetian exit test, an exit criterion in the TOTE sense.
 
-| #   | Capability (Piaget / Vygotsky)                                  | Agent component                                                     | Exit test                                          |
-| --- | --------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------- |
-| 0   | Reflexes; core priors                                           | Generator; primitive tools                                          | Executes primitives                                |
-| 1–2 | Circular reactions; imitation                                   | Forward models; skill compilation                                   | Calibrated surprise; reproduces effects            |
-| 3   | Means–ends; shared goals                                        | Goal stack; TOTE; chunking; joint attention                         | Multi-step means–ends tasks                        |
-| 4   | Experimentation, with guidance                                  | Controller with information gain; ZPD curriculum                    | Finds hidden mechanics efficiently                 |
-| 5–6 | Internal simulation; object permanence; symbols; private speech | World model; belief state; episodic memory; chain-of-thought        | Detour without trial and error; deferred imitation |
-| 7   | Decentration; theory of mind                                    | Source tagging; goal shield; user model                             | False-belief task; not fooled by surface cues      |
-| 8   | Reversibility; conservation                                     | Operations with inverses; invariants; forkable state                | Conservation; verify by undoing                    |
-| 9   | Formal operations; internalized debate                          | Hypothesis search; value-of-computation controller; internal critic | Pendulum task: isolate the causal variable         |
+| #   | Stage (Piaget / Vygotsky)                                | Capability added                                              | Agent component                                                                | Exit test                                                                  |
+| --- | -------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| 0   | Reflexes; core-knowledge priors                          | Primitive actions                                             | Generator G; primitive tools                                                   | Executes primitives                                                        |
+| 1   | Primary circular reactions                               | Predicting the outcomes of one's own actions                  | Practice loop; forward models; P begins                                        | Calibrated surprise on its own actions                                     |
+| 2   | Secondary circular reactions; imitation                  | Reproducing interesting effects in the world                  | Intrinsic reward for controllable effects; skill compilation                   | Reproduces an observed effect reliably                                     |
+| 3   | Coordination of schemes; shared goals                    | Means–ends; intentionality                                    | Goal stack W; TOTE hierarchy; chunking; joint attention                        | Multi-step means–ends (remove the obstacle, then grasp)                    |
+| 4   | Tertiary circular reactions, with guidance               | Active experimentation                                        | Controller K with information gain; ZPD curriculum                             | Finds hidden mechanics efficiently                                         |
+| 5   | Mental combination; object permanence                    | Planning before acting; tracking hidden state                 | World model; simulate mode; belief state                                       | Detour problem without trial and error; invisible-displacement tracking    |
+| 6   | Semiotic function; private speech                        | Symbols for absent things; learning from demonstration; play  | Language grounded in its own skills; episodic memory; chain-of-thought         | Reproduces a demonstrated procedure later from memory (deferred imitation) |
+| 7   | Decentration (preoperational → concrete); theory of mind | Several dimensions at once; others' perspectives              | Source tagging; goal shield; user model                                        | False-belief task; not fooled by salient surface features                  |
+| 8   | Concrete operations                                      | Reversibility, conservation, classification, seriation        | Operations with inverses; invariants in the world model; forkable state        | Conservation tasks; plans checked by undoing                               |
+| 9   | Formal operations; internalized debate                   | Hypothetico-deductive, combinatorial reasoning; metareasoning | Systematic hypothesis search; value-of-computation controller; internal critic | Piaget's pendulum task: isolate which variable matters                     |
+
+**Running through every stage:**
+
+- **equilibration**, through the controller;
+- **reflective abstraction**, through sleep and consolidation;
+- **social scaffolding**: human teaching, curricula, Vygotsky's ZPD;
+- **décalage**: expect each stage to be achieved domain by domain, not everywhere at once.
 
 **Grant autonomy along the reversibility ladder.** Read-only, then reversible actions, then compensable ones, then irreversible ones with permission, each promoted by track record. This mirrors legitimate peripheral participation (Lave & Wenger).
 
 **Keep practice in the ZPD.** A curriculum selector should pick tasks with intermediate success rates and fade its hints and restrictions as reliability grows.
 
-**For LLM agents, build in reverse.** LLMs entered at the symbolic and formal stages by reading the culture: they have scientific concepts without grounded everyday ones. The job is to **back-fill the lower stages in the agent's own action domain**. For a coding agent:
+**For LLM agents, build in reverse.** LLMs entered at the semiotic and formal stages by reading the culture, and skipped the sensorimotor ones: they have scientific concepts without grounded everyday ones, like a child who learned to talk about the world before ever acting in it. Piaget's theory predicts the weaknesses we see:
 
-- **Stages 1–2:** learn what each tool actually does here, and compile reliable sequences into skills.
-- **Stage 3:** compose skills toward goals.
+- fragile object permanence and conservation in grounded settings;
+- centration on surface features;
+- weak reversibility (poor at verifying by undoing);
+- no circular reactions, hence no practice-driven skill compilation.
+
+So the path for an LLM agent isn't building from scratch. It is **back-filling the lower stages in the agent's own action domain**, using language as scaffolding. For a coding agent in a repository:
+
+- **Stages 1–2:** learn what each command and tool actually does here (forward models), and compile reliable sequences into skills.
+- **Stage 3:** compose skills toward goals (a goal stack).
 - **Stage 4:** experiment to discover how the codebase behaves.
 - **Stage 5:** simulate a change before making it.
-- **Stage 8:** treat passing tests as conservation, and verify by reverting.
-- **Stage 9:** debug by hypothesis, isolating variables.
+- **Stage 8:** maintain invariants (tests keep passing = conservation), and verify by reverting.
+- **Stage 9:** debug hypothetico-deductively, isolating variables like the pendulum task.
 
 ## II.5 Where transformers stand
 
 In compressed form, the thesis says:
 
 1. **One step-by-step loop** (a TOTE unit), nested into a hierarchy across timescales. Perception, reasoning, planning, action and language are levels of it.
-2. **Goals are predictions the agent makes come true**, the same mechanism as conditioning a transformer.
-3. **A revisable inner loop** sits in front of each irreversible commitment.
-4. **An emotion-like control layer** sets goals, tracks progress, and decides when to continue, backtrack, interrupt or stop.
-5. **The top goal** comes from homeostasis in humans and from people in AI.
+2. **The steps at each level are procedures** (Piaget's schemes), compiled through practice from deliberation at that level and chunked into single steps for the level above.
+3. **Goals are predictions the agent makes come true**, the same mechanism as conditioning a transformer.
+4. **Thought is internalized action.** The revisable inner loop develops by moving the action loop inside, where operations become reversible and conserve invariants. That makes simulation, verification and free backtracking possible before each irreversible commitment.
+5. **An emotion-like control layer** (equilibration), fed by procedural forward models, sets goals, tracks progress, and decides when to assimilate (run a habit), accommodate, deliberate, backtrack, interrupt or stop. A shielded, decentered goal defines relevance and guards against both external distractors and internal habit capture.
+6. **Memory is working, episodic, semantic and procedural**, linked by consolidation (reflective abstraction) that turns experience into knowledge and deliberation into skill.
+7. **The top goal** comes from homeostasis in humans and from people in AI.
+8. **The capabilities develop in a dependency order**, from sensorimotor through semiotic and operational to formal. That order is the build path for agents. LLMs entered at the top, so an agent's job is to back-fill the lower stages in its own action domain.
 
-Transformers have the loop and goal-conditioning, are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding.
+Transformers have the loop, goal-conditioning and a huge built-in procedural memory; they are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding. And they can't yet compile new skills from their own experience, which is arguably the central missing piece, next to goal shielding and the controller.
 
 | Have                                | Gaining                                       | Missing                                                                                                                            |
 | ----------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -828,6 +903,8 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Craik (1943). *The Nature of Explanation.*
 - Ryle (1949). *The Concept of Mind.*
 - Milner (1962), on H.M.'s mirror-drawing learning.
+- Polanyi (1966). *The Tacit Dimension.*
+- Squire (2004). Memory systems of the brain.
 - Fitts & Posner (1967). *Human Performance.*
 - Anderson. ACT-R; Newell & Rosenbloom, chunking and the power law of practice.
 - Yin & Knowlton (2006). The role of the basal ganglia in habit formation.
