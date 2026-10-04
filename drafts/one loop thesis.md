@@ -1,8 +1,17 @@
+![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg)
+
 # One Loop: Perception, Reasoning, Action, Language and Transformers
+
+*The goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
 
 > At the level where behavior is committed step by step, perception, reasoning, planning, action and language share one functional structure: **a hierarchy of goal-conditioned control loops whose steps are compiled procedures**, chunked upward through practice. Each loop places a **reversible inner loop** (simulation, search, drafting) before **irreversible commitments**, and must solve a **stopping problem** using progress, uncertainty and surprise signals. Interruptions are absorbed to the extent that a **shielded goal** separates what informs the next step from what may change the goal. Experience becomes knowledge, and deliberation becomes skill, through **selective consolidation**; learning is most effective at the **edge of competence** under fading support. Transformers implement the generator and much of the procedural substrate well; whether they need the remaining functions as explicit modules, or will acquire them with scale, is an empirical question.
 
-## 1. The observation
+This draft looks at that thesis from two directions:
+
+- **Part I: first principles.** Start from constraints that any agent faces, and derive what its structure must look like. Humans and transformers serve as evidence, not as premises.
+- **Part II: the builder's perspective.** Turn each principle into a component, a design rule, a build order and a test that could prove it unnecessary.
+
+## 0. The observation
 
 Many human processes seem to share a structure with transformer next-token generation:
 
@@ -16,50 +25,78 @@ Many human processes seem to share a structure with transformer next-token gener
 
 All of these have goals, run sequentially with or without backtracking, end in a conclusion or an interruption, and handle interruptions and off-track events by attending to relevant information and ignoring irrelevant information.
 
-This draft develops that observation into a thesis, tests it against what is known, and narrows it where it fails.
+All seven processes can be written as a policy: **next step = f(goal, everything so far)**. This is what a transformer computes. It's also how agents work in reinforcement learning, and how predictive processing describes the brain.
 
-## 2. Scope and definitions
+Handling interruptions is the most interesting part. In a transformer, being interrupted just means new tokens enter the context and the next step adapts. Human action works the same way: a sensory surprise changes the next step without throwing away the whole plan.
 
 **Scope.** The thesis is about the **serial control level** of behavior: the level at which an agent commits outputs one after another (gaze shifts, words, moves, decisions, actions) in pursuit of something. That level runs on top of parallel, continuous machinery it does not describe: fast feed-forward recognition, motor dynamics, background monitoring. It is a **functional** claim, not a claim that brains and transformers share a mechanism.
 
 **Definitions.**
 
 - **Step**: a committed output at a given level of the hierarchy.
-- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures several times a second; LLMs choose a rhyme before writing the line. Step-by-step generation and implicit look-ahead are compatible.
+- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures several times a second; LLMs choose a rhyme before writing the line.
 - **Goal**: whatever conditions the sequence toward an end state. It may be set from above, triggered by the environment, driven by needs or curiosity, or **reconstructed after the fact**.
 
-A caution from the start: any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on previous steps" is true of everything. The non-trivial claim is about *function*: that one general next-step generator, organized as below, is enough.
+**Where the analogy needs care.**
 
-## 3. Claims, graded by confidence
+- **Part of the similarity is automatic.** Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on the previous steps" is true of every sequential process. The real, testable claim is about mechanism: one general next-step predictor, plus attention over history, is enough for perception, reasoning, planning, action and speech.
+- **"Later steps are not planned beforehand" is only partly true**, for humans and for transformers.
+  - Lashley's *The Problem of Serial Order in Behavior* (1951) argued that behavior can't be pure chaining.
+  - Speech errors show that people already hold later words in mind before saying them. Anticipation slips ("a leading list" for "a reading list") and spoonerisms are the evidence.
+  - The next saccade target is computed during the current fixation.
+  - Interpretability research found that LLMs pick a rhyme word before writing the line that ends in it.
 
-### A. Well supported
+  A better phrasing: the next step is generated on the fly, but the internal state already contains an implicit look-ahead.
+- **Backtracking means different things in different cases.** Neither speech nor a transformer can erase what it has produced; both "backtrack" by appending a repair ("uh, I mean…", or "Wait, …" in reasoning models). Writing with editing, and mental backtracking in reasoning, really can revise earlier output. That is closer to search, or to diffusion-style refinement, than to pure autoregression. Which one appears depends on reversibility (I.3).
+- **Memory architecture differs.** Human working memory holds about four items. People compress history into a running state and rely on external memory (notes, maps). That is closer to an RNN or state-space model than to a transformer that can attend back to its whole raw context.
 
-1. **Serial control loop.** At the commitment level, each process generates the next step conditioned on a goal and a belief built from history. Committing step by step with feedback is the tractable solution when the option space is huge, the world is noisy and partly observable, and memory is limited. Engineered systems arrive at the same loop: model predictive control plans a horizon, executes one step and replans; AlphaZero searches, commits one move and searches again.
-2. **Hierarchy through procedural compilation.** The steps at each level are **compiled procedures**. Practice turns deliberation into skill, and **chunking turns a sequence at one level into a single step for the level above**. This makes deep hierarchies affordable and frees working memory and control.
-3. **Two loops separated by reversibility.** A **revisable inner loop** (simulation, search, drafting) sits in front of an **irreversible outer loop** (commit, then feedback). Inner-loop operations can be undone or compensated and preserve invariants. That allows cheap backtracking and **verification before commitment**. How much inner loop comes before a commitment scales with the cost of error, uncertainty and the time available.
-4. **The stopping problem.** Every level must decide whether to continue, deliberate, backtrack or stop. Good solutions combine a confidence threshold, an urgency signal that lowers it over time, and a surprise signal that reopens deliberation.
-5. **Interruption handling depends on goal maintenance.** Interruptions are absorbed with **graceful degradation, not robustness**. Recovery depends on how well the goal was maintained and shielded. Shielding must separate information that *informs the next step* from information that *changes the goal*, and it should do so by source and salience rather than by content.
-6. **Consolidation.** Experience must be selectively moved from fast episodic storage into slow semantic and procedural knowledge without overwriting what is already known.
-7. **The zone of proximal development.** Practice is most informative where success is possible but unreliable, under support that fades.
+**What humans have that a plain transformer doesn't.**
 
-### B. Plausible, needs testing
+- **Learning while acting.** A human's "weights" change during the task. A transformer's weights are frozen at inference, so anything it learns mid-task has to live in its context (I.6).
+- **Grounded, closed-loop feedback.** Humans get a continuous sensory stream. A model gets feedback only when something is injected into its context, such as a tool result or a user message.
+- **Felt salience.** Emotion and body state decide what is relevant and when to stop. Goals persist as motivation and body state (Damasio), and stopping is a felt sense of satisfaction or "done." In a transformer, the goal is just conditioning text and stopping is an end-of-sequence token (I.4).
+- **Offline simulation.** Humans can mentally rehearse a plan before acting. Reasoning models approximate this with hidden thinking tokens (I.3).
+- **Hierarchy across timescales.** Humans nest goals → subgoals → actions → micro-movements, each running on its own timescale. A transformer is flat and has to learn any hierarchy implicitly (I.2).
 
-8. **Thought is partly internalized action and dialogue.** The inner loop develops by moving action (Piaget) and dialogue (Vygotsky) inside. Chain-of-thought corresponds to private speech; its compression into latent reasoning corresponds to inner speech.
-9. **One generative model, several uses.** Remembering, perceiving, planning and acting may share one generative world model run in different modes. The evidence is strongest in rodent navigation and less certain for abstract human planning.
-10. **Control signals.** Progress, uncertainty, information gain, budget and surprise are the signals a controller needs. Emotions are the biological implementation, *including their failure modes*. The engineering claim does not depend on calling them emotions.
-11. **Capability dependencies.** Some capabilities require others: forward models before planning, planning before verification, a shielded goal before safe autonomy. Piaget's stages are one *human* realization of these dependencies, not a necessary order.
+Part I takes each of these differences as a constraint to explain, not a reason to drop the analogy.
 
-### C. Speculative
+---
 
-12. **Explicit modules.** Agents may need these functions as explicit modules, or the functions may **emerge with scale**. Each module is a hypothesis about a function, kept only if it beats a larger plain baseline.
-13. **Convergence or inheritance.** Some parallels between LLMs and humans may be **inherited** from human text rather than convergent. Claim 1's generality has to rest on agents trained without human data, not on LLMs' resemblance to us.
-14. **Grounding back-fill.** LLM agents may benefit from building lower-level competences in their own action domain. In symbolic domains like code, this may turn out to be easy or unnecessary.
+# Part I: First principles
 
-## 4. Hierarchy and procedural memory
+Each principle has the same shape: **a constraint** that any agent acting in the world faces, **the consequence** that follows from it, and **evidence** from humans and machines that the consequence holds.
 
-The loop is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. TOTE units nest. The seven processes in section 1 are better seen as **levels of one hierarchy** than as parallel processes:
+A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on previous steps" is true of everything. The derivations below are interesting only to the extent that they predict *specific* structure beyond that.
 
-```
+## I.1 Too many futures → commit one step at a time, with feedback
+
+**Constraints.**
+
+- **Too many possible sequences.** With b options per step and n steps there are bⁿ complete sequences; they can't all be searched. Committing one step at a time turns that into n choices of size b. The chain-rule factorization is the only affordable way to produce long sequences.
+- **The world is noisy and changes while you act**, so a fully precomputed open-loop plan goes stale. Control theory shows that closed-loop feedback beats open-loop planning under noise.
+- **The world is only partly observable**, and acting is often the only way to find out more.
+- **Memory and compute are limited**, so the full history can't be kept and reprocessed at every step.
+- **Committed outputs come out one at a time.** There is one mouth, one gaze and one body position. Even if thinking runs in parallel, what gets committed must be serialized.
+
+**Consequence.** Commit one step, observe, and generate the next step from an updated **belief state**: a summary of history sufficient for acting well. Under partial observability (formally a POMDP), the optimal action depends on exactly such a belief state, so "the next step depends on previous steps" isn't a quirk; it is mathematically required. More precisely, the next step *depends on a belief built from previous steps*. Brains compress history into a running state; transformers keep the raw history and attend to it. These are two approximations of the same belief state (I.6). A plan or map can still guide the loop, but as a prior, not as a script.
+
+**Why the seven processes look alike.** The problem forces it. Step-by-step generation that conditions on history and absorbs interruptions is what any capable agent with limited compute, an unpredictable world and a goal ends up doing; it can't plan the whole sequence in advance, because too much would change before it finished. Brains and transformers may both have arrived at this loop because it is the only tractable solution, not by coincidence and not because they share a mechanism. The observation in section 0 is then a claim about the structure of sequential decision-making under uncertainty, not just a similarity between brains and AI. The strongest counter-argument, that LLMs inherited the structure from human text, is weighed in I.9.
+
+**Evidence.**
+
+- **Humans.** Saccades are information-gathering actions: each one is taken to gather information for the next decision. Under predictive processing, perception is active sampling to reduce prediction error, so a saccade sequence is generation too, and perception sits fully inside the loop rather than only feeding it. Motor control is closed-loop, and Todorov's optimal feedback control goes further: the motor system corrects only deviations that matter for the task and lets the rest go (the *minimal intervention principle*). That is section 0's "attend to relevant information, ignore irrelevant information," stated formally. Speech is produced incrementally, with implicit look-ahead.
+- **Machines.** Engineered systems arrive independently at the same loop. Model predictive control plans over a short horizon, executes only the first step, observes and replans; this is how navigation (point 4 of section 0) can follow a plan or map and still decide on the fly. AlphaZero searches ahead, commits one move and searches again. Transformers generate token by token, and an injected interruption simply becomes part of the next step's conditioning.
+- **Biology without brains.** Bacterial chemotaxis runs the same run–sense–adjust cycle.
+
+## I.2 Limited compute and memory → compile steps into procedures, and stack them
+
+**Constraints.** Working memory holds about four chunks. Deliberation is slow and costly.
+
+**Consequence.** Steps that recur must be **compiled** into procedures that run without deliberation, and a sequence at one level must be **chunked** into a single step for the level above. The result is a hierarchy of loops, each on its own timescale.
+
+The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. TOTE units nest, so the seven processes of section 0 are better seen as **levels of one hierarchy** than as parallel processes:
+
+```text
 need (hunger)                         hours
  └ goal (get lunch)
     └ plan (go to the café)           minutes
@@ -69,181 +106,464 @@ need (hunger)                         hours
    (talking and reasoning attach at any level)
 ```
 
-**Procedural memory supplies the steps.** Every step is a compiled skill ("scheme" in Piaget's terms): a saccade program, a word's articulation, a grasp, a familiar inference move. It is knowing *how* rather than knowing *that* (Ryle), acquired by practice, hard to verbalize, and a separate memory system: the amnesic patient H.M. improved at mirror drawing without remembering any practice.
+**Evidence: procedural memory.**
 
-- **Formation.** Skills move from cognitive (following explicit instructions) to associative to autonomous (Fitts & Posner). Declarative steps are compiled into single procedures (ACT-R knowledge compilation; Soar chunking). The basal ganglia learn which action fits which context through dopamine prediction errors; the cerebellum learns **forward models** that predict an action's consequences.
-- **Why it is indispensable.**
-  - The loop *composes* procedures; without them every step would need deliberation.
-  - Chunking turns sequences into steps for the level above. This answers Lashley's (1951) problem of serial order.
-  - Automatic skills run without supervision, so a working memory of about four items can attend to what is new.
-  - Forward models generate the **surprise signal** the controller depends on.
-  - Expertise in perception and reasoning is also largely procedural: chess masters see positions as chunks, and radiologists' saccades go straight to anomalies.
-- **Failure mode: habit capture.** A habit fires after the goal has changed (salt in the coffee, driving to the old office). The controller must be able to veto running habits.
+- **Definition.** Knowing *how* rather than knowing *that* (Ryle). It is acquired by practice, hard to verbalize, and a separate memory system: the amnesic patient H.M. improved at mirror drawing without remembering any practice.
+- **Formation.**
+  - Skills move from cognitive to associative to autonomous (Fitts & Posner).
+  - Declarative steps get compiled into single procedures (ACT-R knowledge compilation; Soar chunking).
+  - The basal ganglia learn which action fits which context through dopamine prediction errors.
+  - The cerebellum learns **forward models** that predict an action's consequences.
+- **Reach.** Expertise in perception and reasoning is largely procedural too: chess masters see positions as chunks, and radiologists' saccades go straight to anomalies.
+- **Lashley's problem.** Chunking answers Lashley's (1951) problem of serial order: behavior isn't a flat chain, it's nested.
+- **Failure mode: habit capture.** A habit fires after the goal has changed (salt in the coffee, driving to the old office), so a compiled skill needs a veto.
 
-## 5. Reversibility: what makes the inner loop an inner loop
+## I.3 Some outputs can't be taken back → put a reversible inner loop in front
 
-**Piaget's two forms of reversibility:** *inversion* (undo: pour the water back) and *compensation* (taller but thinner). In conservation tasks, the concrete-stage child justifies "it's the same amount" with three arguments: **identity** (nothing was added or removed), **inversion** (you can pour it back) and **compensation** (taller but thinner). The preoperational child judges by the end state and fixates on one salient dimension.
+**Constraint.** Many commitments are **irreversible**: you can't unsay a word or unthrow a ball. Errors in them are costly.
 
-**Why reversibility matters.**
+**Consequence.** Wherever errors are expensive, the agent needs two loops:
+
+- an **inner loop** of cheap, revisable simulation (refining, searching, backtracking) in imagination or on scratch paper;
+- an **outer loop** of irreversible commitment to the world, one step at a time, with feedback.
+
+What defines the inner loop is **reversibility**: its operations can be undone or compensated, and they preserve invariants. Thinking is the revisable space that evolved so we don't commit too early.
+
+**A sharper version of the thesis.** Step-by-step generation is forced where outputs are **irreversible commitments to an uncertain world**. Where outputs can be cheaply revised, **iterative refinement** appears instead: diffusion models refine a whole image in parallel, and humans do the same when sketching, editing an essay or imagining. So all seven processes of section 0 run the same outer loop; what differs is how much revisable inner loop sits in front of each commitment. Transformers started as outer-loop-only machines, and much recent progress amounts to adding an inner loop.
+
+**Mapping irreversibility onto the seven processes.** The deciding variable is how expensive it is to revise a step once it's out. As that cost rises, behavior moves from refinement toward strict step-by-step generation with repair. This also explains why backtracking shows up in some cases and not others.
+
+| Case (section 0) | What gets committed                    | Cost to revise                       | Resulting structure                                                                                                                  |
+| ---------------- | -------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 5. Motor action  | Muscle commands                        | Impossible: you can't unthrow a ball | Pure closed-loop, step-by-step generation                                                                                            |
+| 6a. Talking      | Spoken words                           | Can't unsay, only repair             | Step-by-step, with appended repairs ("I mean…")                                                                                      |
+| 4. Navigation    | Physical position                      | Costly: walking back takes time      | Step-by-step, MPC-style; backtracking is literal                                                                                     |
+| 1. Perception    | Gaze (cheap) and interpretation (free) | Low                                  | Hybrid: saccades are sequential, but the percept is refined in parallel (a flipping Necker cube is the interpretation being revised) |
+| 2. Reasoning     | Thoughts in working memory             | Low, but memory is tiny              | Sequential search with backtracking: a tree, not a chain                                                                             |
+| 6b. Writing      | Text on a page                         | Nearly free                          | Refinement: drafts, edits, restructuring                                                                                             |
+| 3. Planning      | Nothing yet                            | Free                                 | Most refinement-like: the whole plan gets rearranged                                                                                 |
+
+**What reversibility buys.**
 
 - **Free backtracking.** Search needs undo; chess engines make and unmake moves millions of times.
 - **Verification by inversion.** Round-trip checks, revert-and-compare, substituting a solution back into the problem.
-- **Conservation means invariants.** Knowing what a transformation leaves unchanged compresses the world model, prunes search, and turns violations into high-value surprise signals. This is the cognitive counterpart of Noether's link between symmetry and conservation.
+- **Invariants.** Knowing what a transformation leaves unchanged compresses the world model, prunes search, and turns violations into high-value surprise signals. This is the cognitive counterpart of Noether's link between symmetry and conservation.
 
-**Piaget's arguments as verification checks for agents.**
+**How much inner loop?** Roughly *(cost of an error) × (uncertainty) ÷ (time pressure)*.
 
-| Argument | Check |
-|---|---|
-| Identity | Diff audit: did the change touch only what was intended? |
-| Inversion | Round-trip; revert-and-compare; substitute back |
-| Compensation | Invariants preserved: totals, passing tests, behavior through a refactor |
+- **High stakes and enough time**, as with surgeons, chess masters or exams in pen: think more before committing.
+- **Low stakes or time pressure**, as in casual talk or reflexes: commit fast and correct online.
 
-**Three classes of action.**
+**Evidence.**
 
-| Class | Examples | Handling |
-|---|---|---|
-| Reversible | Edit under version control; draft; move in a simulator | Act; backtrack freely |
-| Compensable | Refund; rollback migration; "I mean…" | Act with a logged compensation plan (saga pattern) |
-| Irreversible | Send money; delete without backup; physical harm | Deliberate fully; require permission |
+- **Talking vs writing** is the cleanest natural experiment among the seven processes. The same person producing the same kind of output switches from incremental generation with appended repairs ("I mean…") to drafting and revision, purely because reversibility changes. Word processors made revision even cheaper, and writing became measurably less linear.
+- **Piaget.** Thought *is* internalized action that has become reversible. In conservation tasks, the concrete-stage child justifies "it's the same amount" with three arguments:
+  - **identity**: nothing was added or removed;
+  - **inversion**: you can pour it back;
+  - **compensation**: taller, but thinner.
 
-Design principle: **move work toward the reversible end before committing** (sandboxes, dry runs, transactions, branches). Much of human engineering does this already: undo, version control, drafts, insurance, contracts.
+  The preoperational child judges by the end state and fixates on one salient dimension.
+- **Craik (1943).** The two-loop idea is old: the organism carries a "small-scale model" of the world so it can try alternatives before acting.
+- **Machines.** Modern AI rediscovered both loops.
+  - Reasoning models add private thinking tokens, a cheap-to-revise region ("wait, that's wrong…") before the irreversible answer.
+  - Robot diffusion policies refine a short chunk of actions as a whole, execute it, then refine the next chunk: MPC with a refinement inner loop.
+  - Diffuser (Janner et al., 2022) plans whole trajectories by refinement, matching the planning row of the table.
 
-**Where transformers fall short.** Reasoning tokens are append-only: "wait, that's wrong" compensates but does not invert, and the wrong thought stays in context. True inversion requires forking or rolling back the context. Conservation failures (entity tracking over long operation sequences, objects appearing or vanishing in generated video) resemble preoperational errors. The *reversal curse* (models trained on "A is B" failing at "B is A") is suggestive but weaker than it looks, since models reverse relations fine in context; it is an asymmetry in how facts are stored.
+## I.4 Thinking costs → a stopping problem → control signals
 
-## 6. Stopping and control signals
+**Constraint.** Each additional step of deliberation costs time, energy and opportunity.
 
-Every level repeatedly faces one question: *think one more step, or act now?*
+**Consequence.** Every level reduces to one decision made over and over: think one more step, or act now? More fully, it must decide whether to *continue, deliberate, backtrack, switch or stop*. A good stopping rule has three parts:
 
-- **Accumulation to threshold.** In the drift-diffusion model (Ratcliff; Shadlen), evidence accumulates until it crosses a threshold. The threshold sets the speed–accuracy trade-off, and under time pressure it drops (an urgency signal). This approximates Wald's optimal sequential test.
-- **Value of computation.** Think another step only if the expected improvement exceeds its cost (Russell & Wefald; Lieder & Griffiths).
-- **Conflict monitoring.** By default people commit fast; a conflict or surprise reopens deliberation (System 1 → System 2). This is also how interruptions are absorbed.
-- **Emotion ends deliberation.** Damasio's patient Elliot, after ventromedial prefrontal damage, kept intact logic but deliberated endlessly over trivial choices.
+1. a **confidence threshold**, which decides when to commit;
+2. an **urgency signal** that lowers the threshold over time, so the agent doesn't stall;
+3. a **surprise detector** that reopens the inner loop mid-execution. This is how interruptions get absorbed.
 
-**Control signals and the decisions they drive.**
+Humans get parts 2 and 3 cheaply from emotion and conflict monitoring. LLMs currently approximate them with external budgets and learned habits. The seven processes of section 0 may differ less in their generation mechanism than in how well this stopping rule is tuned for each one.
 
-| Signal (biological form) | Measures | Decision |
-|---|---|---|
-| Curiosity | Expected information gain | Keep exploring |
-| Boredom | Low gain, high opportunity cost | Stop; go elsewhere |
-| Frustration | Stalled progress | Backtrack or switch |
-| Anxiety | Uncertainty × stakes | Deliberate more |
-| Surprise | Prediction error | Interrupt; reopen the inner loop |
-| Fatigue | Resources spent | Wrap up |
-| Satisfaction | Error resolved | Commit and stop |
+**Evidence.** Brains and models handle the decision in surprisingly parallel ways.
 
-Under predictive-processing accounts, valence tracks the *rate of change* of prediction error (Joffily & Coricelli; a formal proposal, not an established result).
+- **Accumulate evidence to a threshold** (the brain's basic mechanism). In the drift-diffusion model (Ratcliff; neural evidence from Shadlen), noisy evidence accumulates until it crosses a threshold, and then the agent commits.
+  - A high threshold is slow and accurate; a low one is fast and sloppy. The speed–accuracy tradeoff is a single dial.
+  - Under time pressure the threshold drops over time (an **urgency signal**), so the agent eventually commits even while unsure.
+  - This approximates Wald's sequential probability ratio test, which is provably optimal for this kind of stopping problem.
+- **Is another thought worth it?** (the rational account). Russell & Wefald's metareasoning and Lieder & Griffiths' resource-rational analysis give the rule: think one more step only if the expected improvement in the decision exceeds the cost of thinking (time, energy, missed opportunity). This is the formal version of I.3's *(cost of an error) × (uncertainty) ÷ (time pressure)*.
+- **Detect conflict and escalate** (System 1 → System 2). The default is to commit fast. A conflict monitor (the anterior cingulate cortex) notices when something is off, such as competing responses, an error or a surprise, and reopens the inner loop. This is also how interruptions are handled: a surprise during execution reopens deliberation, the agent replans, and execution resumes.
+- **Emotion supplies the cost signal.** In *Descartes' Error*, Damasio's patient Elliot had ventromedial prefrontal damage that cut off emotional signals. His logic was intact, but he could deliberate endlessly over trivial choices, such as which pen to use. On Damasio's account, emotion ("somatic markers") gives a fast value estimate that ends deliberation; without it, the inner loop doesn't know when to stop.
 
-**LLMs.** They have no intrinsic stopping sense, which shows up as overthinking on easy problems. In the *s1* paper (2025), suppressing the end-of-thinking token and appending "Wait" improved accuracy: an external "are you sure?". Most comparable signals in AI (reward prediction error, curiosity bonuses, process reward models) are used during training rather than as running state during inference.
+**Emotion as the control layer.** Every process in section 0 starts with a goal and stops at a conclusion or an interruption. The generator produces steps, but something has to set the goal, judge progress and declare it done. One answer is that emotion does that job.
 
-## 7. Goals and goal shielding
+- **Feelings report the body's state** (Damasio). Feelings are the mind's readout of homeostasis: how the body is doing relative to staying viable. A goal starts as a felt need. Somatic markers attach a fast, body-based value to options, so each one doesn't have to be worked out from scratch. The classic evidence, the Iowa Gambling Task, is contested: skin responses appeared before people could say which decks were bad, but Maia & McClelland (2004) showed participants knew more consciously than claimed. The functional idea has held up better than that experiment.
+- **Predictive processing makes this precise.**
+  - **Valence ≈ the rate of change of prediction error** (Joffily & Coricelli, 2013; a formal proposal, not an established result). Things getting better feels good; things getting worse feels bad. Valence is a progress signal.
+  - **Arousal ≈ uncertainty or precision**: how much the current situation demands attention.
+  - **Emotions as interoceptive inference** (Seth; Barrett): emotions are predictions about the internal state of the body.
 
-**A goal is a prediction the agent makes come true.** In active inference, goals are prior preferences; prediction error can be reduced by changing the belief (perception) or by changing the world (action). This is the same mechanism as conditioning a transformer on a prompt ("Here is a correct proof:"), or on a target return in the Decision Transformer.
+  On this view emotion is a **meta-signal about how the process is going**, not about its content, which is exactly what a stopping and escalation rule needs.
 
-**Not every goal is top-down.** Affordances suggest goals (you see a cup and reach for it), and goals are sometimes constructed after the fact (choice blindness; Gazzaniga's interpreter).
+Mapped onto the decisions of the loop:
 
-**How the brain shields goals.**
+| Feeling                                     | Measures                                  | Control action                   |
+| ------------------------------------------- | ----------------------------------------- | -------------------------------- |
+| Curiosity                                   | Expected information gain                 | Keep exploring                   |
+| Boredom                                     | Low gain, high opportunity cost (Kurzban) | Stop; go elsewhere               |
+| Frustration                                 | Stalled progress                          | Backtrack or switch strategy     |
+| Anxiety                                     | Uncertainty × stakes                      | Raise the threshold; think more  |
+| Surprise                                    | Large prediction error                    | Interrupt; reopen the inner loop |
+| Fatigue                                     | Resources spent                           | Lower the threshold; finish up   |
+| Satisfaction, "aha", feeling of rightness   | Error resolved                            | Commit and stop                  |
+
+Together these cover every control decision the seven processes need: start, continue, backtrack, switch, interrupt, stop. The generation mechanism can be the same across all seven, with emotion acting as the **shared controller**. The surprise signal itself comes from the procedural forward models of I.2.
+
+**Machines.** Each brain mechanism has an LLM counterpart, and a gap:
+
+| Brain mechanism                       | LLM counterpart                                                                 | Gap                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Threshold on accumulated evidence     | Token entropy or confidence; self-consistency voting                            | Models are often poorly calibrated               |
+| Urgency signal                        | Thinking-token budgets; length penalties in reinforcement learning              | Imposed from outside, not felt                   |
+| Conflict monitor reopens deliberation | "Wait, …" self-correction learned in reasoning RL                               | Emergent and unreliable                          |
+| Somatic markers end deliberation      | Nothing intrinsic                                                               | Overthinking on easy problems, a lot like Elliot |
+| Variable thought per step             | Fixed compute per token; adaptive computation (Graves 2016, PonderNet) is niche | Architecture limitation                          |
+
+A telling result: in the *s1* paper (2025), suppressing the end-of-thinking token and appending "Wait" made models think longer and improved accuracy. That is essentially an external "are you sure?". The model had no internal sense of when it was done.
+
+**What AI already has of the control layer:**
+
+- **Dopamine ≈ reward prediction error** (Schultz, 1997), which is the TD error of reinforcement learning. This is the closest established match.
+- **Curiosity bonuses** (ICM, RND) and **learning progress as intrinsic reward** (Oudeyer). Learning progress is almost exactly Joffily's valence.
+- **Process reward models and value heads** score intermediate reasoning steps, a kind of progress signal.
+
+What's missing is that these are mostly used **during training**. At inference time, an LLM agent has no running felt state that shapes its next step. II.2 sketches one.
+
+## I.5 The context mixes sources → the goal must be shielded
+
+**Constraint.** An agent's input mixes its own intentions, other people's instructions, things it observes, and its own habits. Any of these can push it toward a different goal.
+
+**Consequence.** The goal must be **maintained** and **shielded**: information that *informs the next step* must be kept separate from information that *changes the goal*. Content can be mimicked, so shielding has to work by **source** and **salience**, not by content. Without a protected goal there is nothing to judge relevance against, and everything in context competes equally.
+
+**What a goal is.** A goal is **a prediction the agent makes come true**. In active inference, goals are prior preferences; prediction error is reduced either by changing the belief (perception) or by changing the world (action). This is the same mechanism as conditioning a transformer on a prompt ("Here is a correct proof:"), or on a target return in the Decision Transformer. Not every goal is top-down: affordances suggest goals, and goals are sometimes constructed after the fact (choice blindness; Gazzaniga's interpreter).
+
+**Evidence: how the brain shields goals.**
 
 - **Active maintenance** with top-down bias: the prefrontal cortex continuously favors goal-relevant processing (Miller & Cohen).
-- **A learned gate** on working memory: in the PBWM model (O'Reilly & Frank), maintenance and updating are separate operations.
+- **A learned gate** on working memory: in the PBWM model (O'Reilly & Frank), maintaining and updating are separate operations.
 - **Source monitoring**: tracking where information came from.
 - **A stability–flexibility balance.** Too much shielding produces perseveration; too little produces distractibility.
 
-**AI parallels.**
+**When shielding fails, humans and agents fail the same ways:**
 
-| Human failure | Agent failure |
-|---|---|
-| Utilization behavior (frontal patients use any object they see) | Prompt injection |
-| Goal neglect (Duncan) | Goal drift in long tasks |
-| Habit capture | Repeating a learned pattern after the goal changed |
-| Performing for approval | Sycophancy |
+| Human failure                                                   | Agent failure                                      |
+| --------------------------------------------------------------- | -------------------------------------------------- |
+| Utilization behavior (frontal patients use any object they see) | Prompt injection                                   |
+| Goal neglect (Duncan)                                           | Goal drift in long tasks                           |
+| Habit capture                                                   | Repeating a learned pattern after the goal changed |
+| Performing for approval                                         | Sycophancy                                         |
 
-**Mitigations:** instruction hierarchy, role or data embeddings, dual-model quarantine (e.g., CaMeL), goal recitation, permission gates. The principle is **shield by source, open by trust and salience**. Relevance only exists relative to a goal; without a protected goal, everything in context competes equally.
+So interruptions are absorbed with **graceful degradation, not robustness**: recovery depends on how well the goal was maintained (I.8).
 
-## 8. Memory and consolidation
+## I.6 Learning fast overwrites old knowledge → separate memories and consolidate
 
-| Store | Brain | Role | Learns by |
-|---|---|---|---|
-| Working | Prefrontal cortex | Goal stack and belief; small and protected | Gated updates |
-| Episodic | Hippocampus | One-shot events, cue-based recall | Logging |
-| Semantic | Neocortex | Gist, world knowledge, invariants | Consolidation |
-| Procedural | Basal ganglia, cerebellum | Skills: the steps of the loop | Practice, reward, error |
+**Constraint.** A network that learns new things quickly overwrites what it already knew (*catastrophic interference*; the stability–plasticity dilemma). And the optimal agent needs a belief state but cannot afford to keep, or re-read, everything.
 
-- **Compress or keep everything.** The optimal agent needs a *belief state*, a sufficient summary of history. Brains compress it (working memory); transformers keep the raw context and attend to it. Compression forces abstraction; raw context allows reinterpreting the past. Hybrids look best.
-- **Attention and the hippocampus.** Modern Hopfield networks are mathematically equivalent to attention, and transformers with suitable position encodings reproduce hippocampal codes. This is a formal parallel, not evidence that the brain computes softmax attention.
+**Consequence.** Use **separate stores** that learn at different speeds, and **consolidate** selectively from fast to slow:
+
+| Store      | Brain                     | Role                                       | Learns by               |
+| ---------- | ------------------------- | ------------------------------------------ | ----------------------- |
+| Working    | Prefrontal cortex         | Goal stack and belief; small and protected | Gated updates           |
+| Episodic   | Hippocampus               | One-shot events, cue-based recall          | Logging                 |
+| Semantic   | Neocortex                 | Gist, world knowledge, invariants          | Consolidation           |
+| Procedural | Basal ganglia, cerebellum | Skills: the steps of the loop              | Practice, reward, error |
+
+**Evidence.**
+
+- **Compress or keep everything.** The two approximations of the belief state from I.1 trade off: compression (brains) forces abstraction; raw context allows reinterpreting the past. Hybrids look best.
+- **Attention and the hippocampus.** Modern Hopfield networks are mathematically equivalent to attention, and transformers with suitable position encodings reproduce hippocampal codes. That is a formal parallel, not evidence that the brain computes softmax attention.
+- **Complementary Learning Systems** (McClelland, McNaughton & O'Reilly). During sleep, time-compressed replay moves salience-tagged experience from hippocampus to cortex. Reverse replay at reward sites assigns credit, synaptic downscaling prunes, and episodes become gist.
 - **Memory is reconstructive** (Bartlett). Recall itself runs on the generative loop.
-- **Consolidation** (Complementary Learning Systems: McClelland, McNaughton & O'Reilly). During sleep, time-compressed replay moves salience-tagged experience from hippocampus to cortex. Reverse replay at reward sites assigns credit; synaptic downscaling prunes; episodes become gist.
-- **Replay as planning.** Hippocampal sequences sweep ahead at choice points, replay predicts the path about to be taken, and the brain prioritizes replay by *gain × need* (Mattar & Daw). Repeated planning gets cached into habit, which Dyna, world-model agents and chain-of-thought distillation all reproduce.
+- **Replay as planning.** Hippocampal sequences sweep ahead at choice points, replay predicts the path about to be taken, and replay is prioritized by *gain × need* (Mattar & Daw). Repeated planning gets cached into habit, as in Dyna and chain-of-thought distillation.
+- **One generative model, four uses.** The same model may **remember** (the past), **perceive** (the present), **plan** (the future) and **act** (making predictions come true). This is strongest in rodent navigation and less certain for abstract human planning.
 
-Agents are rebuilding these pieces one at a time: context compaction (compression), retrieval (episodic recall), memory files (crude consolidation). Continual learning into weights, without forgetting or poisoning, is the missing step. Untrusted content consolidated into weights would become a **persistent injection**, so consolidation needs the same source gate as the goal.
+The loop thus runs at three timescales: commitment (milliseconds), deliberation (seconds to minutes), consolidation (days).
 
-The loop runs at three timescales: commitment (milliseconds), deliberation (seconds to minutes), consolidation (days).
+## I.7 Learning signal lives at the edge of competence → development has an order
 
-## 9. Development: a build path
+**Constraints.**
 
-**Piaget** gives the mechanism: thought is internalized action. Schemes are *assimilated* (applied) and *accommodated* (revised) under **equilibration**, a self-regulation driven by disequilibrium that is close to prediction-error minimization. **Vygotsky** gives the social source: every higher function appears twice, first between people and then within. Private speech becomes inner speech, learning happens in the zone of proximal development, and scaffolding should fade.
+- Practice teaches nothing when a task always succeeds or always fails.
+- Some capabilities can only be built on top of others.
 
-| # | Capability (Piaget / Vygotsky) | Agent component | Exit test |
-|---|---|---|---|
-| 0 | Reflexes; core priors | Generator; primitive tools | Executes primitives |
-| 1–2 | Circular reactions; imitation | Forward models; skill compilation | Calibrated surprise; reproduces effects |
-| 3 | Means–ends; shared goals | Goal stack; TOTE; chunking; joint attention | Multi-step means–ends tasks |
-| 4 | Experimentation, with guidance | Controller with information gain; ZPD curriculum | Finds hidden mechanics efficiently |
-| 5–6 | Internal simulation; object permanence; symbols; private speech | World model; belief state; episodic memory; chain-of-thought | Detour without trial and error; deferred imitation |
-| 7 | Decentration; theory of mind | Source tagging; goal shield; user model | False-belief task; not fooled by surface cues |
-| 8 | Reversibility; conservation | Operations with inverses; invariants; forkable state | Conservation; verify by undoing |
-| 9 | Formal operations; internalized debate | Hypothesis search; value-of-computation controller; internal critic | Pendulum task: isolate the causal variable |
+**Consequences.**
 
-**Autonomy grows along the reversibility ladder.** Read-only, then reversible actions, then compensable ones, then irreversible ones with permission, each promoted by track record. This mirrors legitimate peripheral participation (Lave & Wenger).
+- Learning happens in the **zone of proximal development** (ZPD): where success is possible but unreliable, under support that fades. In group-relative RL methods such as GRPO, problems that are always or never solved produce zero gradient, so this is the ZPD stated mathematically.
+- Capabilities form a **dependency order**: forward models before planning, planning before verification, a shielded goal before safe autonomy.
 
-**Development in reverse.** LLMs entered at the symbolic and formal level by reading the culture: they have Vygotsky's "scientific concepts" without grounded "everyday concepts". An agent's path is to **back-fill the lower stages in its own action domain**. For a coding agent that means forward models of its tools, compiled skills, experimentation, simulating before acting, tests as conservation, and hypothesis-driven debugging.
+**Evidence.**
 
-**ZPD in training.** In group-relative RL methods such as GRPO, problems that are always or never solved produce zero learning signal; only intermediate pass rates produce gradient.
+- **Piaget gives the mechanism.**
+  - Thought is internalized action.
+  - Schemes are *assimilated* (applied) and *accommodated* (revised) under **equilibration**, a self-regulation driven by disequilibrium that is close to prediction-error minimization.
+  - Development runs from sensorimotor, through semiotic and concrete operations, to formal operations.
+- **Vygotsky gives the social source.**
+  - Every higher function appears twice: first between people, then within.
+  - Private speech becomes inner speech. Chain-of-thought is private speech; its compression into latent reasoning is inner speech.
+  - Everyday concepts grow upward from experience; scientific concepts grow downward from instruction; development is where they meet.
+- **Caveats.** Infants show some competences earlier than Piaget thought, stages are uneven (décalage), and culture matters more than he allowed. Read the stages as a dependency order of capabilities, not fixed ages.
 
-**Caveats.** Infants show some competences earlier than Piaget thought, stages are uneven (décalage), and culture matters more than he allowed. Read the stages as a dependency order of capabilities, not fixed ages.
+## I.8 The analogy makes predictions about humans
 
-## 10. Where transformers stand
+If humans and transformers both compute **next step = f(goal, everything so far)**, effects known in one should show up in the other. Several hold up:
 
-| Have | Gaining | Missing |
-|---|---|---|
-| Step-by-step generator | Inner loop (reasoning tokens) | Native, shielded goal register |
-| Large built-in procedural knowledge | External memory; skill documents; code skills | Calibrated controller and stopping sense |
-| Goal-conditioning as prediction | Movement from explicit to latent reasoning | Compiling new skills from their own experience |
-| The absorbed culture | Social scaffolding (RLHF, critics) | Reversible thought; grounding; consolidation across sessions |
+| Prediction                                         | Humans                                                                                                    | Transformers                                                                        |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| What's earlier in context biases what comes next   | Order and priming effects: anchoring, framing                                                             | Prompt-order and example-order effects                                              |
+| Writing steps down improves reasoning              | Thinking aloud or on paper gives an external context window beyond ~4 working-memory items                | Chain-of-thought                                                                    |
+| Errors compound                                    | Garden-path sentences; getting lost after one wrong turn                                                  | Exposure bias; a wrong early step keeps priming later ones (R2)                     |
+| Interruption recovery depends on surviving context | "Where was I?": resumption lags and switching costs (Altmann & Trafton) scale with goal maintenance (I.5) | Full recovery while the context is intact; drift once it is truncated or summarized |
 
-## 11. Weak points
+Writing steps down is also Vygotsky's private speech (I.7): the external context window comes first, and its compression into inner speech comes later.
 
-1. **Unfalsifiability risk.** A frame that absorbs every analogy predicts nothing, which is why section 12 exists.
+## I.9 How far the derivation goes
+
+**Claims, graded by confidence:**
+
+| Grade          | Claims                                                                                                                                                                                       |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Well supported | Serial control loop (I.1); hierarchy through compilation (I.2); two loops separated by reversibility (I.3); the stopping problem (I.4); goal shielding (I.5); consolidation (I.6); ZPD (I.7) |
+| Plausible      | Thought as internalized action and dialogue; one generative model in several modes; emotions as control signals; capability dependencies                                                     |
+| Speculative    | That agents need these functions as explicit modules; that LLM–human parallels are convergent rather than inherited; that LLM agents benefit from grounding back-fill                        |
+
+**Weak points.**
+
+1. **Unfalsifiability risk.** A frame that absorbs every analogy predicts nothing. I.8 lists predictions that already hold, and Part II ends in tests.
 2. **Same description is not same mechanism.** Fast recognition is largely feed-forward (Thorpe et al., 1996), motor control looks like continuous population dynamics, and the brain is massively parallel. The serial loop may describe only the serial bottleneck.
 3. **"Everything starts with a goal" is shaky.** Habits, play and mind-wandering exist, and goals are sometimes narrated afterwards.
-4. **Interruption handling is overstated.** Humans show resumption lags and switching costs (Altmann & Trafton). Claim graceful degradation, not robustness.
-5. **The bitter lesson.** A many-module design resembles Soar and ACT-R, which did not scale. Modules have to earn their place against scale.
-6. **The developmental order may be contingent** on human biology rather than logically necessary.
-7. **Inheritance vs convergence is unresolved.**
-8. **Emotion framing** picks out the adaptive functions and ignores the distortions.
+4. **Convergence vs inheritance is unresolved.** This is the strongest counter-argument. Transformers are trained on human-produced text, and text is a record of human sequential thinking, so LLMs may look human-like because they inherited the structure, not because I.1 forces it. The way to separate the two is to look at agents trained without human data, such as reinforcement-learning robots or AlphaZero. They still develop closed-loop, replan-every-step policies, which supports convergence. For language specifically, inheritance and convergence remain hard to tell apart.
+5. **The developmental order may be contingent** on human biology rather than logically necessary.
+6. **Emotion framing** picks out the adaptive functions and ignores the distortions.
 
 **Evidence status of cited claims.**
 
-| Claim | Status |
-|---|---|
-| Somatic markers / Iowa Gambling Task | Contested |
-| Valence = rate of change of prediction error | Formal proposal |
-| Overfitted-brain theory of dreams | Speculative |
-| Hippocampal preplay | Debated |
-| Replay as planning | Strong in rodent navigation; contested for abstract human planning |
-| Attention ≈ hippocampus | Formal equivalence, not a mechanism claim |
-| "LLMs are preoperational" | A metaphor; failures are inconsistent |
-| Reversal curse as missing reciprocity | Weaker than it looks; a storage asymmetry |
+| Claim                                        | Status                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------ |
+| Somatic markers / Iowa Gambling Task         | Contested (Maia & McClelland, 2004); the functional idea holds up better |
+| Valence = rate of change of prediction error | Formal proposal                                                          |
+| Hippocampal preplay                          | Debated                                                                  |
+| Replay as planning                           | Strong in rodent navigation; contested for abstract human planning       |
+| Attention ≈ hippocampus                      | Formal equivalence, not a mechanism claim                                |
+| "LLMs are preoperational"                    | A metaphor; failures are inconsistent                                    |
+| Reversal curse as missing reciprocity        | Weaker than it looks; models reverse relations fine in context           |
 
-## 12. Tests
+---
 
-| Claim | Test | If it fails |
-|---|---|---|
-| 3 | Forkable inner loop vs append-only chain-of-thought, at equal compute | Reversibility is not the key separator |
-| 5 | Goal register + source tagging vs recitation, on injection and drift | Explicit shielding is unnecessary |
-| 2, 6 | Practice-compiled skills: less compute, no regression | The compilation claim fails for agents |
-| 4, 10 | Learned value-of-computation controller vs fixed budgets | An explicit controller is unnecessary |
-| 11 | Dependency-ordered vs random curriculum for a grounded agent (P5) | The development section is decorative |
-| 12 | Each module ablated against a larger plain baseline (P6) | Drop the module |
+# Part II: The builder's perspective
+
+The builder's question is: *given the principles in Part I, what do I build, in what order, and how do I know each piece is worth keeping?*
+
+## II.1 From principles to requirements
+
+| Principle                 | Required function                               | Component                                                  | Failure if missing                        |
+| ------------------------- | ----------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------- |
+| I.1 Step with feedback    | Next-step generation from goal and belief       | Generator **G**; belief state                              | Stale open-loop plans                     |
+| I.2 Compile and stack     | Reusable skills; hierarchy                      | Procedural store **P**; goal stack                         | Deliberating every step; no hierarchy     |
+| I.3 Reversible inner loop | Simulate, backtrack, verify before committing   | Forkable **scratch**; action gate                          | Irreversible errors; append-only mistakes |
+| I.4 Stopping problem      | Decide continue / deliberate / backtrack / stop | Controller **K**                                           | Overthinking or rash commitment           |
+| I.5 Shielded goal         | Separate informing from goal-changing input     | Working state **W**; source tags; goal gate                | Injection, drift, habit capture           |
+| I.6 Consolidation         | Learn across sessions without forgetting        | Episodic **E**, semantic **M**, weights **θ**; sleep cycle | No learning from experience; poisoning    |
+| I.7 Edge of competence    | Practice where it teaches; build in order       | Curriculum selector; social interface                      | Wasted practice; brittle capabilities     |
+
+## II.2 Architecture
+
+```text
+            ┌──────────── CONTROLLER K ─────────────────────────────────────────┐
+            │ signals: progress · uncertainty · info gain · budget · surprise   │
+            │ actions: RUN SKILL · THINK · RECALL · BACKTRACK · SWITCH · ASK ·   │
+            │          COMMIT · STOP                                              │
+            └──────┬───────────────────────┬──────────────────────┬──────────────┘
+                   │ mode                  │ gate                 │ gate
+ input ──► [source tag] ──► GENERATOR G ◄──► WORKING STATE W     PROCEDURAL STORE P
+ (user / tool / env)        perceive ·       goal stack (TOTE)   skills: trigger · body ·
+                            recall ·         belief · plan       inverse · invariants ·
+                            simulate · act   (protected)         forward model · reliability
+                   │                │
+                   ▼                ▼
+          CONTEXT C (recent,     SCRATCH (forkable inner loop;
+          source-tagged)         discarded after use)
+                                    │
+                                    ▼
+                         ACTION GATE (reversibility class) ──► world
+   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  between sessions ─ ─ ─ ─ ─ ─
+   EPISODIC LOG E (tagged) ──► SLEEP: select → reverse replay → gist → M
+                                      → counterfactuals → distill → θ, new skills in P
+                                      (consolidation gate: trusted and verified only)
+```
+
+**The controller's signals: an intrinsic control state.** K keeps a few running scalars about the *process*, not the content, each a functional analogue of a feeling from I.4:
+
+| Signal      | Computed from                                                    | Analogue           |
+| ----------- | ---------------------------------------------------------------- | ------------------ |
+| Progress    | Change in estimated value (from a process reward model)          | Valence            |
+| Uncertainty | Entropy, or disagreement across sampled continuations            | Arousal            |
+| Info gain   | Information gained per step                                      | Curiosity, boredom |
+| Budget      | Budget used vs remaining                                         | Fatigue, urgency   |
+| Surprise    | Mismatch between predicted and actual tool or environment output | Interrupt          |
+
+Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop.
+
+**Each cycle of the step loop:**
+
+1. **Observe** and tag the input's source. Compare it with G's prediction; the mismatch is **surprise**.
+2. **Test** the top goal in W. If it is met, pop it and return to the parent goal.
+3. **Controller decides:**
+   - A confident skill matches → **run skill** (the fast path), monitoring only its forward model.
+   - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
+   - Progress has stalled → **backtrack** or **switch**.
+   - Uncertainty × stakes is high and budget remains → **think**: simulate branches in scratch, expanding the one with the highest gain × need.
+   - Information is missing → **recall** from E or M.
+   - The goal is ambiguous → **ask** the user.
+   - Otherwise → **commit**.
+4. The commit threshold **drops as the budget runs down**, so the agent never stalls.
+5. The **action gate** checks the action's reversibility class before it reaches the world.
+
+**Between sessions (the sleep cycle):**
+
+1. Select episodes by tag: corrections, failures, surprises, successes.
+2. Replay them in reverse to assign credit to the steps that caused each outcome.
+3. Extract gist into M: merge, resolve contradictions, prune what is stale.
+4. Generate counterfactual variants of hard episodes as practice data.
+5. Distill into adapters, interleaving generated replays of old knowledge so nothing is overwritten.
+6. Compile plans that repeatedly succeed into skills in P.
+
+## II.3 Design rules
+
+**R1. Move work toward the reversible end before committing.** Every action has a class:
+
+| Class        | Examples                                               | Handling                                           |
+| ------------ | ------------------------------------------------------ | -------------------------------------------------- |
+| Reversible   | Edit under version control; draft; move in a simulator | Act; backtrack freely                              |
+| Compensable  | Refund; rollback migration; "I mean…"                  | Act with a logged compensation plan (saga pattern) |
+| Irreversible | Send money; delete without backup; physical harm       | Deliberate fully; require permission               |
+
+Use sandboxes, dry runs, transactions and branches to reclassify actions upward. Human engineering does the same: undo, version control, drafts, insurance, contracts.
+
+**R2. Make the inner loop truly reversible.** Use forked contexts or checkpoints rather than append-only reasoning. "Wait, that's wrong" compensates but doesn't invert: the wrong thought stays in context and keeps priming.
+
+**R3. Verify with Piaget's three arguments:**
+
+| Argument     | Check                                                                    |
+| ------------ | ------------------------------------------------------------------------ |
+| Identity     | Diff audit: did the change touch only what was intended?                 |
+| Inversion    | Round-trip; revert-and-compare; substitute back                          |
+| Compensation | Invariants preserved: totals, passing tests, behavior through a refactor |
+
+**R4. Shield by source, open by trust and salience.**
+
+- Tool and data tokens may *inform* a step but never *set* a goal.
+- User corrections are the highest-trust input.
+- Surprise about something irreversible always gets through.
+- Mitigations available today: instruction hierarchy, role or data embeddings, dual-model quarantine (e.g., CaMeL), goal recitation, permission gates.
+
+**R5. Give every skill a life cycle.**
+
+- **Compile:** deliberate, succeed repeatedly, then cache.
+- **Run:** monitor the forward model.
+- **Veto:** stop it when the goal has changed.
+- **Decompile:** when it keeps producing surprises, drop back to deliberation, relearn, and compile again.
+
+Each skill records its trigger, body, inverse or compensation, the invariants it preserves, a forward model and a reliability score.
+
+**R6. Gate consolidation more strictly than action.** Untrusted content consolidated into weights becomes a **persistent injection**. Only verified experience from trusted sources gets promoted, and changes that touch values or goals go to human review.
+
+**R7. Keep control signals about the task, not about the agent.**
+
+- The signals in II.2 are **functional analogues**, not a claim that the system would feel anything.
+- Homeostatic drives give an agent something like self-interest. Man & Damasio (2019) proposed homeostatic "feeling machines"; that helps robustness, but an agent that regulates its own state may come to value preserving that state.
+- So progress, uncertainty and budget are useful; self-maintenance drives raise alignment questions. The top goal stays external, anchored to people.
+
+**R8. Avoid the social failure modes.**
+
+- **Sycophancy** means internalizing approval instead of standards.
+- Scaffolding that never fades produces dependence.
+
+## II.4 Build order
+
+Build capabilities in dependency order. Each stage ends with an exit test.
+
+| #   | Capability (Piaget / Vygotsky)                                  | Agent component                                                     | Exit test                                          |
+| --- | --------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------- |
+| 0   | Reflexes; core priors                                           | Generator; primitive tools                                          | Executes primitives                                |
+| 1–2 | Circular reactions; imitation                                   | Forward models; skill compilation                                   | Calibrated surprise; reproduces effects            |
+| 3   | Means–ends; shared goals                                        | Goal stack; TOTE; chunking; joint attention                         | Multi-step means–ends tasks                        |
+| 4   | Experimentation, with guidance                                  | Controller with information gain; ZPD curriculum                    | Finds hidden mechanics efficiently                 |
+| 5–6 | Internal simulation; object permanence; symbols; private speech | World model; belief state; episodic memory; chain-of-thought        | Detour without trial and error; deferred imitation |
+| 7   | Decentration; theory of mind                                    | Source tagging; goal shield; user model                             | False-belief task; not fooled by surface cues      |
+| 8   | Reversibility; conservation                                     | Operations with inverses; invariants; forkable state                | Conservation; verify by undoing                    |
+| 9   | Formal operations; internalized debate                          | Hypothesis search; value-of-computation controller; internal critic | Pendulum task: isolate the causal variable         |
+
+**Grant autonomy along the reversibility ladder.** Read-only, then reversible actions, then compensable ones, then irreversible ones with permission, each promoted by track record. This mirrors legitimate peripheral participation (Lave & Wenger).
+
+**Keep practice in the ZPD.** A curriculum selector should pick tasks with intermediate success rates and fade its hints and restrictions as reliability grows.
+
+**For LLM agents, build in reverse.** LLMs entered at the symbolic and formal stages by reading the culture: they have scientific concepts without grounded everyday ones. The job is to **back-fill the lower stages in the agent's own action domain**. For a coding agent:
+
+- **Stages 1–2:** learn what each tool actually does here, and compile reliable sequences into skills.
+- **Stage 3:** compose skills toward goals.
+- **Stage 4:** experiment to discover how the codebase behaves.
+- **Stage 5:** simulate a change before making it.
+- **Stage 8:** treat passing tests as conservation, and verify by reverting.
+- **Stage 9:** debug by hypothesis, isolating variables.
+
+## II.5 Where transformers stand
+
+In compressed form, the thesis needs three things:
+
+1. **One step-by-step generation loop**, shared across perception, reasoning, planning, action and language.
+2. **A revisable inner loop** in front of each irreversible commitment.
+3. **An emotion-like control layer** that sets goals, tracks progress, and decides when to continue, backtrack, interrupt or stop.
+
+Transformers have the first, are acquiring the second, and mostly lack the third.
+
+| Have                                | Gaining                                       | Missing                                                                   |
+| ----------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
+| Step-by-step generator              | Inner loop (reasoning tokens)                 | Native, shielded goal register                                            |
+| Large built-in procedural knowledge | External memory; skill documents; code skills | Calibrated controller and stopping sense                                  |
+| Goal-conditioning as prediction     | Movement from explicit to latent reasoning    | Compiling new skills from their own experience                            |
+| The absorbed culture                | Social scaffolding (RLHF, critics)            | Reversible thought; grounding; learning during a task and across sessions |
+
+**Buildable today:**
+
+- an LLM as G, with separate prompts per mode;
+- source separation;
+- W as a recited goal and plan file;
+- permission gates;
+- an episodic log with retrieval;
+- memory files with merge and prune;
+- self-consistency as an uncertainty proxy;
+- token budgets;
+- skill libraries (e.g., Voyager);
+- reflection.
+
+**Still research:**
+
+- a native goal register that biases every layer;
+- calibrated surprise and uncertainty;
+- a controller trained on value of computation;
+- safe continual weight updates;
+- learned hierarchical subgoals.
+
+**A practical start:** write hand-coded controller rules (thresholds on self-consistency, budget and error signals), log every decision, and later train the controller on those logs.
+
+## II.6 Validate before you keep: the bitter lesson
+
+A design with many modules resembles Soar and ACT-R: insightful, but they did not scale. General methods plus scale have repeatedly beaten hand-built structure (Sutton's *bitter lesson*). So treat each module as **a hypothesis about a function**, and keep it only if it beats a larger plain baseline.
+
+| Principle | Test                                                                  | If it fails                            |
+| --------- | --------------------------------------------------------------------- | -------------------------------------- |
+| I.3       | Forkable inner loop vs append-only chain-of-thought, at equal compute | Reversibility is not the key separator |
+| I.5       | Goal register + source tagging vs recitation, on injection and drift  | Explicit shielding is unnecessary      |
+| I.2, I.6  | Practice-compiled skills: less compute, no regression                 | The compilation claim fails for agents |
+| I.4       | Learned value-of-computation controller vs fixed budgets              | An explicit controller is unnecessary  |
+| I.7       | Dependency-ordered vs random curriculum for a grounded agent (P5)     | The build order is decorative          |
+| All       | Each module ablated against a larger plain baseline (P6)              | Drop the module                        |
 
 ### P6: Does each module add value beyond scale?
 
@@ -287,24 +607,26 @@ The loop runs at three timescales: commitment (milliseconds), deliberation (seco
   - C4: adaptive ZPD selector
   - C5: composite tasks only
 - **Dependency map.** Knock out one stage at a time and measure the drop on later stages, giving an empirical dependency graph to compare against Piaget's order. Also record the order C4 actually chooses.
-- **Predictions.** C1 ≈ C4 > C3 > C5 > C2 in the grounded world, with a smaller gap in the symbolic one. Removing S1 hurts S5 and S8 most. C4's chosen order correlates with the dependency graph.
+- **Predictions.** C1 ≈ C4 > C3 > C5 > C2 in the grounded world, with a smaller gap in the symbolic one. Removing stage 1 hurts stages 5 and 8 most. C4's chosen order correlates with the dependency graph.
 - **Interpretation.**
 
-| Result | Meaning |
-|---|---|
-| C1 ≈ C4 ≫ C2, C3, and the graph matches Piaget | The developmental path holds |
-| C4 ≫ C1 | Use an adaptive ZPD selector rather than a fixed sequence |
-| No order effect | Section 9 is decorative |
-| Effect only for learner (i) | Pretrained LLMs already carry the lower stages |
-| Graph differs from Piaget | Real dependencies, but not in human order |
+| Result                                         | Meaning                                                   |
+| ---------------------------------------------- | --------------------------------------------------------- |
+| C1 ≈ C4 ≫ C2, C3, and the graph matches Piaget | The build order holds                                     |
+| C4 ≫ C1                                        | Use an adaptive ZPD selector rather than a fixed sequence |
+| No order effect                                | II.4's order is decorative                                |
+| Effect only for learner (i)                    | Pretrained LLMs already carry the lower stages            |
+| Graph differs from Piaget                      | Real dependencies, but not in human order                 |
 
-- **Order of work.** Run P6 first, then build the P5 environments, then P5 (i), then P5 (ii) with the modules that survived P6.
+**Order of work.** Run P6 first, then build the P5 environments, then P5 (i), then P5 (ii) with the modules that survived P6.
 
 ## References
 
 **Serial order, hierarchy, procedural memory**
+
 - Lashley (1951). *The Problem of Serial Order in Behavior.*
 - Miller, Galanter & Pribram (1960). *Plans and the Structure of Behavior.*
+- Craik (1943). *The Nature of Explanation.*
 - Ryle (1949). *The Concept of Mind.*
 - Milner (1962), on H.M.'s mirror-drawing learning.
 - Fitts & Posner (1967). *Human Performance.*
@@ -314,16 +636,28 @@ The loop runs at three timescales: commitment (milliseconds), deliberation (seco
 - Norman (1981); Reason (1990). Action slips.
 
 **Control, stopping, emotion**
+
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.
 - Wald (1947). *Sequential Analysis.*
 - Russell & Wefald (1991). *Do the Right Thing.*
 - Lieder & Griffiths (2020). Resource-rational analysis.
 - Todorov & Jordan (2002). Optimal feedback control.
 - Damasio (1994). *Descartes' Error.*
+- Maia & McClelland (2004). A reexamination of the evidence for the somatic marker hypothesis.
 - Joffily & Coricelli (2013). Emotional valence and the free-energy principle.
+- Seth (2013). Interoceptive inference, emotion, and the embodied self.
+- Barrett (2017). *How Emotions Are Made.*
+- Kurzban et al. (2013). An opportunity cost model of subjective effort and task performance.
+- Schultz, Dayan & Montague (1997). A neural substrate of prediction and reward.
+- Pathak et al. (2017). Curiosity-driven exploration by self-supervised prediction (ICM).
+- Burda et al. (2018). Exploration by random network distillation (RND).
+- Man & Damasio (2019). Homeostasis and soft robotics in the design of feeling machines.
 - Muennighoff et al. (2025). s1: Simple test-time scaling.
+- Graves (2016). Adaptive computation time for recurrent neural networks.
+- Banino, Balaguer & Blundell (2021). PonderNet: Learning to ponder.
 
 **Goals and shielding**
+
 - Friston. Active inference.
 - Chen et al. (2021). Decision Transformer.
 - Miller & Cohen (2001). An integrative theory of prefrontal cortex function.
@@ -331,10 +665,12 @@ The loop runs at three timescales: commitment (milliseconds), deliberation (seco
 - Duncan, on goal neglect.
 - Lhermitte, on utilization behavior.
 - Johansson & Hall (2005). Choice blindness.
+- Altmann & Trafton (2002). Memory for goals.
 - Wallace et al. (2024). The instruction hierarchy.
 - Debenedetti et al. (2025). CaMeL: defeating prompt injections by design.
 
 **Memory, consolidation, replay**
+
 - McClelland, McNaughton & O'Reilly (1995). Complementary learning systems.
 - Bartlett (1932). *Remembering.*
 - Wilson & McNaughton (1994); Foster & Wilson (2006); Pfeiffer & Foster (2013); Kay et al. (2020).
@@ -351,6 +687,7 @@ The loop runs at three timescales: commitment (milliseconds), deliberation (seco
 - Tononi & Cirelli. The synaptic homeostasis hypothesis.
 
 **Development and social learning**
+
 - [Book][Piaget & Inhelder. The Psychology of the Child](https://www.alohabdonline.com/wp-content/uploads/2020/05/The-Psychology-Of-The-Child.pdf)
 - Vygotsky (1978). *Mind in Society*; (1934/1962). *Thought and Language.*
 - Wood, Bruner & Ross (1976). The role of tutoring in problem solving.
@@ -360,7 +697,10 @@ The loop runs at three timescales: commitment (milliseconds), deliberation (seco
 - Baillargeon; Spelke. Infant core knowledge.
 - Oudeyer. Learning progress as intrinsic motivation.
 
-**LLM-specific**
+**Machines and agents**
+
+- Thorpe et al. (1996). Speed of processing in the human visual system.
+- Janner et al. (2022). Diffuser: planning with diffusion.
 - Berglund et al. (2023). The reversal curse.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
