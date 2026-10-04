@@ -165,9 +165,10 @@ What defines the inner loop is **reversibility**: its operations can be undone o
 
 **What reversibility buys.**
 
-- **Free backtracking.** Search needs undo; chess engines make and unmake moves millions of times.
-- **Verification by inversion.** Round-trip checks, revert-and-compare, substituting a solution back into the problem.
-- **Invariants.** Knowing what a transformation leaves unchanged compresses the world model, prunes search, and turns violations into high-value surprise signals. This is the cognitive counterpart of Noether's link between symmetry and conservation.
+- **Free backtracking.** Search needs undo; chess engines make and unmake moves millions of times. The inner loop is cheap because its operations are reversible.
+- **Verification by inversion.** Check addition with subtraction, decode(encode(x)) = x, round-trip tests, back-translation, cycle consistency, substituting a solution back into the problem. Undoing is often easier to check than doing.
+- **Invariants.** Knowing what a transformation leaves unchanged compresses the world model, prunes search, and turns violations into high-value surprise signals: a violated invariant means a bug or a wrong belief. This is the cognitive counterpart of Noether's link between symmetry and conservation.
+- **Composability.** Reversible operations with an identity form a group-like structure: they can be composed, inverted and re-associated. That is the basis of systematic generalization.
 
 **How much inner loop?** Roughly *(cost of an error) × (uncertainty) ÷ (time pressure)*.
 
@@ -177,17 +178,33 @@ What defines the inner loop is **reversibility**: its operations can be undone o
 **Evidence.**
 
 - **Talking vs writing** is the cleanest natural experiment among the seven processes. The same person producing the same kind of output switches from incremental generation with appended repairs ("I mean…") to drafting and revision, purely because reversibility changes. Word processors made revision even cheaper, and writing became measurably less linear.
-- **Piaget.** Thought *is* internalized action that has become reversible. In conservation tasks, the concrete-stage child justifies "it's the same amount" with three arguments:
-  - **identity**: nothing was added or removed;
-  - **inversion**: you can pour it back;
-  - **compensation**: taller, but thinner.
+- **Piaget.** Thought *is* internalized action, and it becomes thought proper when its operations become reversible. He described two forms of reversibility:
+  - **inversion** (negation): undo the operation; +A − A = 0; pour the water back;
+  - **reciprocity** (compensation): a change in one dimension offset by another; taller but thinner; A < B ⇔ B > A.
 
-  The preoperational child judges by the end state and fixates on one salient dimension.
+  At the concrete stage these work separately; at the formal stage they combine into a single system, the **INRC group** (Identity, Negation, Reciprocal, Correlative). Conservation tasks reveal the shift. Water is poured from a wide glass into a tall, thin one:
+  - The **preoperational** child says "more now, it's higher." It judges by the end state (*figurative* knowledge) and fixates on one dimension (centration).
+  - The **concrete** child says "the same," with three justifications: **identity** (nothing was added or taken away), **inversion** (you can pour it back) and **compensation** (taller, but thinner). It reasons about the transformation, not just the states (*operative* knowledge).
+
+  The three justifications double as three verification strategies for agents (R3).
+- **How reversibility develops.** Piaget traced it from action to thought:
+  - **Sensorimotor, practical reversibility:** the infant can physically return to a starting point and take detours (the "practical group of displacements").
+  - **Concrete operations:** reversibility is internalized; undoing is done mentally, on concrete things.
+  - **Formal operations:** inversion and reciprocity are unified (INRC) and applied to hypotheses, as in reasoning with contrapositives and controlling variables in the balance and pendulum tasks.
+
+  The agent version follows the same path: learn undo as an action (git revert, rollback), then as internal simulation (forked contexts, invariant checks), then as formal reasoning over hypotheses ("if this fix is right, reverting it must bring the failure back").
 - **Craik (1943).** The two-loop idea is old: the organism carries a "small-scale model" of the world so it can try alternatives before acting.
 - **Machines.** Modern AI rediscovered both loops.
   - Reasoning models add private thinking tokens, a cheap-to-revise region ("wait, that's wrong…") before the irreversible answer.
   - Robot diffusion policies refine a short chunk of actions as a whole, execute it, then refine the next chunk: MPC with a refinement inner loop.
   - Diffuser (Janner et al., 2022) plans whole trajectories by refinement, matching the planning row of the table.
+
+**Where transformers lack reversibility.** They are still partly preoperational.
+
+- **Append-only thinking.** A reasoning model can't delete a wrong thought. "Wait, that's wrong" leaves the error in context, where it still primes later tokens. This is compensation, not inversion. Real inversion requires forking or rolling back the context, which tree-search harnesses provide (R2).
+- **The reversal curse** (Berglund et al., 2023). Models trained on "A is B" often fail at "B is A," which looks like a failure of reciprocity in learned knowledge. The reading is weaker than it seems, though: models reverse relations fine when both are in context (I.9).
+- **Conservation failures.** Entity and state tracking breaks down over long sequences of operations; video generators make objects appear, vanish or change count; counting fails after a transformation. These are classic preoperational errors: judging by surface state instead of tracking the transformation.
+- **Verification by inversion helps.** Substituting a solution back into the original equation, or round-tripping a transformation, catches many LLM errors. It is an underused form of self-checking.
 
 ## I.4 Thinking costs → a stopping problem → control signals
 
@@ -661,23 +678,29 @@ Every piece maps to a brain mechanism, and most can be prototyped with current L
 
 **R1. Move work toward the reversible end before committing.** Every action has a class:
 
-| Class        | Examples                                               | Handling                                           |
-| ------------ | ------------------------------------------------------ | -------------------------------------------------- |
-| Reversible   | Edit under version control; draft; move in a simulator | Act; backtrack freely                              |
-| Compensable  | Refund; rollback migration; "I mean…"                  | Act with a logged compensation plan (saga pattern) |
-| Irreversible | Send money; delete without backup; physical harm       | Deliberate fully; require permission               |
+| Class                                               | Piaget analogue            | Examples                                                    | Handling                                                                        |
+| --------------------------------------------------- | -------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Reversible: an exact inverse exists                 | Inversion                  | Edit under version control; draft text; move in a simulator | Act; backtrack freely                                                           |
+| Compensable: no exact inverse, but a counter-action | Reciprocity / compensation | Refund; rollback migration; correction email; "I mean…"     | Act with a logged compensation plan (the saga pattern from distributed systems) |
+| Irreversible                                        | —                          | Send money; delete without backup; physical harm            | Deliberate fully; permission gate                                               |
 
-Use sandboxes, dry runs, transactions and branches to reclassify actions upward. Human engineering does the same: undo, version control, drafts, insurance, contracts.
+Use sandboxes, dry runs, transactions, branches, staging and checkpoints to reclassify actions upward. Much of civilization's engineering does exactly this for humans: undo, version control, drafts, insurance, contracts. Making the outer loop more like the inner loop is a large lever for agent safety.
 
-**R2. Make the inner loop truly reversible.** Use forked contexts or checkpoints rather than append-only reasoning. "Wait, that's wrong" compensates but doesn't invert: the wrong thought stays in context and keeps priming.
+**R2. Make the inner loop truly reversible.** Simulate on forkable state (git worktrees, VM snapshots, simulators, context branching) rather than append-only reasoning. "Wait, that's wrong" compensates but doesn't invert: the wrong thought stays in context and keeps priming. Discarded branches should disappear entirely.
 
 **R3. Verify with Piaget's three arguments:**
 
-| Argument     | Check                                                                    |
-| ------------ | ------------------------------------------------------------------------ |
-| Identity     | Diff audit: did the change touch only what was intended?                 |
-| Inversion    | Round-trip; revert-and-compare; substitute back                          |
-| Compensation | Invariants preserved: totals, passing tests, behavior through a refactor |
+| Argument                                 | Check                                                                                                          |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Identity: nothing added or removed       | Diff audit: did the change touch only what was intended?                                                       |
+| Inversion: undoing restores the original | Round-trip; revert-and-compare; substitute the answer back                                                     |
+| Compensation: changes balance out        | Conservation checks: totals unchanged; tests still pass; API contract or behavior preserved through a refactor |
+
+**R3a. Make transformations first-class, and learn their invariants.**
+
+- Each skill in P records its inverse or compensation, the invariants it preserves, and its preconditions (R5), so the agent reasons over operations, not only states: Piaget's move from figurative to operative knowledge.
+- During consolidation, mine experience for what never changes under which operations, as invariant-detection tools like Daikon do for programs. Store the results in M; a violation becomes surprise for the controller.
+- Train reciprocity: bidirectional relations in data; paired skills (encode/decode, serialize/parse); planning from both ends, forward from the start and backward from the goal (means–ends analysis), as humans solve mazes from both ends.
 
 **R4. Shield by source, open by trust and salience.** Shielding by content fails, because attackers can mimic any content. Follow the brain instead:
 
@@ -707,7 +730,7 @@ Each skill in P records:
 
 - **trigger:** the context or goal it applies to (basal-ganglia-style selection);
 - **body:** code, an adapter, or a compiled sub-policy;
-- **inverse or compensation**, and the **invariants** it preserves (R1, R3);
+- **inverse or compensation**, the **invariants** it preserves, and its **preconditions** (R1, R3, R3a);
 - **forward model:** the expected outcome, for surprise detection (cerebellar);
 - **reliability:** its track record, which sets how much supervision it needs;
 - **level:** which layer of the hierarchy it is a step for.
@@ -787,7 +810,7 @@ In compressed form, the thesis says:
 1. **One step-by-step loop** (a TOTE unit), nested into a hierarchy across timescales. Perception, reasoning, planning, action and language are levels of it.
 2. **The steps at each level are procedures** (Piaget's schemes), compiled through practice from deliberation at that level and chunked into single steps for the level above.
 3. **Goals are predictions the agent makes come true**, the same mechanism as conditioning a transformer.
-4. **Thought is internalized action.** The revisable inner loop develops by moving the action loop inside, where operations become reversible and conserve invariants. That makes simulation, verification and free backtracking possible before each irreversible commitment.
+4. **Thought is internalized action**, and it becomes thought proper when its operations become reversible (inversion and compensation) and conserve invariants. Reversibility defines the inner loop: it allows free backtracking, verification by inversion, and error detection through violated invariants. The outer loop's actions are reversible, compensable or irreversible, and a wise agent moves work toward the reversible end before committing. Transformers' append-only reasoning and conservation failures show they are still partly preoperational; forkable contexts, operations with explicit inverses, and invariant-based verification are the way to make them operational.
 5. **An emotion-like control layer** (equilibration), fed by procedural forward models, sets goals, tracks progress, and decides when to assimilate (run a habit), accommodate, deliberate, backtrack, interrupt or stop. A shielded, decentered goal defines relevance and guards against both external distractors and internal habit capture.
 6. **Memory is working, episodic, semantic and procedural**, linked by consolidation (reflective abstraction) that turns experience into knowledge and deliberation into skill.
 7. **The top goal** comes from homeostasis in humans and from people in AI.
@@ -1008,6 +1031,8 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Thorpe et al. (1996). Speed of processing in the human visual system.
 - Janner et al. (2022). Diffuser: planning with diffusion.
 - Berglund et al. (2023). The reversal curse.
+- Ernst et al. (2007). The Daikon system for dynamic detection of likely invariants.
+- Garcia-Molina & Salem (1987). Sagas.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
 
