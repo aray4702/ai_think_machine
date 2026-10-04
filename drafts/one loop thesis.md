@@ -540,6 +540,18 @@ The builder's question is: *given the principles in Part I, what do I build, in 
                                       (consolidation gate: trusted and verified only)
 ```
 
+**Components**, with the brain parallel for each:
+
+| Part              | Brain parallel                    | Holds                                                                         | Who can write to it                                                                 |
+| ----------------- | --------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| G: generator      | Cortex as one generative model    | One sequence model used in four modes: perceive, recall, simulate, act        | —                                                                                   |
+| K: controller     | Emotion; ACC; basal ganglia       | Running process signals; chooses the next control action                      | —                                                                                   |
+| W: working state  | Prefrontal cortex                 | Goal stack (each goal paired with its TOTE test), current belief, plan sketch | Only through the goal gate (trusted source or high salience); recited each step     |
+| C: context        | Episodic buffer                   | Recent raw trajectory, every token source-tagged                              | Anything, but tool and data tokens can inform steps, never set goals                |
+| Scratch           | Imagination                       | Simulated branches (the inner loop)                                           | G in simulate mode; discarded after use, and only conclusions go to W               |
+| P: procedures     | Basal ganglia; cerebellum         | Skills for the fast path                                                      | Only through the consolidation gate                                                 |
+| E → M → θ         | Hippocampus → neocortex           | Episodes, then distilled lessons, then weights and skills                     | Only through the consolidation gate                                                 |
+
 **The controller's signals: an intrinsic control state.** K keeps a few running scalars about the *process*, not the content, each a functional analogue of a feeling from I.4:
 
 | Signal      | Computed from                                                    | Analogue           |
@@ -555,17 +567,17 @@ Feed these back into the context, or into a separate control channel, so the age
 **Each cycle of the step loop:**
 
 1. **Observe** and tag the input's source. Compare it with G's prediction; the mismatch is **surprise**.
-2. **Test** the top goal in W. If it is met, pop it and return to the parent goal.
+2. **Test** the top goal in W (the TOTE test). If it passes, **exit**: pop the goal and continue with the parent.
 3. **Controller decides:**
-   - A confident skill matches → **run skill** (the fast path), monitoring only its forward model.
+   - A confident skill matches → **run skill** (the fast path, a habit), monitoring only its forward model and escalating to deliberation only on surprise.
    - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
    - Progress has stalled → **backtrack** or **switch**.
-   - Uncertainty × stakes is high and budget remains → **think**: simulate branches in scratch, expanding the one with the highest gain × need.
-   - Information is missing → **recall** from E or M.
+   - Uncertainty × stakes is high and budget remains → **think**: G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator.
+   - Information is missing → **recall** from E or M by cue.
    - The goal is ambiguous → **ask** the user.
-   - Otherwise → **commit**.
-4. The commit threshold **drops as the budget runs down**, so the agent never stalls.
-5. The **action gate** checks the action's reversibility class before it reaches the world.
+   - Otherwise → **commit** one step.
+4. The commit threshold **drops as the budget runs down** (the urgency signal), so the agent never stalls.
+5. The **action gate** checks reversibility × stakes before the action reaches the world; irreversible or high-stakes actions need permission.
 
 **Between sessions (the sleep cycle):**
 
@@ -579,6 +591,22 @@ Feed these back into the context, or into a separate control channel, so the age
   File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
 - **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. Compile plans that repeatedly succeed into skills in P.
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
+
+Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6).
+
+**How the parts map to Part I:**
+
+| Part                    | Principle                                  |
+| ----------------------- | ------------------------------------------ |
+| G                       | The next-step loop (I.1)                   |
+| Scratch                 | The revisable inner loop (I.3)             |
+| K                       | Emotion as controller (I.4)                |
+| W and its gates         | Goal shielding (I.5)                       |
+| E → M → θ               | Memory and consolidation (I.6)             |
+| Simulate mode and sleep | Replay as planning (I.6)                   |
+| P                       | Compiled procedures (I.2)                  |
+
+Every piece maps to a brain mechanism, and most can be prototyped with current LLMs (II.5).
 
 ## II.3 Design rules
 
@@ -641,6 +669,17 @@ Each skill records its trigger, body, inverse or compensation, the invariants it
 - **Sycophancy** means internalizing approval instead of standards.
 - Scaffolding that never fades produces dependence.
 
+**Failure modes and the matching dial.** Each rule is a dial that can be set too far either way:
+
+| Failure                           | Brain analogue       | Dial to adjust                                             |
+| --------------------------------- | -------------------- | ---------------------------------------------------------- |
+| Ignores the user's correction     | Perseveration        | Open the goal gate wider for trusted sources               |
+| Follows injected instructions     | Utilization behavior | Tighten source tagging; quarantine untrusted data          |
+| Overthinks easy steps             | Elliot               | Steeper urgency; stronger fast path                        |
+| Rash irreversible actions         | Impulsivity          | Raise the commit threshold by irreversibility; action gate |
+| Forgets the goal over a long task | Goal neglect         | Recitation; protected W                                    |
+| Learns wrong lessons              | False memory         | Stricter consolidation gate; verification                  |
+
 ## II.4 Build order
 
 Build capabilities in dependency order. Each stage ends with an exit test.
@@ -691,8 +730,8 @@ Transformers have the loop and goal-conditioning, are acquiring the inner loop, 
 **Buildable today:**
 
 - an LLM as G, with separate prompts per mode;
-- source separation;
-- W as a recited goal and plan file;
+- source separation: role tags, delimiters, CaMeL-style quarantine;
+- W as a goal and plan file recited each step;
 - permission gates;
 - an episodic log with retrieval;
 - memory files with merge and prune;
@@ -704,10 +743,10 @@ Transformers have the loop and goal-conditioning, are acquiring the inner loop, 
 **Still research:**
 
 - a native goal register that biases every layer;
-- calibrated surprise and uncertainty;
-- a controller trained on value of computation;
-- safe continual weight updates;
-- learned hierarchical subgoals.
+- calibrated surprise and uncertainty signals;
+- a controller trained on value of computation (outcome reward minus compute cost);
+- safe continual weight updates, without forgetting or poisoning;
+- learned hierarchical subgoals instead of scripted ones.
 
 **A practical start:** write hand-coded controller rules (thresholds on self-consistency, budget and error signals), log every decision, and later train the controller on those logs.
 
@@ -744,11 +783,12 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - **Configurations.** Per scale: plain, full, six leave-one-out and six add-one, for 42 configurations in total. Each also runs against a **compute-matched plain baseline** that spends the same tokens on thinking or retries.
 - **Metrics.**
   - success;
-  - goal retention after interruption;
+  - goal retention after interruption, and correct gate decisions (accept the benign correction, refuse the injection);
   - injection success rate;
+  - accuracy vs compute curves: does the controller spend thinking where it pays?
   - late-step adherence;
   - tokens and time;
-  - improvement across sessions and regression on earlier families;
+  - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
   - irreversible-error rate.
 - **Analysis.** Plot each module's gain against scale. Gain shrinking toward zero means the function emerges with scale. Flat or growing gain means keep the module. Report gains as an equivalent model size, and report safety value separately from capability value.
 - **Predictions.** M1, M4 and M5 persist; M2's injection reduction persists while its drift reduction shrinks; M3 shrinks; M6 reduces irreversible errors at every scale.
