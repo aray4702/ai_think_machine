@@ -94,17 +94,19 @@ A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ�
 
 **Consequence.** Steps that recur must be **compiled** into procedures that run without deliberation, and a sequence at one level must be **chunked** into a single step for the level above. The result is a hierarchy of loops, each on its own timescale.
 
-The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. TOTE units nest, so the seven processes of section 0 are better seen as **levels of one hierarchy** than as parallel processes:
+The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. This is section 0's "sequence of steps that stops at a conclusion," described in 1960. Their main further claim was that TOTE units **nest**: hammering a nail is (lift hammer → strike), repeated until the nail is flush. So the seven processes of section 0 are better seen as **levels of one hierarchy** than as parallel processes, where each level's step becomes the goal of the level below:
 
 ```text
-need (hunger)                         hours
+need (hunger)                         homeostasis, hours
  └ goal (get lunch)
-    └ plan (go to the café)           minutes
-       └ navigation (turn left)       seconds
-          └ action (reach, grasp)     ~100s of ms
-             └ saccade (find handle)  ~200 ms
+    └ plan (go to the café)           planning, minutes
+       └ navigation (turn left)       execution, seconds
+          └ action (reach, grasp)     motor, ~100s of ms
+             └ saccade (find handle)  perception, ~200 ms
    (talking and reasoning attach at any level)
 ```
+
+Each level runs its own step-by-step loop on its own timescale. The brain has a matching layout: the prefrontal cortex runs from abstract goals at the front to concrete actions at the back (Koechlin; Badre). In AI terms this is hierarchical reinforcement learning, or the options framework (Sutton, Precup & Singh, 1999).
 
 **Evidence: procedural memory.**
 
@@ -241,7 +243,12 @@ What's missing is that these are mostly used **during training**. At inference t
 
 **Consequence.** The goal must be **maintained** and **shielded**: information that *informs the next step* must be kept separate from information that *changes the goal*. Content can be mimicked, so shielding has to work by **source** and **salience**, not by content. Without a protected goal there is nothing to judge relevance against, and everything in context competes equally.
 
-**What a goal is.** A goal is **a prediction the agent makes come true**. In active inference, goals are prior preferences; prediction error is reduced either by changing the belief (perception) or by changing the world (action). This is the same mechanism as conditioning a transformer on a prompt ("Here is a correct proof:"), or on a target return in the Decision Transformer. Not every goal is top-down: affordances suggest goals, and goals are sometimes constructed after the fact (choice blindness; Gazzaniga's interpreter).
+**What a goal is.** Every process in section 0 "starts with a goal," and that is the one part the loop itself can't explain. One answer: a goal is **a prediction the agent makes come true**.
+
+- **Active inference.** Goals are prior preferences: the organism expects to be in viable states ("I'll be fed"). When reality doesn't match, the error can be resolved two ways: change the belief (perception), or change the world so the prediction comes true (action). Goals and beliefs are the same kind of object, distinguished only by **which side yields**.
+- **Transformers work this way literally.** A prompt like "Here is a correct proof:" is a conditioning prefix, and the model generates a continuation in which the goal is achieved. The Decision Transformer (Chen et al., 2021) makes it explicit: condition on a desired future reward, and the model predicts the actions that would produce it. Goal-conditioning as prediction may be the deepest point of contact between the seven processes and the transformer.
+
+**Goals also come from the bottom up.** Not every goal starts with a need. The environment suggests goals: you see a cup and want to pick it up (an **affordance**). Goals are also sometimes constructed after the fact (choice blindness; Gazzaniga's interpreter). Bottom-up goals are exactly what the prefrontal cortex has to shield the top-down ones from.
 
 **Evidence: how the brain shields goals.**
 
@@ -258,6 +265,19 @@ What's missing is that these are mostly used **during training**. At inference t
 | Goal neglect (Duncan)                                           | Goal drift in long tasks                           |
 | Habit capture                                                   | Repeating a learned pattern after the goal changed |
 | Performing for approval                                         | Sycophancy                                         |
+
+Frontal patients with utilization behavior (Lhermitte) pick up and use whatever is put in front of them, unprompted; text in the context grabbing the goal is the same failure. Healthy people with goal neglect know the rule but drift from it over a long task; so do LLM agents. Both suggest LLMs lack a strong goal-shielding mechanism.
+
+**The difference at the top.**
+
+|                      | Human                                | LLM agent                                |
+| -------------------- | ------------------------------------ | ---------------------------------------- |
+| Top of the hierarchy | Homeostatic needs (intrinsic)        | User instruction (external)              |
+| Standing preferences | Temperament, values, learned priors  | Training dispositions, system prompt     |
+| Subgoal generation   | Learned, automatic, multi-timescale  | Mostly explicit (to-do lists, scaffolds) |
+| Goal shielding       | Prefrontal cortex                    | Weak: prompt injection, drift            |
+
+Not having intrinsic needs at the top is arguably a feature: it keeps an agent's goals anchored to a person (R7). The open engineering problems are in the **middle of the stack**, learned subgoal hierarchies and robust goal shielding, and neither requires giving the agent needs of its own.
 
 So interruptions are absorbed with **graceful degradation, not robustness**: recovery depends on how well the goal was maintained (I.8).
 
@@ -514,13 +534,15 @@ Build capabilities in dependency order. Each stage ends with an exit test.
 
 ## II.5 Where transformers stand
 
-In compressed form, the thesis needs three things:
+In compressed form, the thesis says:
 
-1. **One step-by-step generation loop**, shared across perception, reasoning, planning, action and language.
-2. **A revisable inner loop** in front of each irreversible commitment.
-3. **An emotion-like control layer** that sets goals, tracks progress, and decides when to continue, backtrack, interrupt or stop.
+1. **One step-by-step loop** (a TOTE unit), nested into a hierarchy across timescales. Perception, reasoning, planning, action and language are levels of it.
+2. **Goals are predictions the agent makes come true**, the same mechanism as conditioning a transformer.
+3. **A revisable inner loop** sits in front of each irreversible commitment.
+4. **An emotion-like control layer** sets goals, tracks progress, and decides when to continue, backtrack, interrupt or stop.
+5. **The top goal** comes from homeostasis in humans and from people in AI.
 
-Transformers have the first, are acquiring the second, and mostly lack the third.
+Transformers have the loop and goal-conditioning, are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding.
 
 | Have                                | Gaining                                       | Missing                                                                   |
 | ----------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
@@ -633,6 +655,9 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Anderson. ACT-R; Newell & Rosenbloom, chunking and the power law of practice.
 - Yin & Knowlton (2006). The role of the basal ganglia in habit formation.
 - Chase & Simon (1973). Perception in chess.
+- Koechlin, Ody & Kouneiher (2003). The architecture of cognitive control in the human prefrontal cortex.
+- Badre (2008). Cognitive control, hierarchy, and the rostro–caudal organization of the frontal lobes.
+- Sutton, Precup & Singh (1999). Between MDPs and semi-MDPs: the options framework.
 - Norman (1981); Reason (1990). Action slips.
 
 **Control, stopping, emotion**

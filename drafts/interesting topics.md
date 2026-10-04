@@ -15,6 +15,8 @@ I am curious about many interesting topics on AI and beyond. To name a few:
 3. [Esher](https://www.wikiart.org/en/m-c-escher/)
 4. [Book][Geometry, Topogy and Physics](https://docs.google.com/file/d/0B8f5D9R5eAYaLV9tRHZORm9JeUk/edit?resourcekey=0-r1kvOx5Zf7qY4LusP5B5bw)
 
+
+
 ## Emergency
 
 1. Brain criticality
@@ -25,20 +27,29 @@ I am curious about many interesting topics on AI and beyond. To name a few:
 6. Learning algorithm -> Learn how to learn
 
 ## Brain
+
 1. [Book][Randall's Computational Cognitive Neuroscience](https://compcogneuro.org/book)
 2. [Book][Piaget's The Psychology of the child](https://www.alohabdonline.com/wp-content/uploads/2020/05/The-Psychology-Of-The-Child.pdf)
 3. [People][Antonio Damasio's consciousness](https://routledgetextbooks.com/textbooks/9781138801318/people/antonio-damasio.php)
+4. [Book] ***Gödel, Escher, Bach: An Eternal Golden Braid* (GEB) by D**ouglas Hofstadter
 
 ## Complex systems
 
 1. [YouTube lectures][复杂系统](https://www.youtube.com/watch?v=0I5Amjk7pbY&list=PLcP_7RwEiPlTvjXOXObektZuWY9_mlxHA)
 2. [Youtube video][复杂](https://www.youtube.com/watch?v=nzuoGALunKM&t=988s)
 
-##  中观和唯识
+
+
+## 中观和唯识
+
 1. 明觉，意识，物质
 
-##  学习，健身，生活
+
+
+## 学习，健身，生活
+
 1. [Learn how to learn](https://barbaraoakley.com/books/learning-how-to-learn/)
 2. 逻辑原点
 3. 第一性原理
 4. 系统思维
+
