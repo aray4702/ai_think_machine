@@ -512,11 +512,51 @@ Sleep is the revisable inner loop applied to a whole day of experience. Today's 
 - **The semiotic function.** Symbols, language, mental images, deferred imitation and pretend play give the inner loop a medium for representing absent things. Pretend play is safe simulation; deferred imitation is learning from a demonstration seen earlier.
 - **Decentration.** Young children are *centered*, fixating on one salient dimension, and *egocentric*, unable to take another's perspective. Development is decentration. This adds perspective-taking and theory of mind, and puts source tagging (self vs other, I.5) on a developmental footing. LLMs anchoring on surface features is a form of centration.
 - **Formal operations.** Hypothetico-deductive reasoning over possibilities, not just what is actual, plus thinking about one's own thinking. This is the mature form of the inner loop: systematic hypothesis search and metareasoning.
-- **Vygotsky gives the social source.**
-  - Every higher function appears twice: first between people, then within.
-  - Private speech becomes inner speech. Chain-of-thought is private speech; its compression into latent reasoning is inner speech.
-  - Everyday concepts grow upward from experience; scientific concepts grow downward from instruction; development is where they meet.
 - **Caveats.** Infants show some competences earlier than Piaget thought (Baillargeon; Spelke's core knowledge), stages are less uniform than he claimed (décalage), and social and cultural learning matter more than he allowed (Vygotsky). Read the stages as a dependency order of capabilities, not fixed ages; core-knowledge priors can be built in at stage 0.
+
+**Vygotsky gives the social source.** Piaget explains how the agent constructs its structures from its own action. Vygotsky explains where much of the content, the tools and the pace come from: other people.
+
+- **Every higher function appears twice:** first between people, then inside the child. Attention, memory, planning and self-control all start as regulation by others and become self-regulation.
+- **Mediation by tools and signs.** Language, numbers, writing, maps and mnemonics are psychological tools that transform the mental function itself: memory with a written note is a different function from memory without one.
+- **Zone of proximal development:** the gap between what a learner can do alone and what they can do with help. Learning happens in that gap.
+- **Scaffolding** (Wood, Bruner & Ross, 1976): support adapted to the learner's level and faded as competence grows.
+- **From social speech to inner speech:** social speech → private speech (talking aloud to oneself) → inner speech (silent, abbreviated, condensed). Private speech increases with task difficulty.
+- **Everyday vs scientific concepts.** Everyday concepts grow upward from experience; scientific concepts are systematic and grow downward from instruction. Development is where they meet.
+- **Play creates its own ZPD:** in play, a child is "a head taller than himself."
+- **Later work** extends this: shared intentionality and the cultural ratchet (Tomasello), legitimate peripheral participation (Lave & Wenger), and reasoning as evolved for argument (Mercier & Sperber).
+
+**Vygotsky already runs through the framework:**
+
+| Vygotsky                                                                                        | Where it appears in the thesis                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Private speech grows with difficulty, then goes underground                                     | Chain-of-thought: reasoning models think longer on harder problems. Distilling reasoning into direct answers, or latent "continuous thought," is speech going underground |
+| Piaget vs Vygotsky on "egocentric speech": a symptom of egocentrism, or a self-regulation tool? | The same debate about whether chain-of-thought is real reasoning or decoration. The evidence favors Vygotsky: it regulates the process                                    |
+| Functions move from social to individual                                                        | Thought as internalized action (I.3), but the source is dialogue: the inner loop is partly internalized argument, as in self-critique and multi-agent debate              |
+| Other-regulation → self-regulation                                                              | The controller and goals start external: a parent's instruction, a user's goal. Self-regulation grows within those goals (I.5)                                            |
+| Psychological tools                                                                             | External memory and scaffolding: notes, scratchpads, memory files, tools. Writing as an external context window (I.8)                                                     |
+| Culture passes on compiled procedures (long division, reading)                                  | Procedural memory transmitted, not discovered: the cultural ratchet (I.2)                                                                                                 |
+| Imitation works only within the ZPD                                                             | Piaget's deferred imitation, plus a limit on what can be imitated                                                                                                         |
+
+**What Vygotsky adds.**
+
+- **The ZPD is a formal training principle.** In group-relative RL methods such as GRPO, problems the model always or never solves give zero learning signal; only intermediate pass rates produce gradient. Oudeyer's learning-progress curiosity is an agent choosing its own ZPD.
+- **Scaffolding fades.** Hints, partial plans, demonstrations, restricted tool sets and human approvals are support, and should fade as reliability grows. This ties directly to the reliability record of each skill in P (R5).
+- **Scientific concepts meet everyday ones.** LLMs have the scientific concepts (systematic, verbal, from reading) without the everyday ones (grounded in their own action). Pretraining supplied the downward growth; Piaget's back-fill (II.4) is the upward growth; grounding is where they meet.
+- **Shared intentionality** (Tomasello): joint attention, common ground, we-goals, teaching by pointing. For agents: track what both parties are attending to (the open file, the selected code), maintain common ground (what has been agreed), and plan *with* the user, not just for them. This requires the decentration and theory of mind of the Piaget stages.
+- **Legitimate peripheral participation.** Newcomers start with low-risk peripheral tasks and earn responsibility. For agents, autonomy expands along the reversibility ladder (II.4), and scaffolding fades class by class.
+- **A teacher's corrections are privileged signals.** A user's correction is the most valuable kind of interruption: it gets top trust at the goal gate (R4), top salience at the consolidation gate (R6), and becomes a lesson.
+
+**Piaget and Vygotsky together:**
+
+|                   | Piaget                                        | Vygotsky                                             |
+| ----------------- | --------------------------------------------- | ---------------------------------------------------- |
+| Learner as        | Scientist                                     | Apprentice                                           |
+| Engine            | Action + equilibration                        | Social interaction + tools                           |
+| Explains          | How structure is built                        | Where content, tools and pace come from              |
+| Direction         | Development enables learning                  | Learning leads development                           |
+| Agent counterpart | Self-practice, experimentation, consolidation | Demonstrations, feedback, curricula, cultural priors |
+
+An agent needs both: self-construction for grounding and structure, social scaffolding for content and speed.
 
 ## I.8 The analogy makes predictions about humans
 
@@ -617,6 +657,14 @@ The builder's question is: *given the principles in Part I, what do I build, in 
 | Scratch           | Imagination                       | Simulated branches (the inner loop)                                           | G in simulate mode; discarded after use, and only conclusions go to W               |
 | P: procedures     | Basal ganglia; cerebellum         | Skills for the fast path                                                      | Only through the consolidation gate                                                 |
 | E → M → θ         | Hippocampus → neocortex           | Episodes, then distilled lessons, then weights and skills                     | Only through the consolidation gate                                                 |
+
+**Social components** (I.7, Vygotsky):
+
+- **Social interface:** a user model (perspective, common ground, preferences) and joint-attention tracking.
+- **Teacher channel:** corrections and demonstrations, as the highest-trust source.
+- **Internalized critic:** learned from human feedback and run in the inner loop (Vygotsky's internalized dialogue).
+- **ZPD curriculum selector:** picks practice tasks with intermediate success rates.
+- **Autonomy level per reversibility class**, raised as reliability is shown.
 
 **The controller's signals: an intrinsic control state.** K keeps a few running scalars about the *process*, not the content, each a functional analogue of a feeling from I.4:
 
@@ -745,8 +793,9 @@ Each skill in P records:
 
 **R8. Avoid the social failure modes.**
 
-- **Sycophancy** means internalizing approval instead of standards.
-- Scaffolding that never fades produces dependence.
+- **Sycophancy is a Vygotskian failure.** Other-regulation never becomes self-regulation: the agent regulates to approval rather than to the task or the truth, like a child performing for an adult. The fix is internalizing the standards, not the approval signal.
+- **Over-scaffolding** leads to dependence: scaffolding that never fades produces no autonomy.
+- **Cultural transmission spreads errors too:** biases and myths inherited from data.
 
 **Failure modes and the matching dial.** Each rule is a dial that can be set too far either way:
 
@@ -763,24 +812,25 @@ Each skill in P records:
 
 Build capabilities in Piaget's dependency order (I.7). Each stage adds one component and ends with a Piagetian exit test, an exit criterion in the TOTE sense.
 
-| #   | Stage (Piaget / Vygotsky)                                | Capability added                                              | Agent component                                                                | Exit test                                                                  |
-| --- | -------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| 0   | Reflexes; core-knowledge priors                          | Primitive actions                                             | Generator G; primitive tools                                                   | Executes primitives                                                        |
-| 1   | Primary circular reactions                               | Predicting the outcomes of one's own actions                  | Practice loop; forward models; P begins                                        | Calibrated surprise on its own actions                                     |
-| 2   | Secondary circular reactions; imitation                  | Reproducing interesting effects in the world                  | Intrinsic reward for controllable effects; skill compilation                   | Reproduces an observed effect reliably                                     |
-| 3   | Coordination of schemes; shared goals                    | Means–ends; intentionality                                    | Goal stack W; TOTE hierarchy; chunking; joint attention                        | Multi-step means–ends (remove the obstacle, then grasp)                    |
-| 4   | Tertiary circular reactions, with guidance               | Active experimentation                                        | Controller K with information gain; ZPD curriculum                             | Finds hidden mechanics efficiently                                         |
-| 5   | Mental combination; object permanence                    | Planning before acting; tracking hidden state                 | World model; simulate mode; belief state                                       | Detour problem without trial and error; invisible-displacement tracking    |
-| 6   | Semiotic function; private speech                        | Symbols for absent things; learning from demonstration; play  | Language grounded in its own skills; episodic memory; chain-of-thought         | Reproduces a demonstrated procedure later from memory (deferred imitation) |
-| 7   | Decentration (preoperational → concrete); theory of mind | Several dimensions at once; others' perspectives              | Source tagging; goal shield; user model                                        | False-belief task; not fooled by salient surface features                  |
-| 8   | Concrete operations                                      | Reversibility, conservation, classification, seriation        | Operations with inverses; invariants in the world model; forkable state        | Conservation tasks; plans checked by undoing                               |
-| 9   | Formal operations; internalized debate                   | Hypothetico-deductive, combinatorial reasoning; metareasoning | Systematic hypothesis search; value-of-computation controller; internal critic | Piaget's pendulum task: isolate which variable matters                     |
+| # | Stage (Piaget)                                           | Social track (Vygotsky)                                                                   | Capability added                                              | Agent component                                                                | Exit test                                                                  |
+| - | -------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| 0 | Reflexes; core-knowledge priors                          | —                                                                                         | Primitive actions                                             | Generator G; primitive tools                                                   | Executes primitives                                                        |
+| 1 | Primary circular reactions                               | —                                                                                         | Predicting the outcomes of one's own actions                  | Practice loop; forward models; P begins                                        | Calibrated surprise on its own actions                                     |
+| 2 | Secondary circular reactions                             | Imitation of demonstrations (behavior cloning)                                            | Reproducing interesting effects in the world                  | Intrinsic reward for controllable effects; skill compilation                   | Reproduces an observed effect reliably                                     |
+| 3 | Coordination of schemes                                  | Shared goals from the user; joint attention on shared context                             | Means–ends; intentionality                                    | Goal stack W; TOTE hierarchy; chunking; joint attention                        | Multi-step means–ends (remove the obstacle, then grasp)                    |
+| 4 | Tertiary circular reactions                              | Guided experimentation, with hints inside the ZPD                                         | Active experimentation                                        | Controller K with information gain; ZPD curriculum                             | Finds hidden mechanics efficiently                                         |
+| 5 | Mental combination; object permanence                    | Private speech (explicit chain-of-thought) as the planning medium                         | Planning before acting; tracking hidden state                 | World model; simulate mode; belief state                                       | Detour problem without trial and error; invisible-displacement tracking    |
+| 6 | Semiotic function                                        | Learning psychological tools; private speech                                              | Symbols for absent things; learning from demonstration; play  | Language grounded in its own skills; episodic memory; chain-of-thought         | Reproduces a demonstrated procedure later from memory (deferred imitation) |
+| 7 | Decentration (preoperational → concrete); theory of mind | Theory of mind through dialogue; maintaining common ground                                | Several dimensions at once; others' perspectives              | Source tagging; goal shield; user model                                        | False-belief task; not fooled by salient surface features                  |
+| 8 | Concrete operations                                      | Instructed concepts meet grounded ones; verification norms learned socially (code review) | Reversibility, conservation, classification, seriation        | Operations with inverses; invariants in the world model; forkable state        | Conservation tasks; plans checked by undoing                               |
+| 9 | Formal operations                                        | Internalized debate: self-critique, multiple perspectives; inner speech compressed        | Hypothetico-deductive, combinatorial reasoning; metareasoning | Systematic hypothesis search; value-of-computation controller; internal critic | Piaget's pendulum task: isolate which variable matters                     |
 
 **Running through every stage:**
 
 - **equilibration**, through the controller;
 - **reflective abstraction**, through sleep and consolidation;
-- **social scaffolding**: human teaching, curricula, Vygotsky's ZPD;
+- **social scaffolding**: human teaching, curricula, Vygotsky's ZPD, with scaffolding that fades;
+- **autonomy** growing along the reversibility ladder (below);
 - **décalage**: expect each stage to be achieved domain by domain, not everywhere at once.
 
 **Grant autonomy along the reversibility ladder.** Read-only, then reversible actions, then compensable ones, then irreversible ones with permission, each promoted by track record. This mirrors legitimate peripheral participation (Lave & Wenger).
@@ -815,6 +865,7 @@ In compressed form, the thesis says:
 6. **Memory is working, episodic, semantic and procedural**, linked by consolidation (reflective abstraction) that turns experience into knowledge and deliberation into skill.
 7. **The top goal** comes from homeostasis in humans and from people in AI.
 8. **The capabilities develop in a dependency order**, from sensorimotor through semiotic and operational to formal. That order is the build path for agents. LLMs entered at the top, so an agent's job is to back-fill the lower stages in its own action domain.
+9. **Higher functions appear twice**, first between people, then within. The inner loop is partly internalized dialogue (private speech → inner speech, the path from explicit chain-of-thought to latent reasoning). The controller and goals begin as other-regulation and grow into self-regulation within externally anchored goals. Learning happens in the zone of proximal development, under scaffolding that fades, with autonomy expanding along the reversibility ladder as reliability is shown. Development is the meeting of Piagetian self-construction (grounded, everyday concepts growing up) and Vygotskian transmission (cultural, scientific concepts growing down). LLMs arrived with the culture already absorbed; their path is to ground it through their own action. Their main social failure, sycophancy, comes from internalizing approval instead of standards.
 
 Transformers have the loop, goal-conditioning and a huge built-in procedural memory; they are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding. And they can't yet compile new skills from their own experience, which is arguably the central missing piece, next to goal shielding and the controller.
 
