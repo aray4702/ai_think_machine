@@ -304,14 +304,61 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 | Semantic   | Neocortex                 | Gist, world knowledge, invariants          | Consolidation           |
 | Procedural | Basal ganglia, cerebellum | Skills: the steps of the loop              | Practice, reward, error |
 
-**Evidence.**
+**Compress, or keep everything?** In a POMDP the optimal agent doesn't need the raw history, only the **belief state**: a summary sufficient to act optimally (formally, a probability distribution over hidden world states). "Later steps depend on previous steps" really means they depend on *a belief built from previous steps* (I.1). There are two ways to approximate it:
 
-- **Compress or keep everything.** The two approximations of the belief state from I.1 trade off: compression (brains) forces abstraction; raw context allows reinterpreting the past. Hybrids look best.
-- **Attention and the hippocampus.** Modern Hopfield networks are mathematically equivalent to attention, and transformers with suitable position encodings reproduce hippocampal codes. That is a formal parallel, not evidence that the brain computes softmax attention.
-- **Complementary Learning Systems** (McClelland, McNaughton & O'Reilly). During sleep, time-compressed replay moves salience-tagged experience from hippocampus to cortex. Reverse replay at reward sites assigns credit, synaptic downscaling prunes, and episodes become gist.
-- **Memory is reconstructive** (Bartlett). Recall itself runs on the generative loop.
+|          | Compress (recurrent)                                  | Keep everything (attention)                                                 |
+| -------- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| Update   | b_t = f(b_{t−1}, o_t), fixed size                     | Re-read the raw history every step                                          |
+| Examples | Kalman filter, RNN/LSTM, SSMs (Mamba), working memory | Transformer context                                                         |
+| Strength | Constant cost; forces abstraction                     | Lossless; can reinterpret the past later                                    |
+| Weakness | Loses what you didn't know would matter               | Cost grows with length; attention dilutes (lost in the middle, goal drift)  |
+
+**Evidence: the brain does both, in separate systems.**
+
+- **Working memory** holds about four chunks (Cowan), actively maintained by the prefrontal cortex. This is the compressed recurrent state.
+- **Episodic memory** in the hippocampus is fast, one-shot storage retrieved by cue: content-addressable, like attention. The parallel is formal: modern Hopfield networks are mathematically equivalent to attention (Ramsauer et al., 2020), and transformers with suitable position encodings reproduce hippocampal place and grid cells (Whittington et al., 2022). That is not evidence that the brain computes softmax attention.
+- **The neocortex** learns slowly and statistically, corresponding to weights.
+- **Consolidation** links them: Complementary Learning Systems (McClelland, McNaughton & O'Reilly, 1995). During sleep, time-compressed replay moves salience-tagged experience from hippocampus to cortex. Reverse replay at reward sites assigns credit, synaptic downscaling prunes, and episodes become gist.
+
+So the brain is a hybrid: a small, actively maintained state, a large associative store, slow weights, and a transfer process between them.
+
+- **Memory is generative too.** Bartlett (1932) showed that recall is reconstruction, not replay: retrieval is generation conditioned on cues, which is why memories distort. Remembering runs on the same loop as the seven processes of section 0, conditioned on a goal and cues. A transformer's context gives verbatim recall instead, which is more accurate but less abstract.
 - **Replay as planning.** Hippocampal sequences sweep ahead at choice points, replay predicts the path about to be taken, and replay is prioritized by *gain × need* (Mattar & Daw). Repeated planning gets cached into habit, as in Dyna and chain-of-thought distillation.
 - **One generative model, four uses.** The same model may **remember** (the past), **perceive** (the present), **plan** (the future) and **act** (making predictions come true). This is strongest in rodent navigation and less certain for abstract human planning.
+
+**Is the small working memory a bug or a feature?**
+
+- **Bug:** transformers beat SSMs at copying and exact retrieval (Jelassi et al., 2024). Rereading the past exactly is powerful.
+- **Feature:** compression forces abstraction. A four-item limit makes you chunk, build schemas and find structure. Newport's (1990) "less is more" hypothesis holds that children's limited memory helps them learn grammar. This links to MDL and grokking: generalization comes from compression.
+
+**Effect on interruptions.** After an interruption, a human rebuilds state from compressed memory and cues ("where was I?"): costly and error-prone, but the goal survives if it was shielded in working memory. For a transformer, an interruption costs nothing while it stays in context, since every token is still there; the risk comes later, when compaction or dilution erodes the goal (I.8).
+
+**What transformer agents have.**
+
+| Brain                                         | Transformer agent                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Working memory (small, maintained, shielded)  | ✗: the context does double duty                                                             |
+| Episodic store (cue-based retrieval)          | Context window + retrieval (RAG)                                                            |
+| Slow weights                                  | Weights                                                                                     |
+| Consolidation (sleep replay)                  | ✗ mostly: context is lost at session end; crude stand-ins are compaction and memory files   |
+
+Agents are reinventing Complementary Learning Systems one piece at a time:
+
+- **Compaction** (summarizing old context) acts as compression into a working state.
+- **Retrieval** acts as episodic recall.
+- **Memory files** act as primitive consolidation.
+- **Continual learning into weights** is the missing last step.
+
+On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest the field is converging on the brain's split.
+
+**The design this implies** is the brain's four-part memory:
+
+1. a **small, protected working state** holding the goal and current belief, which is where the goal register of I.5 belongs;
+2. a **large associative store** read through attention or retrieval;
+3. **slow weights** for skills and world knowledge;
+4. **consolidation** that moves what was learned during a session into lasting form.
+
+Transformers have 2 and 3; agent scaffolding fakes 1 and 4. Getting 1 and 4 natively into the architecture would likely close the remaining gaps: goal drift, overthinking, and not learning from experience.
 
 The loop thus runs at three timescales: commitment (milliseconds), deliberation (seconds to minutes), consolidation (days).
 
@@ -724,6 +771,12 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 
 - McClelland, McNaughton & O'Reilly (1995). Complementary learning systems.
 - Bartlett (1932). *Remembering.*
+- Cowan (2001). The magical number 4 in short-term memory.
+- Newport (1990). Maturational constraints on language learning.
+- Jelassi et al. (2024). Repeat after me: transformers are better than state space models at copying.
+- Gu & Dao (2023). Mamba.
+- Lieber et al. (2024). Jamba; Ren et al. (2024). Samba.
+- Liu et al. (2023). Lost in the middle.
 - Wilson & McNaughton (1994); Foster & Wilson (2006); Pfeiffer & Foster (2013); Kay et al. (2020).
 - Mattar & Daw (2018). Prioritized memory access explains planning and hippocampal replay.
 - Hassabis et al. (2007); Schacter & Addis (2007). Constructive episodic simulation.
