@@ -293,7 +293,7 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 
 ## I.6 Learning fast overwrites old knowledge → separate memories and consolidate
 
-**Constraint.** A network that learns new things quickly overwrites what it already knew (*catastrophic interference*; the stability–plasticity dilemma). And the optimal agent needs a belief state but cannot afford to keep, or re-read, everything.
+**Constraint.** A distributed network that learns new things quickly overwrites what it already knew (*catastrophic interference*, McCloskey & Cohen, 1989; the stability–plasticity dilemma). LLMs have the dilemma in its pure form: fine-tune naively on today's session and you damage what the model already knew. And the optimal agent needs a belief state but cannot afford to keep, or re-read, everything.
 
 **Consequence.** Use **separate stores** that learn at different speeds, and **consolidate** selectively from fast to slow:
 
@@ -318,12 +318,23 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 - **Working memory** holds about four chunks (Cowan), actively maintained by the prefrontal cortex. This is the compressed recurrent state.
 - **Episodic memory** in the hippocampus is fast, one-shot storage retrieved by cue: content-addressable, like attention. The parallel is formal: modern Hopfield networks are mathematically equivalent to attention (Ramsauer et al., 2020), and transformers with suitable position encodings reproduce hippocampal place and grid cells (Whittington et al., 2022). That is not evidence that the brain computes softmax attention.
 - **The neocortex** learns slowly and statistically, corresponding to weights.
-- **Consolidation** links them: Complementary Learning Systems (McClelland, McNaughton & O'Reilly, 1995). During sleep, time-compressed replay moves salience-tagged experience from hippocampus to cortex. Reverse replay at reward sites assigns credit, synaptic downscaling prunes, and episodes become gist.
+- **Consolidation** links them: Complementary Learning Systems (McClelland, McNaughton & O'Reilly, 1995). The hippocampus learns fast with sparse, well-separated codes, so new memories interfere little with each other; the neocortex learns slowly with overlapping codes that generalize; replay lets the cortex learn new experience interleaved with old, so nothing is overwritten.
 
 So the brain is a hybrid: a small, actively maintained state, a large associative store, slow weights, and a transfer process between them.
 
 - **Memory is generative too.** Bartlett (1932) showed that recall is reconstruction, not replay: retrieval is generation conditioned on cues, which is why memories distort. Remembering runs on the same loop as the seven processes of section 0, conditioned on a goal and cues. A transformer's context gives verbatim recall instead, which is more accurate but less abstract.
 - **Replay as planning.** Hippocampal sequences sweep ahead at choice points, replay predicts the path about to be taken, and replay is prioritized by *gain × need* (Mattar & Daw). Repeated planning gets cached into habit, as in Dyna and chain-of-thought distillation.
+
+**Evidence: what sleep actually does.**
+
+- **Time-compressed replay.** During deep (NREM) sleep, hippocampal sharp-wave ripples replay the day's sequences about 10–20× faster than real time (Wilson & McNaughton, 1994). Ripples coordinate with cortical spindles and slow oscillations to move the information into cortex.
+- **Reverse replay at reward sites.** Sequences are played backwards from where reward occurred (Foster & Wilson, 2006). That is credit assignment, much like TD learning propagating value backward.
+- **Replay of paths never taken.** Rats replay routes they never ran (Gupta et al., 2010). This is generative replay: the revisable inner loop of I.3, running offline.
+- **Selection by tag.** Not everything is kept. Memories tagged by reward, emotion, surprise or expected future relevance are preferentially consolidated; people told they'd be tested later consolidate better (Wilhelm et al., 2011). Emotion is the tag, which ties consolidation to the controller of I.4.
+- **Downscaling.** The synaptic homeostasis hypothesis (Tononi & Cirelli) holds that sleep globally weakens synapses, pruning noise and keeping the strong. Forgetting is part of consolidation, not a failure of it.
+- **Schema integration and gist.** New information that fits an existing schema consolidates in days rather than weeks (Tse et al., 2007). Over time episodes become semantic gist: details fade, structure remains. This is compression into abstraction again (MDL).
+- **REM recombination.** REM sleep mixes memories in new combinations and processes their emotional charge. Hoel's (2021) overfitted brain hypothesis, which is speculative, says dreams are noisy augmentation that prevents overfitting to the day.
+- **The wrong things get consolidated too.** False memories are consolidated like true ones (Loftus). The agent version is R6's persistent injection.
 - **One generative model, four uses.** The same model may **remember** (the past), **perceive** (the present), **plan** (the future) and **act** (making predictions come true). This is strongest in rodent navigation and less certain for abstract human planning.
 
 **Is the small working memory a bug or a feature?**
@@ -349,7 +360,18 @@ Agents are reinventing Complementary Learning Systems one piece at a time:
 - **Memory files** act as primitive consolidation.
 - **Continual learning into weights** is the missing last step.
 
-On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest the field is converging on the brain's split.
+On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest the field is converging on the brain's split. AI has also borrowed pieces of sleep itself:
+
+| Brain                          | AI counterpart                                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Hippocampal replay             | Experience replay in DQN (explicitly inspired by it)                                                               |
+| Salience-tagged consolidation  | Prioritized replay                                                                                                 |
+| Generative replay              | Generative replay for continual learning (Shin et al., 2017): regenerate old data to interleave with new           |
+| Protecting important synapses  | EWC (Kirkpatrick et al., 2017): penalize changes to weights that matter for old tasks                              |
+| Offline simulation             | Dyna (Sutton, 1990): learn from model-simulated experience between real steps                                      |
+| Episodes → gist                | Reflection in Generative Agents (Park et al., 2023): periodically summarize memories into higher-level insights    |
+| Offline pre-thinking           | Sleep-time compute (2025): process context while idle to pre-compute what future queries will need                 |
+| Moving into weights            | Context distillation; LoRA updates on session data                                                                 |
 
 **The design this implies** is the brain's four-part memory:
 
@@ -360,7 +382,15 @@ On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest t
 
 Transformers have 2 and 3; agent scaffolding fakes 1 and 4. Getting 1 and 4 natively into the architecture would likely close the remaining gaps: goal drift, overthinking, and not learning from experience.
 
-The loop thus runs at three timescales: commitment (milliseconds), deliberation (seconds to minutes), consolidation (days).
+**The loop runs at three timescales**, each with its own form of backtracking:
+
+| Timescale       | Loop                                          | Backtracking form                                      |
+| --------------- | --------------------------------------------- | ------------------------------------------------------ |
+| ms–seconds      | Committing steps (outer loop)                 | Repair ("I mean…")                                     |
+| Seconds–minutes | Deliberation (inner loop)                     | Search; revising the draft                             |
+| Hours–days      | Consolidation (offline loop over a whole day) | Reverse replay: credit assignment back through the day |
+
+Sleep is the revisable inner loop applied to a whole day of experience. Today's agents mostly lack it, which is why they act within a session but don't learn across sessions.
 
 ## I.7 Learning signal lives at the edge of competence → development has an order
 
@@ -503,12 +533,16 @@ Feed these back into the context, or into a separate control channel, so the age
 
 **Between sessions (the sleep cycle):**
 
-1. Select episodes by tag: corrections, failures, surprises, successes.
-2. Replay them in reverse to assign credit to the steps that caused each outcome.
-3. Extract gist into M: merge, resolve contradictions, prune what is stale.
-4. Generate counterfactual variants of hard episodes as practice data.
-5. Distill into adapters, interleaving generated replays of old knowledge so nothing is overwritten.
-6. Compile plans that repeatedly succeed into skills in P.
+- **Wake.** Act, and log episodes to E with salience tags: surprises, errors, user corrections, successes.
+- **Phase 1 (NREM-like, memory level).**
+  1. Select episodes by tag.
+  2. Replay them in reverse to assign credit to the steps that caused each outcome; extract lessons (episode → gist).
+  3. Integrate with M: merge duplicates, resolve contradictions.
+  4. Prune what is stale.
+
+  File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
+- **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. Compile plans that repeatedly succeed into skills in P.
+- **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
 
 ## II.3 Design rules
 
@@ -558,7 +592,7 @@ Fixes available today, mapped to the brain mechanisms of I.5:
 
 Each skill records its trigger, body, inverse or compensation, the invariants it preserves, a forward model and a reliability score.
 
-**R6. Gate consolidation more strictly than action.** Untrusted content consolidated into weights becomes a **persistent injection**. Only verified experience from trusted sources gets promoted, and changes that touch values or goals go to human review.
+**R6. Gate consolidation more strictly than action.** Untrusted content consolidated into weights becomes a **persistent injection** that survives every future context, much as brains consolidate false memories (Loftus). So the source-aware gate of R4 sits in front of consolidation too: only verified experience from trusted sources gets promoted, the gate gets stricter the higher the layer (memory → weights), and changes that touch values or goals go to human review.
 
 **R7. Keep control signals about the task, not about the agent.**
 
@@ -789,6 +823,16 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Park et al. (2023). Generative Agents.
 - Kirkpatrick et al. (2017). Elastic weight consolidation.
 - Tononi & Cirelli. The synaptic homeostasis hypothesis.
+- McCloskey & Cohen (1989). Catastrophic interference in connectionist networks.
+- Gupta et al. (2010). Hippocampal replay is not a simple function of experience.
+- Wilhelm et al. (2011). Sleep selectively enhances memory expected to be of future relevance.
+- Tse et al. (2007). Schemas and memory consolidation.
+- Hoel (2021). The overfitted brain: dreams evolved to assist generalization.
+- Loftus. False memory and misinformation.
+- Mnih et al. (2015). Human-level control through deep reinforcement learning (DQN).
+- Schaul et al. (2016). Prioritized experience replay.
+- Shin et al. (2017). Continual learning with deep generative replay.
+- Lin et al. (2025). Sleep-time compute.
 
 **Development and social learning**
 
