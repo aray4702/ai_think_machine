@@ -252,10 +252,10 @@ What's missing is that these are mostly used **during training**. At inference t
 
 **Evidence: how the brain shields goals.**
 
-- **Active maintenance** with top-down bias: the prefrontal cortex continuously favors goal-relevant processing (Miller & Cohen).
-- **A learned gate** on working memory: in the PBWM model (O'Reilly & Frank), maintaining and updating are separate operations.
-- **Source monitoring**: tracking where information came from.
-- **A stability–flexibility balance.** Too much shielding produces perseveration; too little produces distractibility.
+- **Active maintenance with top-down bias.** The prefrontal cortex doesn't just store the goal: it holds it in sustained activity and continuously biases all other processing toward goal-relevant pathways ("biased competition"; Miller & Cohen, 2001).
+- **A learned gate.** In the PBWM model (O'Reilly & Frank, 2006), the basal ganglia gate working memory. While the gate is closed, distractors can't overwrite the goal; it opens only when updating is warranted. Maintaining a goal and updating it are separate operations, controlled by a learned gate. O'Reilly's *Computational Cognitive Neuroscience* covers this in detail.
+- **Source tagging.** The brain keeps track of where information came from: my intention, someone's instruction, something I saw. When source monitoring fails, as in some psychosis, inner speech is experienced as external voices.
+- **A tunable tradeoff.** Too much shielding causes perseveration: frontal patients keep applying an old rule on the Wisconsin Card Sort after it stops working. Too little causes distractibility and utilization behavior. The setting moves with context: a fire alarm always gets through.
 
 **When shielding fails, humans and agents fail the same ways:**
 
@@ -267,6 +267,14 @@ What's missing is that these are mostly used **during training**. At inference t
 | Performing for approval                                         | Sycophancy                                         |
 
 Frontal patients with utilization behavior (Lhermitte) pick up and use whatever is put in front of them, unprompted; text in the context grabbing the goal is the same failure. Healthy people with goal neglect know the rule but drift from it over a long task; so do LLM agents. Both suggest LLMs lack a strong goal-shielding mechanism.
+
+**Why transformers struggle: the missing prefrontal cortex.**
+
+- **Everything is one flat stream.** Instructions, documents, tool outputs and the model's own thoughts are all tokens in the same context. There is no privileged goal register.
+- **The goal is re-inferred at every token** from the whole context. Its influence is just attention weight, which dilutes as the context grows. That causes goal drift.
+- **There is no gate.** Any text in the context can act as an instruction. That causes prompt injection.
+
+The LLM is like Leonard in *Memento*: with no working memory, his goals live only in notes and tattoos he rereads constantly, and anyone who can write on his notes can redirect him. R4 maps the available fixes onto the brain mechanisms above.
 
 **The difference at the top.**
 
@@ -280,6 +288,8 @@ Frontal patients with utilization behavior (Lhermitte) pick up and use whatever 
 Not having intrinsic needs at the top is arguably a feature: it keeps an agent's goals anchored to a person (R7). The open engineering problems are in the **middle of the stack**, learned subgoal hierarchies and robust goal shielding, and neither requires giving the agent needs of its own.
 
 So interruptions are absorbed with **graceful degradation, not robustness**: recovery depends on how well the goal was maintained (I.8).
+
+**Back to section 0.** The observation said every process "attends to relevant information and ignores irrelevant information." This makes it precise. Relevance is defined *relative to a shielded goal*; without one, everything in context competes equally, which is the transformer's weakness. Humans handle interruptions well not because they attend to everything, but because a source-aware gate, tuned by salience, decides what may **change the goal** and what may only **inform the next step**. That distinction is probably the most useful practical takeaway for building agents.
 
 ## I.6 Learning fast overwrites old knowledge → separate memories and consolidate
 
@@ -475,12 +485,22 @@ Use sandboxes, dry runs, transactions and branches to reclassify actions upward.
 | Inversion    | Round-trip; revert-and-compare; substitute back                          |
 | Compensation | Invariants preserved: totals, passing tests, behavior through a refactor |
 
-**R4. Shield by source, open by trust and salience.**
+**R4. Shield by source, open by trust and salience.** Shielding by content fails, because attackers can mimic any content. Follow the brain instead:
 
-- Tool and data tokens may *inform* a step but never *set* a goal.
-- User corrections are the highest-trust input.
-- Surprise about something irreversible always gets through.
-- Mitigations available today: instruction hierarchy, role or data embeddings, dual-model quarantine (e.g., CaMeL), goal recitation, permission gates.
+- Keep the goal stable against input from untrusted sources: tool and data tokens may *inform* a step but never *set* a goal.
+- Let interrupts through when they come from a trusted source (user corrections are the highest-trust input) or carry high salience (an error, a failed test, something irreversible about to happen).
+
+The salience signal is the controller of I.4, with surprise opening the gate, so goal shielding and the emotion-like control layer are **one mechanism**. Shield too hard and you get perseveration: an agent that ignores the user's "stop, that's wrong." Shield too little and you get injection.
+
+Fixes available today, mapped to the brain mechanisms of I.5:
+
+| Brain mechanism                 | AI approach                                                                                                                                                                          | Status                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Source tagging                  | Instruction hierarchy (trained system > user > tool priority); delimiting and datamarking (spotlighting); role embeddings that mark data tokens in the representation (StruQ, ASIDE) | Deployed or research; reduces but doesn't eliminate injection |
+| Gate that blocks distractors    | Dual-LLM / CaMeL: a privileged planner sees only trusted input and writes the control flow; a quarantined model reads untrusted data but can't choose actions                        | Strongest guarantees; costs flexibility                       |
+| Active maintenance by rehearsal | Goal recitation: keep a to-do or plan file and restate it near the end of the context, in the high-attention region                                                                  | Common in agent harnesses; cheap; works well against drift    |
+| Gating the action stage         | Permission systems: tool calls need approval or an allowlist, whatever the context says                                                                                              | Defense in depth                                              |
+| Persistent top-down bias        | A goal vector outside the token stream that steers every layer, like goal-conditioned activation steering                                                                            | Mostly a research idea                                        |
 
 **R5. Give every skill a life cycle.**
 
@@ -693,6 +713,12 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Altmann & Trafton (2002). Memory for goals.
 - Wallace et al. (2024). The instruction hierarchy.
 - Debenedetti et al. (2025). CaMeL: defeating prompt injections by design.
+- O'Reilly, Munakata, Frank, Hazy et al. *Computational Cognitive Neuroscience.*
+- Milner (1963). Effects of different brain lesions on card sorting (Wisconsin Card Sort perseveration).
+- Hines et al. (2024). Defending against indirect prompt injection attacks with spotlighting.
+- Chen et al. (2024). StruQ: defending against prompt injection with structured queries.
+- Zverev et al. (2025). ASIDE: architectural separation of instructions and data in language models.
+- Willison (2023). The dual LLM pattern for building AI assistants that can resist prompt injection.
 
 **Memory, consolidation, replay**
 
