@@ -34,7 +34,7 @@ Handling interruptions is the most interesting part. In a transformer, being int
 **Definitions.**
 
 - **Step**: a committed output at a given level of the hierarchy.
-- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures several times a second; LLMs choose a rhyme before writing the line.
+- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line.
 - **Goal**: whatever conditions the sequence toward an end state. It may be set from above, triggered by the environment, driven by needs or curiosity, or **reconstructed after the fact**.
 
 **Where the analogy needs care.**
@@ -323,8 +323,6 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 So the brain is a hybrid: a small, actively maintained state, a large associative store, slow weights, and a transfer process between them.
 
 - **Memory is generative too.** Bartlett (1932) showed that recall is reconstruction, not replay: retrieval is generation conditioned on cues, which is why memories distort. Remembering runs on the same loop as the seven processes of section 0, conditioned on a goal and cues. A transformer's context gives verbatim recall instead, which is more accurate but less abstract.
-- **Replay as planning.** Hippocampal sequences sweep ahead at choice points, replay predicts the path about to be taken, and replay is prioritized by *gain × need* (Mattar & Daw). Repeated planning gets cached into habit, as in Dyna and chain-of-thought distillation.
-
 **Evidence: what sleep actually does.**
 
 - **Time-compressed replay.** During deep (NREM) sleep, hippocampal sharp-wave ripples replay the day's sequences about 10–20× faster than real time (Wilson & McNaughton, 1994). Ripples coordinate with cortical spindles and slow oscillations to move the information into cortex.
@@ -335,7 +333,45 @@ So the brain is a hybrid: a small, actively maintained state, a large associativ
 - **Schema integration and gist.** New information that fits an existing schema consolidates in days rather than weeks (Tse et al., 2007). Over time episodes become semantic gist: details fade, structure remains. This is compression into abstraction again (MDL).
 - **REM recombination.** REM sleep mixes memories in new combinations and processes their emotional charge. Hoel's (2021) overfitted brain hypothesis, which is speculative, says dreams are noisy augmentation that prevents overfitting to the day.
 - **The wrong things get consolidated too.** False memories are consolidated like true ones (Loftus). The agent version is R6's persistent injection.
-- **One generative model, four uses.** The same model may **remember** (the past), **perceive** (the present), **plan** (the future) and **act** (making predictions come true). This is strongest in rodent navigation and less certain for abstract human planning.
+
+**Evidence: replay as planning.** Remembering and imagining run on the same machinery.
+
+- **Memory exists for the future.** Patients with hippocampal amnesia can't remember the past, and they also can't imagine new scenes in rich detail; their imagined experiences are fragmented (Hassabis et al., 2007). The constructive episodic simulation hypothesis (Schacter & Addis, 2007) explains why: memory is built to be recombined, and pieces of the past are reassembled to simulate possible futures. Remembering, imagining and planning are one generative process run on different inputs.
+- **Theta sweeps: look-ahead at every step.** Within each ~125 ms theta cycle, place cells sweep ahead of the animal's current position. At a fork, consecutive cycles alternate between the possible futures, left, right, left (Kay et al., 2020). Even "on the fly" generation (section 0, point 1) contains a built-in micro-look-ahead, about eight times a second.
+- **Vicarious trial and error.** Rats pause at choice points and swing their heads while hippocampal sequences run down each arm in turn (Johnson & Redish, 2007): deliberation as a visible mini-search.
+- **Replay predicts the path.** Before moving, awake replay traces the route the rat is about to take to a remembered goal (Pfeiffer & Foster, 2013). The replay works as the plan.
+- **Humans too.** MEG studies detect fast sequential replay in humans, including replay of abstract structure, not just places (Liu, Dolan, Kurth-Nelson & Behrens, 2019).
+- **What gets replayed is optimized.** Mattar & Daw (2018) proposed that the brain replays the memory with the highest *gain × need*: how much replaying it would improve decisions, times how likely that state is to matter soon. The theory correctly predicts forward replay before decisions (planning) and reverse replay after reward (credit assignment). This is I.4's "is another thought worth it?" rule applied to *which memory to think about*: the controller decides not only whether to think, but what to simulate.
+- **Habits vs planning: amortization.** Model-based planning is flexible but slow; model-free habit is fast but rigid. The brain arbitrates between them by which is more reliable at the moment (Daw, Niv & Dayan, 2005), which is the System 1 / System 2 controller of I.4 again. Practice converts planning into habit: repeated simulation is cached into fast responses (I.2). This is exactly Dyna, which uses simulated experience to train the fast policy. The LLM version distills chain-of-thought into direct answers, so what once required reasoning becomes intuition. Sleep replay is the brain's distillation step.
+
+AI counterparts:
+
+| Brain                                   | AI                                                                                                                     |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Replay trains habits from a model       | Dyna (Sutton, 1990)                                                                                                    |
+| Simulating futures in a learned model   | World models (Ha & Schmidhuber, 2018: "learning inside the dream"); Dreamer (a policy trained entirely in imagination) |
+| Look-ahead at choice points             | MuZero: a learned model plus tree search, without being given the rules                                                |
+| Theta-sweep alternation between options | Sampling several candidate continuations; tree-of-thought                                                              |
+| Verbal simulation of outcomes           | LLM-as-world-model planning (e.g., RAP, 2023); reasoning tokens                                                        |
+| Planning → intuition                    | Distilling reasoning traces into direct-answer models                                                                  |
+
+A caveat: the hippocampus-as-planner evidence is strongest for spatial navigation in rodents. For abstract human planning it is growing but contested, and the prefrontal cortex clearly plays a large role too.
+
+**One generative model, four uses.**
+
+| Applied to           | It is called                                  |
+| -------------------- | --------------------------------------------- |
+| The past             | Remembering (reconstruction)                  |
+| The present          | Perceiving (prediction plus saccade sampling) |
+| The future           | Planning (simulation, theta sweeps, replay)   |
+| Oneself in the world | Acting (predictions made true)                |
+
+Offline, the same model produces the replay that trains the fast habit system. This is the deepest version of section 0's observation: the seven processes don't just resemble transformer generation; they may be **one step-by-step generative model of the world, pointed at different times and targets**. Transformers already are such generative models. What they mostly lack is not the generator but the **orchestration**:
+
+- when to simulate instead of act;
+- what to replay;
+- when to cache simulation into habit;
+- how to do all of it continuously across sessions.
 
 **Is the small working memory a bug or a feature?**
 
@@ -450,15 +486,15 @@ Writing steps down is also Vygotsky's private speech (I.7): the external context
 
 **Evidence status of cited claims.**
 
-| Claim                                        | Status                                                                   |
-| -------------------------------------------- | ------------------------------------------------------------------------ |
-| Somatic markers / Iowa Gambling Task         | Contested (Maia & McClelland, 2004); the functional idea holds up better |
-| Valence = rate of change of prediction error | Formal proposal                                                          |
-| Hippocampal preplay                          | Debated                                                                  |
-| Replay as planning                           | Strong in rodent navigation; contested for abstract human planning       |
-| Attention ≈ hippocampus                      | Formal equivalence, not a mechanism claim                                |
-| "LLMs are preoperational"                    | A metaphor; failures are inconsistent                                    |
-| Reversal curse as missing reciprocity        | Weaker than it looks; models reverse relations fine in context           |
+| Claim                                        | Status                                                                               |
+| -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Somatic markers / Iowa Gambling Task         | Contested (Maia & McClelland, 2004); the functional idea holds up better             |
+| Valence = rate of change of prediction error | Formal proposal                                                                      |
+| Hippocampal preplay                          | Debated                                                                              |
+| Replay as planning                           | Strong in rodent navigation; growing (MEG) but contested for abstract human planning |
+| Attention ≈ hippocampus                      | Formal equivalence, not a mechanism claim                                            |
+| "LLMs are preoperational"                    | A metaphor; failures are inconsistent                                                |
+| Reversal curse as missing reciprocity        | Weaker than it looks; models reverse relations fine in context                       |
 
 ---
 
@@ -645,12 +681,12 @@ In compressed form, the thesis says:
 
 Transformers have the loop and goal-conditioning, are acquiring the inner loop, and mostly lack the control layer. Below the externally set top goal, their weak points are subgoal hierarchy and goal shielding.
 
-| Have                                | Gaining                                       | Missing                                                                   |
-| ----------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------- |
-| Step-by-step generator              | Inner loop (reasoning tokens)                 | Native, shielded goal register                                            |
-| Large built-in procedural knowledge | External memory; skill documents; code skills | Calibrated controller and stopping sense                                  |
-| Goal-conditioning as prediction     | Movement from explicit to latent reasoning    | Compiling new skills from their own experience                            |
-| The absorbed culture                | Social scaffolding (RLHF, critics)            | Reversible thought; grounding; learning during a task and across sessions |
+| Have                                | Gaining                                       | Missing                                                                                                                            |
+| ----------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Step-by-step generator              | Inner loop (reasoning tokens)                 | Native, shielded goal register                                                                                                     |
+| Large built-in procedural knowledge | External memory; skill documents; code skills | Calibrated controller and stopping sense; orchestration of simulation (when to simulate, what to replay, when to cache into habit) |
+| Goal-conditioning as prediction     | Movement from explicit to latent reasoning    | Compiling new skills from their own experience                                                                                     |
+| The absorbed culture                | Social scaffolding (RLHF, critics)            | Reversible thought; grounding; learning during a task and across sessions                                                          |
 
 **Buildable today:**
 
@@ -813,12 +849,17 @@ A design with many modules resembles Soar and ACT-R: insightful, but they did no
 - Liu et al. (2023). Lost in the middle.
 - Wilson & McNaughton (1994); Foster & Wilson (2006); Pfeiffer & Foster (2013); Kay et al. (2020).
 - Mattar & Daw (2018). Prioritized memory access explains planning and hippocampal replay.
+- Johnson & Redish (2007). Neural ensembles in CA3 transiently encode paths forward of the animal at a decision point.
+- Liu, Dolan, Kurth-Nelson & Behrens (2019). Human replay spontaneously reorganizes experience.
+- Daw, Niv & Dayan (2005). Uncertainty-based competition between prefrontal and dorsolateral striatal systems for behavioral control.
 - Hassabis et al. (2007); Schacter & Addis (2007). Constructive episodic simulation.
 - Ramsauer et al. (2020). Hopfield Networks is All You Need.
 - Whittington et al. (2022). Relating transformers to the hippocampal formation.
 - Sutton (1990). Dyna.
 - Ha & Schmidhuber (2018). World Models.
 - Hafner et al. Dreamer.
+- Yao et al. (2023). Tree of Thoughts.
+- Hao et al. (2023). Reasoning with language model is planning with world model (RAP).
 - Schrittwieser et al. (2020). MuZero.
 - Park et al. (2023). Generative Agents.
 - Kirkpatrick et al. (2017). Elastic weight consolidation.
