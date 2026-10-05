@@ -77,7 +77,7 @@ Handling interruptions is the most interesting part. In a transformer, being int
 
 - **Step**: a committed output at a given level of the hierarchy. For perception, reasoning, planning, action and speech, any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), and the shared mechanism works as general next-step predictor, plus attention over history.
 
-- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
+- **Step is not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
   - Lashley's *The Problem of Serial Order in Behavior* (1951) argued that behavior can't be pure chaining.
   - Speech errors show that people already hold later words in mind before saying them. Anticipation slips ("a leading list" for "a reading list") and spoonerisms are the evidence.
   - The next saccade target is computed during the current fixation.
@@ -100,6 +100,8 @@ Handling interruptions is the most interesting part. In a transformer, being int
 - **Hierarchy across timescales.** Humans nest goals → subgoals → actions → micro-movements, each running on its own timescale. A transformer is flat and has to learn any hierarchy implicitly (I.2).
 
 # **Scope**
+
+![Scope of the One Loop thesis: shared supporting functions coordinate domain-specific knowledge and skills; underlying mechanisms implement both.](../assets/images/one-loop-scope.svg)
 
 This thesis examines the **supporting functions** that organize intelligent activity across domains: maintaining goals, selecting and sequencing actions, using feedback, deciding when to continue or stop, and learning from experience. Domains such as language, spatial reasoning, and social or emotional understanding supply specialized knowledge, representations and skills; the supporting functions coordinate when and how those resources are used, revised and learned. For example, composing a sentence and navigating a route require different knowledge and skills, but both involve maintaining a goal, evaluating possible next steps and adjusting to feedback. Capable behavior depends on their interaction: a shared control structure alone does not explain competence in a particular domain.
 
@@ -1462,4 +1464,3 @@ Recommended sequence:
 - Garcia-Molina & Salem (1987). Sagas.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
-
