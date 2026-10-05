@@ -1,4 +1,6 @@
-# ![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg) One Loop: Minds and Transformers
+# <img src="../assets/images/one-loop-icon.svg" alt="One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop" width="128"> One Loop: Minds and Transformers
+
+<br/>
 
   
 
