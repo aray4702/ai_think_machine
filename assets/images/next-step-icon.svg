@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="title desc">
+  <title id="title">Next Step</title>
+  <desc id="desc">A rising path of committed steps, each one built on the steps before it, leading by a dashed line to a glowing next step that has not been taken yet.</desc>
+
+  <!-- background -->
+  <rect x="0" y="0" width="256" height="256" rx="48" fill="#14213d"/>
+
+  <g transform="translate(-8 10)">
+  <!-- everything so far: committed steps -->
+  <path d="M48 196 L88 168 L128 148 L160 118" fill="none" stroke="#e5e5e5" stroke-opacity="0.45" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="48" cy="196" r="8" fill="#e5e5e5" fill-opacity="0.55"/>
+  <circle cx="88" cy="168" r="9" fill="#e5e5e5" fill-opacity="0.7"/>
+  <circle cx="128" cy="148" r="10" fill="#e5e5e5" fill-opacity="0.85"/>
+  <circle cx="160" cy="118" r="11" fill="#e5e5e5"/>
+
+  <!-- being generated -->
+  <path d="M168 108 L188 84" fill="none" stroke="#5ec8d8" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+
+  <!-- the next step -->
+  <circle cx="200" cy="70" r="30" fill="none" stroke="#fca311" stroke-opacity="0.3" stroke-width="4"/>
+  <circle cx="200" cy="70" r="16" fill="#fca311"/>
+  </g>
+</svg>
