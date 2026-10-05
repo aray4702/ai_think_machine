@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="770" viewBox="0 0 960 770" role="img" aria-labelledby="title desc">
   <title id="title">One Loop: scope and relationships</title>
-  <desc id="desc">The thesis covers shared supporting functions at the serial control level. They coordinate domain-specific knowledge and skills, which provide information and possible actions. Underlying biological or computational mechanisms implement both. Domain-specific theories and detailed mechanisms are outside the scope; shared functions do not imply identical mechanisms.</desc>
+  <desc id="desc">The thesis covers shared supporting functions at the serial control level. They coordinate domain-specific knowledge and skills, which provide information and possible actions. Underlying biological or computational mechanisms implement and constrain the supporting functions. Domain-specific theories and detailed mechanisms are outside the scope; shared functions do not imply identical mechanisms.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
@@ -33,8 +33,6 @@
     <path d="M480 608 V520" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
     <text x="497" y="559" font-size="16" text-anchor="start">Implement and constrain</text>
     <text x="497" y="582" font-size="16" text-anchor="start">the supporting functions</text>
-    <path d="M110 674 H48 V144 H108" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
-    <text x="30" y="419" font-size="16" transform="rotate(-90 30 419)">Also implement domain-specific capabilities</text>
 
     <rect x="110" y="610" width="740" height="124" rx="6" fill="#fff4dc" stroke="#a17a2b" stroke-width="2"/>
     <text x="480" y="641" font-size="20" font-weight="700">UNDERLYING MECHANISMS</text>
