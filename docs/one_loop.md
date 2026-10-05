@@ -15,7 +15,7 @@ This article begins with observation, and then looks at the thesis from two dire
 
 - [0. The observation](#0-the-observation)
 - [Part I: First principles](#part-i-first-principles)
-  - [I.1 Too many futures → commit one step at a time, with feedback](#i1-too-many-futures--commit-one-step-at-a-time-with-feedback)
+  - [I.1 Too many futures to plan in advance → commit one step at a time and use feedback](#i1-too-many-futures-to-plan-in-advance--commit-one-step-at-a-time-and-use-feedback)
   - [I.2 Limited compute and memory → compile steps into procedures, and stack them](#i2-limited-compute-and-memory--compile-steps-into-procedures-and-stack-them)
   - [I.3 Some outputs can't be taken back → put a reversible inner loop in front](#i3-some-outputs-cant-be-taken-back--put-a-reversible-inner-loop-in-front)
   - [I.4 Thinking costs → a stopping problem → control signals](#i4-thinking-costs--a-stopping-problem--control-signals)
@@ -46,18 +46,12 @@ This article begins with observation, and then looks at the thesis from two dire
 Many human processes seem to share a structure with transformer next-token generation:
 
 1. **Perception** unfolds through successive observations, guided by what we are trying to find out. Our eyes make rapid shifts called saccades; each shift draws on what we have seen so far. We stop looking when we have enough information or something interrupts us.
-
-1. **Reasoning** develops thought by thought toward an answer. Each thought builds on earlier ones, sometimes revisiting or correcting them, until we reach a conclusion or are interrupted.
-
-1. **Planning** develops a course of action step by step. Each choice shapes the next, and later considerations may lead us to revise earlier choices.
-
-1. **Execution and navigation** turn intentions into successive decisions. A plan or map provides direction, while each next step responds to our current situation and what happened before.
-
-1. **Physical action** often begins with an intended outcome rather than a fully specified sequence of movements. Each movement adjusts to the effects of preceding movements and incoming sensory feedback.
-
-1. **Talking and writing** unfold word by word. We may know what we want to express without having chosen every word; the wording develops as we proceed, with opportunities for correction and revision.
-
-1. **Transformers** generate outputs token by token, conditioned on the available context and previously generated tokens. These outputs can represent text, speech, audio, video, or actions. Generation ends when a stopping condition is met, and new information added to the context can redirect subsequent output.
+2. **Reasoning** develops thought by thought toward an answer. Each thought builds on earlier ones, sometimes revisiting or correcting them, until we reach a conclusion or are interrupted.
+3. **Planning** develops a course of action step by step. Each choice shapes the next, and later considerations may lead us to revise earlier choices.
+4. **Execution and navigation** turn intentions into successive decisions. A plan or map provides direction, while each next step responds to our current situation and what happened before.
+5. **Physical action** often begins with an intended outcome rather than a fully specified sequence of movements. Each movement adjusts to the effects of preceding movements and incoming sensory feedback.
+6. **Talking and writing** unfold word by word. We may know what we want to express without having chosen every word; the wording develops as we proceed, with opportunities for correction and revision.
+7. **Transformers** generate outputs token by token, conditioned on the available context and previously generated tokens. These outputs can represent text, speech, audio, video, or actions. Generation ends when a stopping condition is met, and new information added to the context can redirect subsequent output.
 
 All of these have goals, run sequentially with or without backtracking, end in a conclusion or an interruption, and handle interruptions and off-track events by attending to relevant information and ignoring irrelevant information.
 
@@ -74,30 +68,26 @@ Handling interruptions is the most interesting part. In a transformer, being int
 ##### **Comparisons between minds and transformers**
 
 - **Goal**: whatever conditions the sequence toward an end state. It may be set from above, triggered by the environment, driven by needs or curiosity, or **reconstructed after the fact**.
-
 - **Step**: a committed output at a given level of the hierarchy. For perception, reasoning, planning, action and speech, any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), and the shared mechanism works as general next-step predictor, plus attention over history.
-
 - **Step is not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
   - Lashley's *The Problem of Serial Order in Behavior* (1951) argued that behavior can't be pure chaining.
   - Speech errors show that people already hold later words in mind before saying them. Anticipation slips ("a leading list" for "a reading list") and spoonerisms are the evidence.
   - The next saccade target is computed during the current fixation.
   - Interpretability research found that LLMs pick a rhyme word before writing the line that ends in it.
-
 - **Backtracking means different things in different cases.** Neither speech nor a transformer can erase what it has produced; both "backtrack" by appending a repair ("uh, I mean…", or "Wait, …" in reasoning models). Writing with editing, and mental backtracking in reasoning, really can revise earlier output. That is closer to search, or to diffusion-style refinement, than to pure autoregression. Which one appears depends on reversibility (I.3).
+
+
 
 ##### **Contrasts between minds and transformers**
 
 - **Memory architectures differ.** Human working memory holds about four items. People compress history into a running state and rely on external memory (notes, maps). That is closer to an RNN or state-space model than to a transformer that can attend back to its whole raw context.
-
 - **Learning while acting.** A human's "weights" change during the task. A transformer's weights are frozen at inference, so anything it learns mid-task has to live in its context (I.6).
-
 - **Grounded, closed-loop feedback.** Humans get a continuous sensory stream. A model gets feedback only when something is injected into its context, such as a tool result or a user message.
-
 - **Felt salience.** Emotion and body state decide what is relevant and when to stop. Goals persist as motivation and body state (Damasio), and stopping is a felt sense of satisfaction or "done." In a transformer, the goal is just conditioning text and stopping is an end-of-sequence token (I.4).
-
 - **Offline simulation.** Humans can mentally rehearse a plan before acting. Reasoning models approximate this with hidden thinking tokens (I.3).
-
 - **Hierarchy across timescales.** Humans nest goals → subgoals → actions → micro-movements, each running on its own timescale. A transformer is flat and has to learn any hierarchy implicitly (I.2).
+
+
 
 # **Scope**
 
@@ -107,19 +97,19 @@ This thesis examines the **supporting functions** that organize intelligent acti
 
 The thesis focuses on the **serial control level** of behavior: the level at which an agent commits outputs one after another (gaze shifts, words, moves, decisions, actions) in pursuit of something. Domain-specific capabilities serve as examples, rather than subjects of a complete theory. This level runs on top of parallel, continuous machinery the document does not describe: fast feed-forward recognition, motor dynamics, background monitoring. It is a **functional** claim, not a claim that brains and transformers share a mechanism.
 
-Part I takes each of these differences as a constraint to explain, not a reason to drop the analogy.
-
 ---
+
+
 
 # Part I: First principles' perspective
 
-Each principle has the same shape: **a constraint** that any agent acting in the world faces, **the consequence** that follows from it, and **evidence** from humans and machines that the consequence holds.
+Each section below follows the same pattern. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, and gives **evidence** from humans and machines that the consequence holds.
 
-A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on previous steps" is true of everything. The derivations below are interesting only to the extent that they predict *specific* structure beyond that.
+Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so step-by-step dependence alone is not the claim. The derivations below predict *specific* structure beyond that: structure an arbitrary sequence would not have.
 
-## I.1 Too many futures → commit one step at a time, with feedback
+## I.1 Too many futures to plan in advance → commit one step at a time and use feedback
 
-**Constraints.**
+**Constraints:**
 
 - **Too many possible sequences.** With b options per step and n steps there are bⁿ complete sequences; they can't all be searched. Committing one step at a time turns that into n choices of size b. The chain-rule factorization is the only affordable way to produce long sequences.
 - **The world is noisy and changes while you act**, so a fully precomputed open-loop plan goes stale. Control theory shows that closed-loop feedback beats open-loop planning under noise.
@@ -127,17 +117,15 @@ A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ�
 - **Memory and compute are limited**, so the full history can't be kept and reprocessed at every step.
 - **Committed outputs come out one at a time.** There is one mouth, one gaze and one body position. Even if thinking runs in parallel, what gets committed must be serialized.
 
-**Consequence.** Commit one step, observe, and generate the next step from an updated **belief state**: a summary of history sufficient for acting well. Under partial observability (formally a POMDP), the optimal action depends on exactly such a belief state, so "the next step depends on previous steps" isn't a quirk; it is mathematically required. More precisely, the next step *depends on a belief built from previous steps*. Brains compress history into a running state; transformers keep the raw history and attend to it. These are two approximations of the same belief state (I.6). A plan or map can still guide the loop, but as a prior, not as a script.
+**Consequence:** Commit one step, observe, and generate the next step from an updated **belief state**: a summary of history sufficient for acting well. Under partial observability (formally a POMDP), the optimal action depends on exactly such a belief state. It is mathematically required that the next step depends on the previous steps; More precisely, the next step *depends on a belief built from previous steps*. Brains compress history into a running state; transformers keep the raw history and attend to it. These are two approximations of the same belief state (I.6). A plan or map can still guide the loop, but as a prior, not as a script.
 
-**Why the seven processes look alike.** The problem forces it. Step-by-step generation that conditions on history and absorbs interruptions is what any capable agent with limited compute, an unpredictable world and a goal ends up doing; it can't plan the whole sequence in advance, because too much would change before it finished. Brains and transformers may both have arrived at this loop because it is the only tractable solution, not by coincidence and not because they share a mechanism. The observation in section 0 is then a claim about the structure of sequential decision-making under uncertainty, not just a similarity between brains and AI. The strongest counter-argument, that LLMs inherited the structure from human text, is weighed in I.9.
+**Why the processes of minds and transformers look alike.** The problem forces it. Step-by-step generation that conditions on history and absorbs interruptions is what any capable agent with limited compute, an unpredictable world and a goal ends up doing; it can't plan the whole sequence in advance, because too much would change before it finished. Brains and transformers may both have arrived at this loop because it is the only tractable solution, not by coincidence and not because they share a mechanism. The observation in the observation section is then a claim about the structure of sequential decision-making under uncertainty, not just a similarity between brains and AI. The strongest counter-argument, that LLMs inherited the structure from human text, is weighed in I.9.
 
-**Evidence.**
+**Evidence:**
 
-- **Humans.** Saccades are information-gathering actions: each one is taken to gather information for the next decision. Under predictive processing, perception is active sampling to reduce prediction error, so a saccade sequence is generation too, and perception sits fully inside the loop rather than only feeding it. Motor control is closed-loop, and Todorov's optimal feedback control goes further: the motor system corrects only deviations that matter for the task and lets the rest go (the *minimal intervention principle*). That is section 0's "attend to relevant information, ignore irrelevant information," stated formally. Speech is produced incrementally, with implicit look-ahead.
-- **Machines.** Engineered systems arrive independently at the same loop. Model predictive control plans over a short horizon, executes only the first step, observes and replans; this is how navigation (point 4 of section 0) can follow a plan or map and still decide on the fly. AlphaZero searches ahead, commits one move and searches again. Transformers generate token by token, and an injected interruption simply becomes part of the next step's conditioning.
-- **Biology without brains.** Bacterial chemotaxis runs the same run–sense–adjust cycle.
-
-
+- **Humans.** Saccades are information-gathering actions: each one is taken to gather information for the next decision. Under predictive processing, perception is active sampling to reduce prediction error, so a saccade sequence is generation too, and perception sits fully inside the loop rather than only feeding it. Motor control is closed-loop, and Todorov's optimal feedback control goes further: the motor system corrects only deviations that matter for the task and lets the rest go (the *minimal intervention principle*). Speech is produced incrementally, with implicit look-ahead.
+- **Machines:** Engineered systems arrive independently at the same loop. Model predictive control plans over a short horizon, executes only the first step, observes and replans; this is how navigation (point 4 in Observation section) can follow a plan or map and still decide on the fly. AlphaZero searches ahead, commits one move and searches again. Transformers generate token by token, and an injected interruption simply becomes part of the next step's conditioning.
+- **Biology without brains:** Bacterial chemotaxis runs the same run–sense–adjust cycle.
 
 ## I.2 Limited compute and memory → compile steps into procedures, and stack them
 
@@ -1464,3 +1452,4 @@ Recommended sequence:
 - Garcia-Molina & Salem (1987). Sagas.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
+
