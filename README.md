@@ -1,5 +1,7 @@
 # <img src="assets/images/next-step-icon.svg" alt="Next Step icon: a rising path of committed steps leading to a glowing next step" width="128"> **Thinking About Thinking Machines**
 
+<br/>
+
 My understanding of AI: how minds and machines decide what comes next.
 
 ## [One Loop: Minds and Transformers](docs/one_loop.md)
