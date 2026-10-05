@@ -18,7 +18,7 @@ This article begins with observation, and then looks at the thesis from two dire
   - [I.1 Too many futures to plan in advance → commit one step at a time and use feedback](#i1-too-many-futures-to-plan-in-advance--commit-one-step-at-a-time-and-use-feedback)
   - [I.2 Limited compute and memory → compile steps into procedures, and stack them](#i2-limited-compute-and-memory--compile-steps-into-procedures-and-stack-them)
   - [I.3 Some outputs can't be taken back → put a reversible inner loop in front](#i3-some-outputs-cant-be-taken-back--put-a-reversible-inner-loop-in-front)
-  - [I.4 Thinking costs → a stopping problem → control signals](#i4-thinking-costs--a-stopping-problem--control-signals)
+  - [I.4 Thinking has a cost → use control signals to decide when to stop](#i4-thinking-has-a-cost--use-control-signals-to-decide-when-to-stop)
   - [I.5 The context mixes sources → the goal must be shielded](#i5-the-context-mixes-sources--the-goal-must-be-shielded)
   - [I.6 Learning fast overwrites old knowledge → separate memories and consolidate](#i6-learning-fast-overwrites-old-knowledge--separate-memories-and-consolidate)
   - [I.7 Learning signal lives at the edge of competence → development has an order](#i7-learning-signal-lives-at-the-edge-of-competence--development-has-an-order)
@@ -247,6 +247,8 @@ Step-by-step generation is forced where outputs are **irreversible commitments t
   - Robot diffusion policies refine a short chunk of actions as a whole, execute it, then refine the next chunk: MPC with a refinement inner loop.
   - Diffuser (Janner et al., 2022) plans whole trajectories by refinement, matching the planning row of the table.
 
+
+
 **Where transformers lack reversibility.** They are still partly preoperational.
 
 - **Append-only thinking.** A reasoning model can't delete a wrong thought. "Wait, that's wrong" leaves the error in context, where it still primes later tokens. This is compensation, not inversion. Real inversion requires forking or rolling back the context, which tree-search harnesses provide (R2).
@@ -256,17 +258,19 @@ Step-by-step generation is forced where outputs are **irreversible commitments t
 
 
 
-## I.4 Thinking costs → a stopping problem → control signals
+## I.4 Thinking has a cost → use control signals to decide when to stop
 
-**Constraint.** Each additional step of deliberation costs time, energy and opportunity.
+**Constraint:** Each additional step of deliberation costs time, energy and opportunity.
 
-**Consequence.** Every level reduces to one decision made over and over: think one more step, or act now? More fully, it must decide whether to *continue, deliberate, backtrack, switch or stop*. A good stopping rule has three parts:
+**Consequence:** Every level reduces to one decision made over and over: think one more step, or act now? More fully, it must decide whether to *continue, deliberate, backtrack, switch or stop*. A good stopping rule has three parts:
 
 1. a **confidence threshold**, which decides when to commit;
 2. an **urgency signal** that lowers the threshold over time, so the agent doesn't stall;
 3. a **surprise detector** that reopens the inner loop mid-execution. This is how interruptions get absorbed.
 
-Humans get parts 2 and 3 cheaply from emotion and conflict monitoring. LLMs currently approximate them with external budgets and learned habits. The seven processes of section 0 may differ less in their generation mechanism than in how well this stopping rule is tuned for each one.
+Humans get parts 2 and 3 cheaply from emotion and conflict monitoring. LLMs currently approximate them with external budgets and learned habits. The seven processes of in the Observation section may differ less in their generation mechanism than in how well this stopping rule is tuned for each one.
+
+![I.4: noisy evidence accumulates until it crosses a confidence threshold, and the agent commits; urgency lowers the threshold over time; a surprise during execution reopens deliberation. Emotion acts as the controller, mapping feelings such as curiosity, frustration, anxiety, surprise, fatigue and satisfaction to control actions.](../assets/images/one-loop-i4-stopping.svg)
 
 **Evidence.** Brains and models handle the decision in surprisingly parallel ways.
 
@@ -278,7 +282,7 @@ Humans get parts 2 and 3 cheaply from emotion and conflict monitoring. LLMs curr
 - **Detect conflict and escalate** (System 1 → System 2). The default is to commit fast. A conflict monitor (the anterior cingulate cortex) notices when something is off, such as competing responses, an error or a surprise, and reopens the inner loop. This is also how interruptions are handled: a surprise during execution reopens deliberation, the agent replans, and execution resumes.
 - **Emotion supplies the cost signal.** In *Descartes' Error*, Damasio's patient Elliot had ventromedial prefrontal damage that cut off emotional signals. His logic was intact, but he could deliberate endlessly over trivial choices, such as which pen to use. On Damasio's account, emotion ("somatic markers") gives a fast value estimate that ends deliberation; without it, the inner loop doesn't know when to stop.
 
-**Emotion as the control layer.** Every process in section 0 starts with a goal and stops at a conclusion or an interruption. The generator produces steps, but something has to set the goal, judge progress and declare it done. One answer is that emotion does that job.
+**Emotion as the control layer.** Every process in the Observation section starts with a goal and stops at a conclusion or an interruption. The **generator** (the part that produces each next step: next-token prediction in a transformer, the cortex's generative model in a brain) produces steps, but something has to set the goal, judge progress and declare it done. One answer is that emotion does that job.
 
 - **Feelings report the body's state** (Damasio). Feelings are the mind's readout of homeostasis: how the body is doing relative to staying viable. A goal starts as a felt need. Somatic markers attach a fast, body-based value to options, so each one doesn't have to be worked out from scratch. The classic evidence, the Iowa Gambling Task, is contested: skin responses appeared before people could say which decks were bad, but Maia & McClelland (2004) showed participants knew more consciously than claimed. The functional idea has held up better than that experiment.
 - **Predictive processing makes this precise.**
@@ -303,7 +307,7 @@ Mapped onto the decisions of the loop:
 
 Together these cover every control decision the seven processes need: start, continue, backtrack, switch, interrupt, stop. The generation mechanism can be the same across all seven, with emotion acting as the **shared controller**. The surprise signal itself comes from the procedural forward models of I.2.
 
-**Machines.** Each brain mechanism has an LLM counterpart, and a gap:
+**Machines:** Each brain mechanism has an LLM counterpart, and a gap:
 
 
 | Brain mechanism                       | LLM counterpart                                                                 | Gap                                              |
