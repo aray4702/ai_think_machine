@@ -1,6 +1,7 @@
-# <img src="../assets/images/one-loop-icon.svg" alt="One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop" width="128"> One Loop: Minds and Transformers
+# ![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg) One Loop: Minds and Transformers
 
-<br/>
+  
+
 
 *The goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
 
@@ -509,6 +510,8 @@ On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest t
 - **The prior does most of the work.** One example can't define a concept; it can only *choose* among hypotheses the learner already favors. Children assume a new word names a whole object and extend it by shape (the shape bias, Landau, Smith & Jones, 1988). Bayesian models of word learning show how a few examples rapidly narrow a hypothesis space the learner already has (Xu & Tenenbaum, 2007). Characters are learned from one example because they are parsed into strokes the learner already knows how to compose. Analogy does the same at a higher level: map the new case onto a familiar structure (Gentner, 1983).
 - **Transformers do it in context.** Put one or a few examples in the prompt and the model generalizes from them with no weight change (Brown et al., 2020). This is the same mechanism as goal-conditioning and interruption: the example enters the context, and the next step is conditioned on it. Pretraining builds the prior; the context selects from it. In-context learning behaves like implicit Bayesian inference (Xie et al., 2022), can implement gradient-descent-like updates inside the forward pass (von Oswald et al., 2023), and relies on circuits such as induction heads that copy patterns from earlier in the context (Olsson et al., 2022).
 
+
+
 So one-shot learning splits across the two speeds of this section:
 
 1. **Fast: use the example now.** Hold it in the fast store (hippocampus; the context window) and generalize by attending to it. This works only as far as the prior already contains the right hypotheses.
@@ -665,11 +668,15 @@ The human forms of imitation each have a machine counterpart:
 | Practice while a coach corrects your own attempts  | DAgger; RL on the model's own outputs                                        |
 
 
+
+
 For an agent:
 
 1. **Treat a demonstration as evidence about a goal.** Infer what the demonstrator was trying to achieve, then plan toward it; copy the exact steps only where the agent can't yet tell which ones matter.
 2. **Follow imitation with corrected practice.** Let the agent attempt the task and have the user fix *its* attempts. Corrections on states the agent actually reaches are worth more than further demonstrations.
 3. **Keep only what holds up.** A demonstrated procedure enters P as a skill through the consolidation gate (R6), like any other lesson, once the agent's own runs confirm it.
+
+
 
 ## I.8 The analogy makes predictions about humans
 
@@ -882,6 +889,8 @@ Only trusted, verified experience passes the consolidation gate, and any change 
 | P                       | Compiled procedures (I.2)      |
 
 
+
+
 **Hierarchy for the task, tiers for authority.** The parts are organized in two different ways, on purpose.
 
 - **A hierarchy** is the same loop nested to any depth: each level sets the goal for the level below, and each step at one level is a whole loop at the next (claim 2). The goal stack in W, the skills in P and the TOTE tests are organized this way.
@@ -890,14 +899,14 @@ Only trusted, verified experience passes the consolidation gate, and any change 
 Each one fails where the other is strong:
 
 
-|               | Hierarchy                                           | Tiers                                             |
-| ------------- | --------------------------------------------------- | ------------------------------------------------- |
-| Good at       | Decomposing a task into subgoals of any depth       | Reacting fast; enforcing safety                   |
-| Scales with   | Task depth: add levels as needed                    | Barely: the layers are fixed                      |
-| Goals         | Each level knows its parent's goal (I.5)            | Tiers can pull in different directions            |
-| On a surprise | Slow: it must climb the chain before the plan moves | Fast: a low tier acts at once                     |
-| On failure    | A bad top-level goal propagates everywhere          | Lower tiers keep working when upper ones fail     |
-| Main cost     | Latency; a single chain of command                  | Arbitration between tiers                         |
+|               | Hierarchy                                           | Tiers                                         |
+| ------------- | --------------------------------------------------- | --------------------------------------------- |
+| Good at       | Decomposing a task into subgoals of any depth       | Reacting fast; enforcing safety               |
+| Scales with   | Task depth: add levels as needed                    | Barely: the layers are fixed                  |
+| Goals         | Each level knows its parent's goal (I.5)            | Tiers can pull in different directions        |
+| On a surprise | Slow: it must climb the chain before the plan moves | Fast: a low tier acts at once                 |
+| On failure    | A bad top-level goal propagates everywhere          | Lower tiers keep working when upper ones fail |
+| Main cost     | Latency; a single chain of command                  | Arbitration between tiers                     |
 
 
 So the design uses both. **What to do** is hierarchical: goals, subgoals and compiled skills form one recursive loop, which is how the agent takes on tasks of any depth. **Who can stop or override it** is tiered, and the tiers cut across every level of the hierarchy without waiting for it:
@@ -907,8 +916,6 @@ So the design uses both. **What to do** is hierarchical: goals, subgoals and com
 3. **Sleep** (slowest): consolidation between sessions, behind its own gate (I.6, R6).
 
 The brain appears to combine them the same way. The prefrontal cortex organizes goals hierarchically (Koechlin; Badre), but it sits on an older layered stack of spinal reflexes, brainstem, basal ganglia and cortex, in which lower layers can act first and higher ones modulate them (Prescott, Redgrave & Gurney, 1999). You pull your hand off the stove before you know why, and a strong feeling can interrupt any level of a plan.
-
-
 
 Every piece maps to a brain mechanism, and most can be prototyped with current LLMs (II.5).
 
@@ -1429,6 +1436,8 @@ Recommended sequence:
 - Baillargeon; Spelke. Infant core knowledge.
 - Oudeyer. Learning progress as intrinsic motivation.
 
+
+
 **Machines and agents**
 
 - Thorpe et al. (1996). Speed of processing in the human visual system.
@@ -1441,4 +1450,3 @@ Recommended sequence:
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
 
-**Related reading in this repo:** [interesting topics](interesting%20topics.md), covering the predictive mind, emergence and the brain.
