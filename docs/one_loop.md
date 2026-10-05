@@ -187,32 +187,34 @@ The missing piece in LLM is **practice-driven compilation**: moving a procedure 
 
 ## I.3 Some outputs can't be taken back → put a reversible inner loop in front
 
-**Constraint.** Many commitments are **irreversible**: you can't unsay a word or unthrow a ball. Errors in them are costly.
+**Constraint:** Many commitments are **irreversible**: you can't unsay a word or unthrow a ball. Errors in them are costly.
 
-**Consequence.** Wherever errors are expensive, the agent needs two loops:
+**Consequence:** Wherever errors are expensive, the agent needs two loops:
 
 - an **inner loop** of cheap, revisable simulation (refining, searching, backtracking) in imagination or on scratch paper;
 - an **outer loop** of irreversible commitment to the world, one step at a time, with feedback.
 
 What defines the inner loop is **reversibility**: its operations can be undone or compensated, and they preserve invariants. Thinking is the revisable space that evolved so we don't commit too early.
 
-**A sharper version of the thesis.** Step-by-step generation is forced where outputs are **irreversible commitments to an uncertain world**. Where outputs can be cheaply revised, **iterative refinement** appears instead: diffusion models refine a whole image in parallel, and humans do the same when sketching, editing an essay or imagining. So all seven processes of section 0 run the same outer loop; what differs is how much revisable inner loop sits in front of each commitment. Transformers started as outer-loop-only machines, and much recent progress amounts to adding an inner loop.
+Step-by-step generation is forced where outputs are **irreversible commitments to an uncertain world**. Where outputs can be cheaply revised, **iterative refinement** appears instead: diffusion models refine a whole image in parallel, and humans do the same when sketching, editing an essay or imagining. So all seven processes in the Observation section run the same outer loop; what differs is how much revisable inner loop sits in front of each commitment. Transformers started as outer-loop-only machines, and much recent progress amounts to adding an inner loop.
+
+![I.3: a reversible inner loop (propose, check, revise or undo) passes its result through a one-way commit into the outer loop of irreversible steps in the world, and feedback returns to the inner loop. How much inner loop sits in front depends on the cost of revising a committed step, from planning (free) to motor action (impossible).](../assets/images/one-loop-i3-two-loops.svg)
 
 **Mapping irreversibility onto the seven processes.** The deciding variable is how expensive it is to revise a step once it's out. As that cost rises, behavior moves from refinement toward strict step-by-step generation with repair. This also explains why backtracking shows up in some cases and not others.
 
 
-| Case (section 0) | What gets committed                    | Cost to revise                       | Resulting structure                                                                                                                  |
-| ---------------- | -------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 5. Motor action  | Muscle commands                        | Impossible: you can't unthrow a ball | Pure closed-loop, step-by-step generation                                                                                            |
-| 6a. Talking      | Spoken words                           | Can't unsay, only repair             | Step-by-step, with appended repairs ("I mean…")                                                                                      |
-| 4. Navigation    | Physical position                      | Costly: walking back takes time      | Step-by-step, MPC-style; backtracking is literal                                                                                     |
-| 1. Perception    | Gaze (cheap) and interpretation (free) | Low                                  | Hybrid: saccades are sequential, but the percept is refined in parallel (a flipping Necker cube is the interpretation being revised) |
-| 2. Reasoning     | Thoughts in working memory             | Low, but memory is tiny              | Sequential search with backtracking: a tree, not a chain                                                                             |
-| 6b. Writing      | Text on a page                         | Nearly free                          | Refinement: drafts, edits, restructuring                                                                                             |
-| 3. Planning      | Nothing yet                            | Free                                 | Most refinement-like: the whole plan gets rearranged                                                                                 |
+| Case (Observation section) | What gets committed                    | Cost to revise                       | Resulting structure                                                                                                                  |
+| -------------------------- | -------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 5. Motor action            | Muscle commands                        | Impossible: you can't unthrow a ball | Pure closed-loop, step-by-step generation                                                                                            |
+| 6a. Talking                | Spoken words                           | Can't unsay, only repair             | Step-by-step, with appended repairs ("I mean…")                                                                                      |
+| 4. Navigation              | Physical position                      | Costly: walking back takes time      | Step-by-step, MPC-style; backtracking is literal                                                                                     |
+| 1. Perception              | Gaze (cheap) and interpretation (free) | Low                                  | Hybrid: saccades are sequential, but the percept is refined in parallel (a flipping Necker cube is the interpretation being revised) |
+| 2. Reasoning               | Thoughts in working memory             | Low, but memory is tiny              | Sequential search with backtracking: a tree, not a chain                                                                             |
+| 6b. Writing                | Text on a page                         | Nearly free                          | Refinement: drafts, edits, restructuring                                                                                             |
+| 3. Planning                | Nothing yet                            | Free                                 | Most refinement-like: the whole plan gets rearranged                                                                                 |
 
 
-**What reversibility buys.**
+**Advantages of reversibility:**
 
 - **Free backtracking.** Search needs undo; chess engines make and unmake moves millions of times. The inner loop is cheap because its operations are reversible.
 - **Verification by inversion.** Check addition with subtraction, decode(encode(x)) = x, round-trip tests, back-translation, cycle consistency, substituting a solution back into the problem. Undoing is often easier to check than doing.
@@ -224,16 +226,16 @@ What defines the inner loop is **reversibility**: its operations can be undone o
 - **High stakes and enough time**, as with surgeons, chess masters or exams in pen: think more before committing.
 - **Low stakes or time pressure**, as in casual talk or reflexes: commit fast and correct online.
 
-**Evidence.**
+**Evidence:**
 
 - **Talking vs writing** is the cleanest natural experiment among the seven processes. The same person producing the same kind of output switches from incremental generation with appended repairs ("I mean…") to drafting and revision, purely because reversibility changes. Word processors made revision even cheaper, and writing became measurably less linear.
 - **Piaget.** Thought *is* internalized action, and it becomes thought proper when its operations become reversible. He described two forms of reversibility:
   - **inversion** (negation): undo the operation; +A − A = 0; pour the water back;
   - **reciprocity** (compensation): a change in one dimension offset by another; taller but thinner; A < B ⇔ B > A.
   - At the concrete stage these work separately; at the formal stage they combine into a single system, the **INRC group** (Identity, Negation, Reciprocal, Correlative). Conservation tasks reveal the shift. Water is poured from a wide glass into a tall, thin one:
-  - The **preoperational** child says "more now, it's higher." It judges by the end state (*figurative* knowledge) and fixates on one dimension (centration).
-  - The **concrete** child says "the same," with three justifications: **identity** (nothing was added or taken away), **inversion** (you can pour it back) and **compensation** (taller, but thinner). It reasons about the transformation, not just the states (*operative* knowledge).
-  - The three justifications double as three verification strategies for agents (R3).
+    - The **preoperational** child says "more now, it's higher." It judges by the end state (*figurative* knowledge) and fixates on one dimension (centration).
+    - The **concrete** child says "the same," with three justifications: **identity** (nothing was added or taken away), **inversion** (you can pour it back) and **compensation** (taller, but thinner). It reasons about the transformation, not just the states (*operative* knowledge).
+  - Each justification is also a way for an agent to check its own work: identity becomes a diff audit, inversion a round-trip test, and compensation a conservation check (R3).
 - **How reversibility develops.** Piaget traced it from action to thought:
   - **Sensorimotor, practical reversibility:** the infant can physically return to a starting point and take detours (the "practical group of displacements").
   - **Concrete operations:** reversibility is internalized; undoing is done mentally, on concrete things.

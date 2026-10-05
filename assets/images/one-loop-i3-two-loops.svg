@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">I.3: a reversible inner loop before irreversible commitment</title>
+  <desc id="desc">Top: the inner loop is reversible: propose a candidate, check it with round-trips and invariants, revise or undo, and backtrack for free, in imagination or on scratch paper. A one-way commit passes the result into the outer loop, where steps are committed to the world one at a time and cannot be unsaid or unthrown. Feedback from the world returns to the inner loop. Bottom: how much inner loop sits in front of each commitment depends on the cost of revising a committed step. From free to impossible: planning, writing, reasoning, perception, navigation, talking, motor action. Where revision is cheap, behavior is revisable refinement; where it is impossible, behavior is strict step-by-step generation with repair.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#16755d"/>
+    </marker>
+    <marker id="arrow-big" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#202b35"/>
+    </marker>
+  </defs>
+  <rect width="960" height="600" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Think Reversibly, Then Commit</text>
+
+    <!-- Inner loop -->
+    <rect x="40" y="62" width="400" height="238" rx="8" fill="#e8f5f1" stroke="#16755d" stroke-width="2.5" stroke-dasharray="8 5"/>
+    <text x="240" y="90" font-size="14" font-weight="700" fill="#16755d" letter-spacing="1.5">INNER LOOP · REVERSIBLE</text>
+    <text x="240" y="110" font-size="13" fill="#53606c">simulate, search, draft: in the head or on scratch paper</text>
+    <g fill="#ffffff" stroke="#16755d" stroke-width="2">
+      <rect x="60" y="140" width="130" height="48" rx="6"/>
+      <rect x="290" y="140" width="130" height="48" rx="6"/>
+      <rect x="175" y="230" width="130" height="48" rx="6"/>
+    </g>
+    <text x="125" y="161" font-size="14" font-weight="700">Propose</text>
+    <text x="125" y="178" font-size="12" fill="#53606c">a candidate</text>
+    <text x="355" y="161" font-size="14" font-weight="700">Check</text>
+    <text x="355" y="178" font-size="12" fill="#53606c">round-trip, invariants</text>
+    <text x="240" y="251" font-size="14" font-weight="700">Revise or undo</text>
+    <text x="240" y="268" font-size="12" fill="#53606c">backtrack for free</text>
+    <g fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrow-g)">
+      <path d="M192 164 H287"/>
+      <path d="M345 190 L292 228"/>
+      <path d="M188 228 L135 191"/>
+    </g>
+
+    <!-- One-way commit -->
+    <path d="M442 164 H594" fill="none" stroke="#202b35" stroke-width="5" marker-end="url(#arrow-big)"/>
+    <text x="520" y="150" font-size="15" font-weight="700">commit</text>
+    <g font-size="13" fill="#53606c">
+      <text x="520" y="190">one way:</text>
+      <text x="520" y="207">can't unsay,</text>
+      <text x="520" y="224">can't unthrow</text>
+    </g>
+
+    <!-- Outer loop -->
+    <rect x="600" y="62" width="320" height="238" rx="8" fill="#f3f5f7" stroke="#465462" stroke-width="2.5"/>
+    <text x="760" y="90" font-size="14" font-weight="700" fill="#465462" letter-spacing="1.5">OUTER LOOP · IRREVERSIBLE</text>
+    <text x="760" y="110" font-size="13" fill="#53606c">one committed step at a time</text>
+    <g fill="#ffffff" stroke="#465462" stroke-width="2">
+      <rect x="616" y="146" width="72" height="36" rx="5"/>
+      <rect x="712" y="146" width="72" height="36" rx="5"/>
+      <rect x="808" y="146" width="72" height="36" rx="5"/>
+      <rect x="660" y="234" width="200" height="48" rx="6"/>
+    </g>
+    <g font-size="13">
+      <text x="652" y="169">step 1</text>
+      <text x="748" y="169">step 2</text>
+      <text x="844" y="169">step 3</text>
+      <text x="902" y="169" font-size="16">…</text>
+    </g>
+    <g fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M689 164 H709"/>
+      <path d="M785 164 H805"/>
+      <path d="M760 204 V231"/>
+    </g>
+    <path d="M652 186 V204 H844 V186" fill="none" stroke="#465462" stroke-width="2"/>
+    <text x="760" y="255" font-size="14" font-weight="700">World</text>
+    <text x="760" y="272" font-size="12" fill="#53606c">noisy, changing, partly hidden</text>
+
+    <!-- Feedback -->
+    <path d="M760 284 V332 H240 V303" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="500" y="352" font-size="14">feedback: observe the result, then think again</text>
+
+    <!-- Spectrum -->
+    <text x="480" y="398" font-size="17" font-weight="700">How much inner loop? Set by the cost of revising a committed step</text>
+    <path d="M80 414 H880 V426 L80 474 Z" fill="#e8f5f1" stroke="#16755d" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M80 474 L880 426 V486 H80 Z" fill="#dfe3e8" stroke="#465462" stroke-width="1.5"/>
+    <text x="96" y="438" font-size="14" font-weight="700" fill="#125c49" text-anchor="start">Revisable refinement</text>
+    <text x="96" y="455" font-size="12" fill="#125c49" text-anchor="start">drafts, edits, rearranged plans</text>
+    <text x="864" y="463" font-size="14" font-weight="700" fill="#202b35" text-anchor="end">Step-by-step with repair</text>
+    <text x="864" y="479" font-size="12" fill="#202b35" text-anchor="end">“I mean…”, online correction</text>
+    <path d="M80 500 H880" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="120" y1="494" x2="120" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="120" y="526" font-size="14" font-weight="700">Planning</text>
+    <text x="120" y="543" font-size="12" fill="#53606c">free</text>
+    <line x1="240" y1="494" x2="240" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="240" y="526" font-size="14" font-weight="700">Writing</text>
+    <text x="240" y="543" font-size="12" fill="#53606c">nearly free</text>
+    <line x1="360" y1="494" x2="360" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="360" y="526" font-size="14" font-weight="700">Reasoning</text>
+    <text x="360" y="543" font-size="12" fill="#53606c">low; tiny memory</text>
+    <line x1="480" y1="494" x2="480" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="480" y="526" font-size="14" font-weight="700">Perception</text>
+    <text x="480" y="543" font-size="12" fill="#53606c">low</text>
+    <line x1="600" y1="494" x2="600" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="600" y="526" font-size="14" font-weight="700">Navigation</text>
+    <text x="600" y="543" font-size="12" fill="#53606c">costly</text>
+    <line x1="720" y1="494" x2="720" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="720" y="526" font-size="14" font-weight="700">Talking</text>
+    <text x="720" y="543" font-size="12" fill="#53606c">only repair</text>
+    <line x1="840" y1="494" x2="840" y2="506" stroke="#465462" stroke-width="2"/>
+    <text x="840" y="526" font-size="14" font-weight="700">Motor action</text>
+    <text x="840" y="543" font-size="12" fill="#53606c">impossible</text>
+    <text x="480" y="580" font-size="13" fill="#53606c">cost to revise: free → impossible</text>
+  </g>
+</svg>
