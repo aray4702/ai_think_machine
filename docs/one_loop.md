@@ -882,6 +882,32 @@ Only trusted, verified experience passes the consolidation gate, and any change 
 | P                       | Compiled procedures (I.2)      |
 
 
+**Hierarchy for the task, tiers for authority.** The parts are organized in two different ways, on purpose.
+
+- **A hierarchy** is the same loop nested to any depth: each level sets the goal for the level below, and each step at one level is a whole loop at the next (claim 2). The goal stack in W, the skills in P and the TOTE tests are organized this way.
+- **Tiers** are a small, fixed number of layers that differ in role and speed. Each can act on its own, and a higher tier modulates or overrides a lower one rather than feeding it every step. Brooks's subsumption architecture (1986) and the three-layer robot architectures (Gat, 1998) work this way.
+
+Each one fails where the other is strong:
+
+
+|               | Hierarchy                                           | Tiers                                             |
+| ------------- | --------------------------------------------------- | ------------------------------------------------- |
+| Good at       | Decomposing a task into subgoals of any depth       | Reacting fast; enforcing safety                   |
+| Scales with   | Task depth: add levels as needed                    | Barely: the layers are fixed                      |
+| Goals         | Each level knows its parent's goal (I.5)            | Tiers can pull in different directions            |
+| On a surprise | Slow: it must climb the chain before the plan moves | Fast: a low tier acts at once                     |
+| On failure    | A bad top-level goal propagates everywhere          | Lower tiers keep working when upper ones fail     |
+| Main cost     | Latency; a single chain of command                  | Arbitration between tiers                         |
+
+
+So the design uses both. **What to do** is hierarchical: goals, subgoals and compiled skills form one recursive loop, which is how the agent takes on tasks of any depth. **Who can stop or override it** is tiered, and the tiers cut across every level of the hierarchy without waiting for it:
+
+1. **Gates** (fastest): the source tag, the goal gate and the action gate block untrusted inputs and risky actions at any level (R4).
+2. **Controller K**: surprise, budget and progress signals can interrupt any level and reopen deliberation (I.4).
+3. **Sleep** (slowest): consolidation between sessions, behind its own gate (I.6, R6).
+
+The brain appears to combine them the same way. The prefrontal cortex organizes goals hierarchically (Koechlin; Badre), but it sits on an older layered stack of spinal reflexes, brainstem, basal ganglia and cortex, in which lower layers can act first and higher ones modulate them (Prescott, Redgrave & Gurney, 1999). You pull your hand off the stove before you know why, and a strong feeling can interrupt any level of a plan.
+
 
 
 Every piece maps to a brain mechanism, and most can be prototyped with current LLMs (II.5).
@@ -1284,6 +1310,9 @@ Recommended sequence:
 - Badre (2008). Cognitive control, hierarchy, and the rostro–caudal organization of the frontal lobes.
 - Sutton, Precup & Singh (1999). Between MDPs and semi-MDPs: the options framework.
 - Norman (1981); Reason (1990). Action slips.
+- Brooks (1986). A robust layered control system for a mobile robot.
+- Gat (1998). On three-layer architectures.
+- Prescott, Redgrave & Gurney (1999). Layered control architectures in robots and vertebrates.
 
 **Control, stopping, emotion**
 
