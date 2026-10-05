@@ -503,6 +503,25 @@ On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest t
 | Moving into weights           | Context distillation; LoRA updates on session data                                                              |
 
 
+**Learning from one example.** Everything above is about *keeping* what was learned. The harder question is how one example can teach anything general at all.
+
+- **Humans do it routinely.** A child learns a new word from a single use (*fast mapping*, Carey & Bartlett, 1978). Adults can recognize and draw a new handwritten character after seeing it once, where standard neural networks needed thousands of examples (Lake, Salakhutdinov & Tenenbaum, 2015).
+- **The prior does most of the work.** One example can't define a concept; it can only *choose* among hypotheses the learner already favors. Children assume a new word names a whole object and extend it by shape (the shape bias, Landau, Smith & Jones, 1988). Bayesian models of word learning show how a few examples rapidly narrow a hypothesis space the learner already has (Xu & Tenenbaum, 2007). Characters are learned from one example because they are parsed into strokes the learner already knows how to compose. Analogy does the same at a higher level: map the new case onto a familiar structure (Gentner, 1983).
+- **Transformers do it in context.** Put one or a few examples in the prompt and the model generalizes from them with no weight change (Brown et al., 2020). This is the same mechanism as goal-conditioning and interruption: the example enters the context, and the next step is conditioned on it. Pretraining builds the prior; the context selects from it. In-context learning behaves like implicit Bayesian inference (Xie et al., 2022), can implement gradient-descent-like updates inside the forward pass (von Oswald et al., 2023), and relies on circuits such as induction heads that copy patterns from earlier in the context (Olsson et al., 2022).
+
+So one-shot learning splits across the two speeds of this section:
+
+1. **Fast: use the example now.** Hold it in the fast store (hippocampus; the context window) and generalize by attending to it. This works only as far as the prior already contains the right hypotheses.
+2. **Slow: decide whether to keep it.** What an LLM learns in context disappears at the end of the session unless it is consolidated. Humans keep one-shot learning when it fits an existing schema, which is also when consolidation is fastest (Tse et al., 2007, above).
+
+Where the two differ:
+
+- **Humans learn from explanations, not just examples.** People ask *why* the example works and generalize the reason, not the surface (explanation-based learning). In-context learning often keys on surface format: models can still do well when the labels in the examples are randomized (Min et al., 2022), and results shift with example order (I.8).
+- **Humans tag single events for keeping.** A surprising, rewarded or emotional one-off is stored and consolidated preferentially (selection by tag, above). LLMs weigh every token in context alike and have no mechanism for marking one example as worth keeping.
+- **A correction is the most valuable one-shot lesson** (I.7). But one example is also the easiest way to learn the wrong lesson: a single misleading case, or an injected one, generalizes just as readily.
+
+For an agent this suggests a pipeline: log the example verbatim in E; extract the rule it implies as an explicit *hypothesis*; check that hypothesis on the next cases where it applies; and let it through the consolidation gate (R6) into M or P only once it has held up. One example is enough to *act* on, and the inner loop can test it cheaply; it is rarely enough to *keep*.
+
 **The design this implies** is the brain's memory system, with procedural memory kept separate from world knowledge:
 
 1. a **small, protected working state** holding the goal and current belief, which is where the goal register of I.5 belongs;
@@ -625,6 +644,32 @@ Sleep is the revisable inner loop applied to a whole day of experience. Today's 
 
 
 An agent needs both: self-construction for grounding and structure, social scaffolding for content and speed.
+
+**Learning by watching: imitation.** Piaget and Vygotsky both mention imitation in passing, but it may be the main channel through which humans and LLMs acquire their content.
+
+- **Pretraining is imitation.** Next-token prediction on human text is behavior cloning on the written record of human sequential behavior: speech, argument, worked solutions, thinking set down on paper. The generator of this thesis was learned largely by imitating people. That sharpens claim 13: if LLMs learned by copying humans, their resemblance to humans is the expected outcome and says little about whether the loop is a general solution.
+- **Good imitation copies the goal, not the movements.** Eighteen-month-olds who watch an adult *fail* to pull a toy apart still pull it apart: they reproduce the intended act, not the observed one (Meltzoff, 1995). Infants who see an adult switch on a light with her forehead copy the odd action when her hands were free, but use their hands when hers were wrapped in a blanket: they infer *why* she did it that way (rational imitation, Gergely, Bekkering & Király, 2002). Imitation is goal inference followed by one's own steps toward the goal, which ties it to the goal machinery of I.5.
+- **Faithful copying has a price.** When a causal mechanism is hidden, children copy even the demonstrator's useless steps, which chimpanzees skip (overimitation, Horner & Whiten, 2005). High-fidelity copying of steps one doesn't understand is what lets cultures pass on procedures nobody could reinvent (the cultural ratchet, Tomasello), and it is also how quirks and errors get passed along. LLMs show both sides: they inherit compiled human procedures, and also human filler, biases and mistakes.
+- **Imitation alone compounds errors.** A cloned policy has seen only the states the expert visited. One mistake takes it somewhere the demonstrations never went, and errors grow with the length of the task (Ross, Gordon & Bagnell, 2011). This is the exposure bias of I.8 and R2. The fix is to close the loop: DAgger has the expert label the states the *learner* actually reaches, and RL on a model's own outputs (RLHF, verifiable rewards) trains on its own trajectories. Humans learn the same way: watch a demonstration, then practice while a coach corrects your attempts, not the coach's. Imitation supplies the prior, and feedback on one's own steps repairs it.
+- **Imitation is bounded by the ZPD.** You can imitate only what you can almost do already (Vygotsky). A few-shot prompt is imitation in the fast store: the demonstration sits in context and the model follows it (I.6, learning from one example).
+
+The human forms of imitation each have a machine counterpart:
+
+
+| Human                                              | Machine                                                                      |
+| -------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Copy the movements (mimicry)                       | Behavior cloning; next-token pretraining                                     |
+| Copy the outcome by any means (emulation)          | Goal-conditioned imitation; hindsight relabeling (Andrychowicz et al., 2017) |
+| Infer the intention, then act (rational imitation) | Inverse RL (Ng & Russell, 2000); apprenticeship learning (Abbeel & Ng, 2004) |
+| Copy steps whose purpose is opaque (overimitation) | Inheriting human quirks, biases and errors from training data                |
+| Practice while a coach corrects your own attempts  | DAgger; RL on the model's own outputs                                        |
+
+
+For an agent:
+
+1. **Treat a demonstration as evidence about a goal.** Infer what the demonstrator was trying to achieve, then plan toward it; copy the exact steps only where the agent can't yet tell which ones matter.
+2. **Follow imitation with corrected practice.** Let the agent attempt the task and have the user fix *its* attempts. Corrections on states the agent actually reaches are worth more than further demonstrations.
+3. **Keep only what holds up.** A demonstrated procedure enters P as a skill through the consolidation gate (R6), like any other lesson, once the agent's own runs confirm it.
 
 ## I.8 The analogy makes predictions about humans
 
@@ -1300,6 +1345,31 @@ Recommended sequence:
 - Ramsauer et al. (2020). Hopfield Networks is All You Need.
 - Whittington et al. (2022). Relating transformers to the hippocampal formation.
 - Sutton (1990). Dyna.
+
+**Learning from one example**
+
+- Carey & Bartlett (1978). Acquiring a single new word.
+- Landau, Smith & Jones (1988). The importance of shape in early lexical learning.
+- Gentner (1983). Structure-mapping: a theoretical framework for analogy.
+- Xu & Tenenbaum (2007). Word learning as Bayesian inference.
+- Lake, Salakhutdinov & Tenenbaum (2015). Human-level concept learning through probabilistic program induction.
+- Brown et al. (2020). Language models are few-shot learners.
+- Xie et al. (2022). An explanation of in-context learning as implicit Bayesian inference.
+- Olsson et al. (2022). In-context learning and induction heads.
+- Min et al. (2022). Rethinking the role of demonstrations: what makes in-context learning work?
+- von Oswald et al. (2023). Transformers learn in-context by gradient descent.
+
+**Imitation**
+
+- Meltzoff (1995). Understanding the intentions of others: re-enactment of intended acts by 18-month-old children.
+- Gergely, Bekkering & Király (2002). Rational imitation in preverbal infants.
+- Horner & Whiten (2005). Causal knowledge and imitation/emulation switching in chimpanzees and children.
+- Tomasello, Kruger & Ratner (1993). Cultural learning.
+- Pomerleau (1989). ALVINN: an autonomous land vehicle in a neural network.
+- Ng & Russell (2000). Algorithms for inverse reinforcement learning.
+- Abbeel & Ng (2004). Apprenticeship learning via inverse reinforcement learning.
+- Ross, Gordon & Bagnell (2011). A reduction of imitation learning and structured prediction to no-regret online learning.
+- Andrychowicz et al. (2017). Hindsight experience replay.
 - Ha & Schmidhuber (2018). World Models.
 - Hafner et al. Dreamer.
 - Yao et al. (2023). Tree of Thoughts.
