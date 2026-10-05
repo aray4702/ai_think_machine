@@ -1,6 +1,8 @@
-![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg)
-
-# One Loop: Minds and Transformers
+<h1 align="center">
+  <img src="../assets/images/one-loop-icon.svg" alt="One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop" width="85" align="left">
+  One Loop: Minds and Transformers
+</h1>
+<br clear="left">
 
 *The goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
 

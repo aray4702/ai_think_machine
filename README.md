@@ -1,7 +1,4 @@
-<h1 align="center">
-  <img src="assets/images/next-step-icon.svg" alt="Next Step icon: a rising path of committed steps leading to a glowing next step" width="48" align="left">
-  Next Step
-</h1>
+# ![Next Step icon: a rising path of committed steps leading to a glowing next step](assets/images/next-step-icon.svg) **Thinking About Thinking Machines**
 
 My understanding of AI: how minds and machines decide what comes next.
 
