@@ -1,15 +1,10 @@
-# <img src="../assets/images/one-loop-icon.svg" alt="One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop" width="128"> One Loop: Minds and Transformers
+# ![One Loop icon: a goal at the center, a dashed reversible inner loop, and a solid outer loop of committed steps, one of which is itself a loop](../assets/images/one-loop-icon.svg) One Loop: Minds and Transformers
 
-<br/>
-
-  
-
-
-*The goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
+*About the logo: the goal sits at the center. The dashed inner loop is reversible simulation and search; the solid outer loop is irreversible, committed steps. One step is drawn as a loop of its own, because every step is a lower-level loop.*
 
 > At the level where behavior is committed step by step, perception, reasoning, planning, action and language share one functional structure: **a hierarchy of goal-conditioned control loops whose steps are compiled procedures**, chunked upward through practice. Each loop places a **reversible inner loop** (simulation, search, drafting) before **irreversible commitments**, and must solve a **stopping problem** using progress, uncertainty and surprise signals. Interruptions are absorbed to the extent that a **shielded goal** separates what informs the next step from what may change the goal. Experience becomes knowledge, and deliberation becomes skill, through **selective consolidation**; learning is most effective at the **edge of competence** under fading support. Transformers implement the generator and much of the procedural substrate well; whether they need the remaining functions as explicit modules, or will acquire them with scale, is an empirical question, settled by the tests in II.6.
 
-This  article looks at that thesis from two directions:
+This article begins with observation, and then looks at the thesis from two directions:
 
 - **Part I: first principles.** Start from constraints that any agent faces, and derive what its structure must look like. Humans and transformers serve as evidence, not as premises.
 - **Part II: the builder's perspective.** Turn each principle into a component, a design rule, a build order and a test that could prove it unnecessary.
@@ -46,59 +41,75 @@ This  article looks at that thesis from two directions:
 
 
 
-## 0. The observation
+## The observation
 
 Many human processes seem to share a structure with transformer next-token generation:
 
-1. **Perception** starts with a goal. The eyes saccade in a sequence. Each saccade is not planned in advance; it depends on the previous ones. The sequence stops when perception concludes or is interrupted.
-2. **Reasoning** starts with a goal and runs a flow of thoughts, with or without backtracking. Each thought depends on the previous ones. It stops at a conclusion or an interruption.
-3. **Planning** works the same way: a flow of planning steps, with or without backtracking.
-4. **Execution and navigation** may be guided by a plan or a map, but still proceed through small decisions that refer to previous steps.
-5. **Physical action** starts from a rough idea, not an exact sequence of moves. Each sub-action depends on the previous ones.
-6. **Talking and writing**: we don't know our later words at the start; they are generated on the fly from what came before.
-7. **Transformers** generate a sequence of tokens, each depending on the previous ones, for text, speech, audio, video and actions. They stop at a conclusion and can be interrupted by new information injected into the context.
+1. **Perception** unfolds through successive observations, guided by what we are trying to find out. Our eyes make rapid shifts called saccades; each shift draws on what we have seen so far. We stop looking when we have enough information or something interrupts us.
+
+1. **Reasoning** develops thought by thought toward an answer. Each thought builds on earlier ones, sometimes revisiting or correcting them, until we reach a conclusion or are interrupted.
+
+1. **Planning** develops a course of action step by step. Each choice shapes the next, and later considerations may lead us to revise earlier choices.
+
+1. **Execution and navigation** turn intentions into successive decisions. A plan or map provides direction, while each next step responds to our current situation and what happened before.
+
+1. **Physical action** often begins with an intended outcome rather than a fully specified sequence of movements. Each movement adjusts to the effects of preceding movements and incoming sensory feedback.
+
+1. **Talking and writing** unfold word by word. We may know what we want to express without having chosen every word; the wording develops as we proceed, with opportunities for correction and revision.
+
+1. **Transformers** generate outputs token by token, conditioned on the available context and previously generated tokens. These outputs can represent text, speech, audio, video, or actions. Generation ends when a stopping condition is met, and new information added to the context can redirect subsequent output.
 
 All of these have goals, run sequentially with or without backtracking, end in a conclusion or an interruption, and handle interruptions and off-track events by attending to relevant information and ignoring irrelevant information.
 
-All seven processes can be written as a policy: **next step = f(goal, everything so far)**. This is what a transformer computes. It's also how agents work in reinforcement learning, and how predictive processing describes the brain.
+All seven processes can be written as a policy:
+
+$$
+\text{next step} = f(\text{goal}, \text{everything so far})
+$$
+
+This is what a transformer computes. It's also how agents work in reinforcement learning, and how predictive processing describes the brain.
 
 Handling interruptions is the most interesting part. In a transformer, being interrupted just means new tokens enter the context and the next step adapts. Human action works the same way: a sensory surprise changes the next step without throwing away the whole plan.
 
-**Scope.** The thesis is about the **serial control level** of behavior: the level at which an agent commits outputs one after another (gaze shifts, words, moves, decisions, actions) in pursuit of something. That level runs on top of parallel, continuous machinery it does not describe: fast feed-forward recognition, motor dynamics, background monitoring. It is a **functional** claim, not a claim that brains and transformers share a mechanism.
+##### **Comparisons between minds and transformers**
 
-**Definitions.**
-
-- **Step**: a committed output at a given level of the hierarchy.
-- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
 - **Goal**: whatever conditions the sequence toward an end state. It may be set from above, triggered by the environment, driven by needs or curiosity, or **reconstructed after the fact**.
 
-**Where the analogy needs care.**
+- **Step**: a committed output at a given level of the hierarchy. For perception, reasoning, planning, action and speech, any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), and the shared mechanism works as general next-step predictor, plus attention over history.
 
-- **Part of the similarity is automatic.** Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on the previous steps" is true of every sequential process. The real, testable claim is about mechanism: one general next-step predictor, plus attention over history, is enough for perception, reasoning, planning, action and speech.
-- **"Later steps are not planned beforehand" is only partly true**, for humans and for transformers.
+- **Not planned beforehand**: the full sequence is not *explicitly represented* in advance. The internal state can still carry *implicit look-ahead*: speech errors show that later words are already active; hippocampal "theta sweeps" alternate between possible futures about eight times a second (I.6); LLMs choose a rhyme before writing the line. So the two are compatible: steps are generated on the fly, but the state looks ahead.
   - Lashley's *The Problem of Serial Order in Behavior* (1951) argued that behavior can't be pure chaining.
   - Speech errors show that people already hold later words in mind before saying them. Anticipation slips ("a leading list" for "a reading list") and spoonerisms are the evidence.
   - The next saccade target is computed during the current fixation.
   - Interpretability research found that LLMs pick a rhyme word before writing the line that ends in it.
-  - A better phrasing: the next step is generated on the fly, but the internal state already contains an implicit look-ahead.
-- **Backtracking means different things in different cases.** Neither speech nor a transformer can erase what it has produced; both "backtrack" by appending a repair ("uh, I mean…", or "Wait, …" in reasoning models). Writing with editing, and mental backtracking in reasoning, really can revise earlier output. That is closer to search, or to diffusion-style refinement, than to pure autoregression. Which one appears depends on reversibility (I.3).
-- **Memory architecture differs.** Human working memory holds about four items. People compress history into a running state and rely on external memory (notes, maps). That is closer to an RNN or state-space model than to a transformer that can attend back to its whole raw context.
 
-**What humans have that a plain transformer doesn't.**
+- **Backtracking means different things in different cases.** Neither speech nor a transformer can erase what it has produced; both "backtrack" by appending a repair ("uh, I mean…", or "Wait, …" in reasoning models). Writing with editing, and mental backtracking in reasoning, really can revise earlier output. That is closer to search, or to diffusion-style refinement, than to pure autoregression. Which one appears depends on reversibility (I.3).
+
+##### **Contrasts between minds and transformers**
+
+- **Memory architectures differ.** Human working memory holds about four items. People compress history into a running state and rely on external memory (notes, maps). That is closer to an RNN or state-space model than to a transformer that can attend back to its whole raw context.
 
 - **Learning while acting.** A human's "weights" change during the task. A transformer's weights are frozen at inference, so anything it learns mid-task has to live in its context (I.6).
+
 - **Grounded, closed-loop feedback.** Humans get a continuous sensory stream. A model gets feedback only when something is injected into its context, such as a tool result or a user message.
+
 - **Felt salience.** Emotion and body state decide what is relevant and when to stop. Goals persist as motivation and body state (Damasio), and stopping is a felt sense of satisfaction or "done." In a transformer, the goal is just conditioning text and stopping is an end-of-sequence token (I.4).
+
 - **Offline simulation.** Humans can mentally rehearse a plan before acting. Reasoning models approximate this with hidden thinking tokens (I.3).
+
 - **Hierarchy across timescales.** Humans nest goals → subgoals → actions → micro-movements, each running on its own timescale. A transformer is flat and has to learn any hierarchy implicitly (I.2).
+
+# **Scope**
+
+This thesis examines the **supporting functions** that organize intelligent activity across domains: maintaining goals, selecting and sequencing actions, using feedback, deciding when to continue or stop, and learning from experience. Domains such as language, spatial reasoning, and social or emotional understanding supply specialized knowledge, representations and skills; the supporting functions coordinate when and how those resources are used, revised and learned. For example, composing a sentence and navigating a route require different knowledge and skills, but both involve maintaining a goal, evaluating possible next steps and adjusting to feedback. Capable behavior depends on their interaction: a shared control structure alone does not explain competence in a particular domain.
+
+The thesis focuses on the **serial control level** of behavior: the level at which an agent commits outputs one after another (gaze shifts, words, moves, decisions, actions) in pursuit of something. Domain-specific capabilities serve as examples, rather than subjects of a complete theory. This level runs on top of parallel, continuous machinery the document does not describe: fast feed-forward recognition, motor dynamics, background monitoring. It is a **functional** claim, not a claim that brains and transformers share a mechanism.
 
 Part I takes each of these differences as a constraint to explain, not a reason to drop the analogy.
 
 ---
 
-
-
-# Part I: First principles
+# Part I: First principles' perspective
 
 Each principle has the same shape: **a constraint** that any agent acting in the world faces, **the consequence** that follows from it, and **evidence** from humans and machines that the consequence holds.
 
