@@ -39,14 +39,13 @@ Handling interruptions is the most interesting part. In a transformer, being int
 
 **Where the analogy needs care.**
 
-- **Part of the similarity is automatic.** Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on the previous steps" is true of every sequential process. The real, testable claim is about mechanism: one general next-step predictor, plus attention over history, is enough for perception, reasoning, planning, action and speech.
+- **Part of the similarity is automatic.** Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍&lt;ₜ₎), so "each step depends on the previous steps" is true of every sequential process. The real, testable claim is about mechanism: one general next-step predictor, plus attention over history, is enough for perception, reasoning, planning, action and speech.
 - **"Later steps are not planned beforehand" is only partly true**, for humans and for transformers.
   - Lashley's *The Problem of Serial Order in Behavior* (1951) argued that behavior can't be pure chaining.
   - Speech errors show that people already hold later words in mind before saying them. Anticipation slips ("a leading list" for "a reading list") and spoonerisms are the evidence.
   - The next saccade target is computed during the current fixation.
   - Interpretability research found that LLMs pick a rhyme word before writing the line that ends in it.
-
-  A better phrasing: the next step is generated on the fly, but the internal state already contains an implicit look-ahead.
+  - A better phrasing: the next step is generated on the fly, but the internal state already contains an implicit look-ahead.
 - **Backtracking means different things in different cases.** Neither speech nor a transformer can erase what it has produced; both "backtrack" by appending a repair ("uh, I mean…", or "Wait, …" in reasoning models). Writing with editing, and mental backtracking in reasoning, really can revise earlier output. That is closer to search, or to diffusion-style refinement, than to pure autoregression. Which one appears depends on reversibility (I.3).
 - **Memory architecture differs.** Human working memory holds about four items. People compress history into a running state and rely on external memory (notes, maps). That is closer to an RNN or state-space model than to a transformer that can attend back to its whole raw context.
 
@@ -66,7 +65,7 @@ Part I takes each of these differences as a constraint to explain, not a reason 
 
 Each principle has the same shape: **a constraint** that any agent acting in the world faces, **the consequence** that follows from it, and **evidence** from humans and machines that the consequence holds.
 
-A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so "each step depends on previous steps" is true of everything. The derivations below are interesting only to the extent that they predict *specific* structure beyond that.
+A caution first. Any sequence factors as p(x₁…xₙ) = ∏ p(xₜ | x₍&lt;ₜ₎), so "each step depends on previous steps" is true of everything. The derivations below are interesting only to the extent that they predict *specific* structure beyond that.
 
 ## I.1 Too many futures → commit one step at a time, with feedback
 
@@ -180,19 +179,16 @@ What defines the inner loop is **reversibility**: its operations can be undone o
 - **Talking vs writing** is the cleanest natural experiment among the seven processes. The same person producing the same kind of output switches from incremental generation with appended repairs ("I mean…") to drafting and revision, purely because reversibility changes. Word processors made revision even cheaper, and writing became measurably less linear.
 - **Piaget.** Thought *is* internalized action, and it becomes thought proper when its operations become reversible. He described two forms of reversibility:
   - **inversion** (negation): undo the operation; +A − A = 0; pour the water back;
-  - **reciprocity** (compensation): a change in one dimension offset by another; taller but thinner; A < B ⇔ B > A.
-
-  At the concrete stage these work separately; at the formal stage they combine into a single system, the **INRC group** (Identity, Negation, Reciprocal, Correlative). Conservation tasks reveal the shift. Water is poured from a wide glass into a tall, thin one:
+  - **reciprocity** (compensation): a change in one dimension offset by another; taller but thinner; A &lt; B ⇔ B > A.
+  - At the concrete stage these work separately; at the formal stage they combine into a single system, the **INRC group** (Identity, Negation, Reciprocal, Correlative). Conservation tasks reveal the shift. Water is poured from a wide glass into a tall, thin one:
   - The **preoperational** child says "more now, it's higher." It judges by the end state (*figurative* knowledge) and fixates on one dimension (centration).
   - The **concrete** child says "the same," with three justifications: **identity** (nothing was added or taken away), **inversion** (you can pour it back) and **compensation** (taller, but thinner). It reasons about the transformation, not just the states (*operative* knowledge).
-
-  The three justifications double as three verification strategies for agents (R3).
+  - The three justifications double as three verification strategies for agents (R3).
 - **How reversibility develops.** Piaget traced it from action to thought:
   - **Sensorimotor, practical reversibility:** the infant can physically return to a starting point and take detours (the "practical group of displacements").
   - **Concrete operations:** reversibility is internalized; undoing is done mentally, on concrete things.
   - **Formal operations:** inversion and reciprocity are unified (INRC) and applied to hypotheses, as in reasoning with contrapositives and controlling variables in the balance and pendulum tasks.
-
-  The agent version follows the same path: learn undo as an action (git revert, rollback), then as internal simulation (forked contexts, invariant checks), then as formal reasoning over hypotheses ("if this fix is right, reverting it must bring the failure back").
+  - The agent version follows the same path: learn undo as an action (git revert, rollback), then as internal simulation (forked contexts, invariant checks), then as formal reasoning over hypotheses ("if this fix is right, reverting it must bring the failure back").
 - **Craik (1943).** The two-loop idea is old: the organism carries a "small-scale model" of the world so it can try alternatives before acting.
 - **Machines.** Modern AI rediscovered both loops.
   - Reasoning models add private thinking tokens, a cheap-to-revise region ("wait, that's wrong…") before the irreversible answer.
@@ -235,8 +231,7 @@ Humans get parts 2 and 3 cheaply from emotion and conflict monitoring. LLMs curr
   - **Valence ≈ the rate of change of prediction error** (Joffily & Coricelli, 2013; a formal proposal, not an established result). Things getting better feels good; things getting worse feels bad. Valence is a progress signal.
   - **Arousal ≈ uncertainty or precision**: how much the current situation demands attention.
   - **Emotions as interoceptive inference** (Seth; Barrett): emotions are predictions about the internal state of the body.
-
-  On this view emotion is a **meta-signal about how the process is going**, not about its content, which is exactly what a stopping and escalation rule needs.
+  - On this view emotion is a **meta-signal about how the process is going**, not about its content, which is exactly what a stopping and escalation rule needs.
 
 Mapped onto the decisions of the loop:
 
@@ -344,7 +339,7 @@ So interruptions are absorbed with **graceful degradation, not robustness**: rec
 
 |          | Compress (recurrent)                                  | Keep everything (attention)                                                 |
 | -------- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
-| Update   | b_t = f(b_{t−1}, o_t), fixed size                     | Re-read the raw history every step                                          |
+| Update   | bₜ = f(bₜ₋₁, oₜ), fixed size                          | Re-read the raw history every step                                          |
 | Examples | Kalman filter, RNN/LSTM, SSMs (Mamba), working memory | Transformer context                                                         |
 | Strength | Constant cost; forces abstraction                     | Lossless; can reinterpret the past later                                    |
 | Weakness | Loses what you didn't know would matter               | Cost grows with length; attention dilutes (lost in the middle, goal drift)  |
@@ -729,8 +724,7 @@ Feed these back into the context, or into a separate control channel, so the age
   2. Replay them in reverse to assign credit to the steps that caused each outcome; extract lessons (episode → gist).
   3. Integrate with M: merge duplicates, resolve contradictions.
   4. Prune what is stale.
-
-  File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
+  - File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
 - **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. Compile plans that repeatedly succeed into skills in P.
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
 
