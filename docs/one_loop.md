@@ -127,13 +127,15 @@ Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so s
 - **Machines:** Engineered systems arrive independently at the same loop. Model predictive control plans over a short horizon, executes only the first step, observes and replans; this is how navigation (point 4 in Observation section) can follow a plan or map and still decide on the fly. AlphaZero searches ahead, commits one move and searches again. Transformers generate token by token, and an injected interruption simply becomes part of the next step's conditioning.
 - **Biology without brains:** Bacterial chemotaxis runs the same run–sense–adjust cycle.
 
+
+
 ## I.2 Limited compute and memory → compile steps into procedures, and stack them
 
-**Constraints.** Working memory holds about four chunks. Deliberation is slow and costly.
+**Constraints:** Human working memory holds about four chunks. Deliberation is slow and costly.
 
-**Consequence.** Steps that recur must be **compiled** into procedures that run without deliberation, and a sequence at one level must be **chunked** into a single step for the level above. The result is a hierarchy of loops, each on its own timescale.
+**Consequence:** Steps that recur must be **compiled** into procedures that run without deliberation, and a sequence at one level must be **chunked** into a single step for the level above. The result is a hierarchy of loops, each on its own timescale.
 
-The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. This is section 0's "sequence of steps that stops at a conclusion," described in 1960. Their main further claim was that TOTE units **nest**: hammering a nail is (lift hammer → strike), repeated until the nail is flush. So the seven processes of section 0 are better seen as **levels of one hierarchy** than as parallel processes, where each level's step becomes the goal of the level below:
+The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. Their main further claim was that TOTE units **nest**: hammering a nail is (lift hammer → strike), repeated until the nail is flush. So the seven processes of the observation section are better seen as **levels of one hierarchy** than as parallel processes, where each level's step becomes the goal of the level below:
 
 ```text
 need (hunger)                         homeostasis, hours
@@ -177,7 +179,7 @@ Each level runs its own step-by-step loop on its own timescale. The brain has a 
 | Adapters or weights trained by practice    | Autonomous: true procedural memory                            | Fine-tuning or distillation from successful trajectories   |
 
 
-The missing piece is **practice-driven compilation**: moving a procedure from the first row to the second and third automatically through repetition, with forward models and reliability estimates attached (R5).
+The missing piece in LLM is **practice-driven compilation**: moving a procedure from the first row to the second and third automatically through repetition, with forward models and reliability estimates attached (R5).
 
 ## I.3 Some outputs can't be taken back → put a reversible inner loop in front
 
