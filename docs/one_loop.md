@@ -119,11 +119,13 @@ Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so s
 
 **Consequence:** Commit one step, observe, and generate the next step from an updated **belief state**: a summary of history sufficient for acting well. Under partial observability (formally a POMDP), the optimal action depends on exactly such a belief state. It is mathematically required that the next step depends on the previous steps; More precisely, the next step *depends on a belief built from previous steps*. Brains compress history into a running state; transformers keep the raw history and attend to it. These are two approximations of the same belief state (I.6). A plan or map can still guide the loop, but as a prior, not as a script.
 
+![I.1: planning the whole sequence first means searching bⁿ futures and running one as a script that goes stale; the closed loop instead chooses one step from a belief state and the goal, commits it, observes the outcome and updates the belief.](../assets/images/one-loop-i1-step-feedback.svg)
+
 **Why the processes of minds and transformers look alike.** The problem forces it. Step-by-step generation that conditions on history and absorbs interruptions is what any capable agent with limited compute, an unpredictable world and a goal ends up doing; it can't plan the whole sequence in advance, because too much would change before it finished. Brains and transformers may both have arrived at this loop because it is the only tractable solution, not by coincidence and not because they share a mechanism. The observation in the observation section is then a claim about the structure of sequential decision-making under uncertainty, not just a similarity between brains and AI. The strongest counter-argument, that LLMs inherited the structure from human text, is weighed in I.9.
 
 **Evidence:**
 
-- **Humans.** Saccades are information-gathering actions: each one is taken to gather information for the next decision. Under predictive processing, perception is active sampling to reduce prediction error, so a saccade sequence is generation too, and perception sits fully inside the loop rather than only feeding it. Motor control is closed-loop, and Todorov's optimal feedback control goes further: the motor system corrects only deviations that matter for the task and lets the rest go (the *minimal intervention principle*). Speech is produced incrementally, with implicit look-ahead.
+- **Humans:** Saccades are information-gathering actions: each one is taken to gather information for the next decision. Under predictive processing, perception is active sampling to reduce prediction error, so a saccade sequence is generation too, and perception sits fully inside the loop rather than only feeding it. Motor control is closed-loop, and Todorov's optimal feedback control goes further: the motor system corrects only deviations that matter for the task and lets the rest go (the *minimal intervention principle*). Speech is produced incrementally, with implicit look-ahead.
 - **Machines:** Engineered systems arrive independently at the same loop. Model predictive control plans over a short horizon, executes only the first step, observes and replans; this is how navigation (point 4 in Observation section) can follow a plan or map and still decide on the fly. AlphaZero searches ahead, commits one move and searches again. Transformers generate token by token, and an injected interruption simply becomes part of the next step's conditioning.
 - **Biology without brains:** Bacterial chemotaxis runs the same run–sense–adjust cycle.
 
@@ -134,6 +136,8 @@ Any sequence can be factored as p(x₁…xₙ) = ∏ p(xₜ | x₍<ₜ₎), so s
 **Constraints:** Human working memory holds about four chunks. Deliberation is slow and costly.
 
 **Consequence:** Steps that recur must be **compiled** into procedures that run without deliberation, and a sequence at one level must be **chunked** into a single step for the level above. The result is a hierarchy of loops, each on its own timescale.
+
+![I.2: practice compiles reach, grasp and pull into one step, "open the door", freeing working memory; stacked, each step at one level (plan, action, perception) is a whole loop at the level below.](../assets/images/one-loop-i2-compile-stack.svg)
 
 The loop itself is a **TOTE unit** (Miller, Galanter & Pribram, 1960): *Test* the state against the goal, *Operate*, *Test* again, *Exit* when they match. Their main further claim was that TOTE units **nest**: hammering a nail is (lift hammer → strike), repeated until the nail is flush. So the seven processes of the observation section are better seen as **levels of one hierarchy** than as parallel processes, where each level's step becomes the goal of the level below:
 
@@ -151,8 +155,8 @@ Each level runs its own step-by-step loop on its own timescale. The brain has a 
 
 **Evidence: procedural memory.**
 
-- **Definition.** Knowing *how* rather than knowing *that* (Ryle, 1949): skills, habits, motor programs, cognitive routines (reading, arithmetic, grammar) and perceptual skills, including expert saccade strategies. It is acquired by practice, hard to put into words ("we know more than we can tell": Polanyi), and very durable.
-- **A separate system.** The amnesic patient H.M. improved at mirror drawing over days with no memory of ever practicing it (Milner, 1962). In Squire's taxonomy, *declarative* memory is episodic plus semantic, and *non-declarative* memory is procedural, priming and conditioning. Semantic and procedural memory learn differently and belong in separate stores (I.6).
+- **Definition:** Knowing *how* rather than knowing *that* (Ryle, 1949): skills, habits, motor programs, cognitive routines (reading, arithmetic, grammar) and perceptual skills, including expert saccade strategies. It is acquired by practice, hard to put into words ("we know more than we can tell": Polanyi), and very durable.
+- **Procedural memory is a separate system:** The amnesic patient H.M. improved at mirror drawing over days with no memory of ever practicing it (Milner, 1962). In Squire's taxonomy, *declarative* memory is episodic plus semantic, and *non-declarative* memory is procedural, priming and conditioning. Semantic and procedural memory learn differently and belong in separate stores (I.6).
 - **Formation.**
   - The **basal ganglia** learn which action fits which context, by reinforcement through dopamine prediction errors. With practice, control shifts from the goal-directed dorsomedial striatum to the habitual dorsolateral striatum (Yin & Knowlton, 2006).
   - The **cerebellum** learns **forward models** that predict an action's sensory consequences, along with fine timing and error-driven correction.

@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="530" viewBox="0 0 960 530" role="img" aria-labelledby="title desc">
+  <title id="title">I.2: compile steps, then stack them</title>
+  <desc id="desc">Left, compile through practice: a novice deliberates over reach, grasp and pull as three separate steps, filling three of about four working-memory slots. Practice moves the skill from the cognitive to the associative to the autonomous stage, and the three steps become one compiled procedure, open the door, which uses one slot and leaves three free for what is new. Right, stack: each step of one loop is a whole loop one level down. At the plan level (minutes) the steps are leave office, walk to corner, turn left, open cafe door. Open cafe door expands at the action level (seconds) into find handle, reach, grasp, pull. Find handle expands at the perception level (about 200 ms) into saccade, saccade, fixate handle. Each level runs its own test, operate, test, exit loop on its own timescale.</desc>
+  <rect width="960" height="530" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Compile Steps, Then Stack Them</text>
+
+    <!-- Left: compile -->
+    <rect x="24" y="64" width="340" height="440" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="194" y="94" font-size="17" font-weight="700">1 · Compile through practice</text>
+    <text x="194" y="124" font-size="13" fill="#53606c">Novice: each step is deliberate</text>
+    <rect x="44" y="136" width="96" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="92.0" y="157.0" font-size="13" fill="#202b35">reach</text>
+    <rect x="148" y="136" width="96" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="196.0" y="157.0" font-size="13" fill="#202b35">grasp</text>
+    <rect x="252" y="136" width="96" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="300.0" y="157.0" font-size="13" fill="#202b35">pull</text>
+    <text x="44" y="198" font-size="12" fill="#53606c" text-anchor="start">working memory</text>
+    <rect x="228" y="186" width="24" height="16" rx="3" fill="#8895a1" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="258" y="186" width="24" height="16" rx="3" fill="#8895a1" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="288" y="186" width="24" height="16" rx="3" fill="#8895a1" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="318" y="186" width="24" height="16" rx="3" fill="#ffffff" stroke="#8895a1" stroke-width="1.2"/>
+    <path d="M100 222 V300" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <g font-size="13" text-anchor="start">
+      <text x="116" y="246" font-weight="700">practice</text>
+      <text x="116" y="264" fill="#53606c">cognitive → associative</text>
+      <text x="116" y="282" fill="#53606c">→ autonomous</text>
+    </g>
+    <rect x="44" y="312" width="300" height="48" rx="5" fill="#16755d"/>
+    <text x="194" y="333" font-size="16" font-weight="700" fill="#ffffff">open the door</text>
+    <text x="194" y="351" font-size="12" fill="#d5ece5">reach · grasp · pull, compiled</text>
+    <text x="44" y="388" font-size="12" fill="#53606c" text-anchor="start">working memory</text>
+    <rect x="228" y="376" width="24" height="16" rx="3" fill="#16755d" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="258" y="376" width="24" height="16" rx="3" fill="#ffffff" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="288" y="376" width="24" height="16" rx="3" fill="#ffffff" stroke="#8895a1" stroke-width="1.2"/>
+    <rect x="318" y="376" width="24" height="16" rx="3" fill="#ffffff" stroke="#8895a1" stroke-width="1.2"/>
+    <text x="194" y="440" font-size="14">One step, run without deliberation;</text>
+    <text x="194" y="460" font-size="14">three slots free for what is new.</text>
+
+    <!-- Right: stack -->
+    <rect x="392" y="64" width="544" height="440" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="664" y="94" font-size="17" font-weight="700" fill="#125c49">2 · Stack: one step above is a whole loop below</text>
+    <path d="M824 156 L924 156 L924 254 L500 254 Z" fill="#16755d" fill-opacity="0.12" stroke="#16755d" stroke-opacity="0.45" stroke-dasharray="4 3"/>
+    <path d="M500 286 L600 286 L816 384 L500 384 Z" fill="#16755d" fill-opacity="0.12" stroke="#16755d" stroke-opacity="0.45" stroke-dasharray="4 3"/>
+    <text x="408" y="138" font-size="14" font-weight="700" text-anchor="start">Plan</text>
+    <text x="408" y="154" font-size="12" fill="#53606c" text-anchor="start">minutes</text>
+    <rect x="500" y="124" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="550.0" y="145.0" font-size="13" fill="#202b35">leave office</text>
+    <rect x="608" y="124" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="658.0" y="145.0" font-size="13" fill="#202b35">walk to corner</text>
+    <rect x="716" y="124" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="766.0" y="145.0" font-size="13" fill="#202b35">turn left</text>
+    <rect x="824" y="124" width="100" height="32" rx="5" fill="#e8f5f1" stroke="#16755d" stroke-width="2"/>
+    <text x="874.0" y="145.0" font-size="13" fill="#125c49">open café door</text>
+    <text x="408" y="268" font-size="14" font-weight="700" text-anchor="start">Action</text>
+    <text x="408" y="284" font-size="12" fill="#53606c" text-anchor="start">seconds</text>
+    <rect x="500" y="254" width="100" height="32" rx="5" fill="#e8f5f1" stroke="#16755d" stroke-width="2"/>
+    <text x="550.0" y="275.0" font-size="13" fill="#125c49">find handle</text>
+    <rect x="608" y="254" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="658.0" y="275.0" font-size="13" fill="#202b35">reach</text>
+    <rect x="716" y="254" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="766.0" y="275.0" font-size="13" fill="#202b35">grasp</text>
+    <rect x="824" y="254" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="874.0" y="275.0" font-size="13" fill="#202b35">pull</text>
+    <text x="408" y="398" font-size="14" font-weight="700" text-anchor="start">Perception</text>
+    <text x="408" y="414" font-size="12" fill="#53606c" text-anchor="start">~200 ms</text>
+    <rect x="500" y="384" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="550.0" y="405.0" font-size="13" fill="#202b35">saccade</text>
+    <rect x="608" y="384" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="658.0" y="405.0" font-size="13" fill="#202b35">saccade</text>
+    <rect x="716" y="384" width="100" height="32" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="766.0" y="405.0" font-size="13" fill="#202b35">fixate handle</text>
+    <g font-size="12" fill="#125c49" font-style="italic">
+      <text x="716" y="206">expands into its own loop</text>
+      <text x="610" y="336">expands into its own loop</text>
+    </g>
+    <text x="664" y="452" font-size="14">Each level runs its own test–operate–test–exit loop</text>
+    <text x="664" y="472" font-size="14">on its own timescale, over compiled steps from below.</text>
+  </g>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+  </defs>
+</svg>
