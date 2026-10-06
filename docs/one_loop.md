@@ -580,6 +580,8 @@ Sleep is the revisable inner loop applied to a whole day of experience. Today's 
 - Learning happens in the **zone of proximal development** (ZPD): where success is possible but unreliable, under support that fades. In group-relative RL methods such as GRPO, problems that are always or never solved produce zero gradient, so this is the ZPD stated mathematically.
 - Capabilities form a **dependency order**: forward models before planning, planning before verification, a shielded goal before safe autonomy. Piaget's stages, below, are one human realization of these dependencies, not a necessary order (I.9).
 
+![I.7: learning signal is zero when a task always fails or always succeeds and peaks in the zone of proximal development; scaffolding pulls a too-hard task into the zone and fades as competence grows. Capabilities build in order, from forward models to planning, verification, and hypotheses with metareasoning; learning happens one step above what is mastered.](../assets/images/one-loop-i7-edge-of-competence.svg)
+
 **Evidence.**
 
 - **Piaget gives the mechanism** (Piaget & Inhelder, *The Psychology of the Child*, 1969).
