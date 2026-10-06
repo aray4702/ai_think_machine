@@ -26,12 +26,15 @@ I am curious about many interesting topics on AI and beyond. To name a few:
 5. [Singular Learning Theory](https://sites.google.com/view/sumiowatanabe/home/singular-learning-theory)
 6. Learning algorithm -> Learn how to learn
 
+
+
 ## Brain
 
 1. [Book][Randall's Computational Cognitive Neuroscience](https://compcogneuro.org/book)
 2. [Book][Piaget's The Psychology of the child](https://www.alohabdonline.com/wp-content/uploads/2020/05/The-Psychology-Of-The-Child.pdf)
 3. [People][Antonio Damasio's consciousness](https://routledgetextbooks.com/textbooks/9781138801318/people/antonio-damasio.php)
 4. [Book] ***Gödel, Escher, Bach: An Eternal Golden Braid* (GEB) by D**ouglas Hofstadter
+5. [Book] ++[A Thousand Brains: A New Theory of Intelligence](https://www.amazon.com/Thousand-Brains-New-Theory-Intelligence/dp/1541675819)++ by Jeff Hawkins
 
 ## Complex systems
 
