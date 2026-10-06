@@ -1,6 +1,6 @@
 # One Loop: System Design
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
 
 The builder's question is: *given the features derived in [Derived features](02_features.md), what do I build?* This document specifies the requirements, the architecture and the design rules. The [implementation plan](04_implementation_plan.md) covers the order of building and how each piece is validated.
 
@@ -595,4 +595,4 @@ Grants are read **narrowly**. Approval in one context does not carry over to ano
 
 The [applications](05_applications.md#safety) give the starting autonomy and permissions for each domain.
 
-References are collected at the end of [Derived features](02_features.md#references).
+References are collected in [References](references.md).

@@ -1,6 +1,6 @@
 # One Loop: Applications
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
 
 The builder's next question is: *where should this agent be used first?* This document ranks candidate domains by how well they fit the design, and gives them in the recommended order: the first application, the domains that test the design in its purest form, then the domains where its safety and learning parts pay off, and last the domains where it should only support human decisions.
 
@@ -318,4 +318,4 @@ Multiple loops work at two scales.
 
 Build hierarchical teams first (a manager and workers), where goals flow clearly. Use debate or voting among peers for verification, not generation, and avoid flat swarms of chatty agents. Studies of multi-agent LLM systems find that many underperform a single agent given the same compute, mostly through lost goals, miscommunication and missing verification (Cemri et al., 2025), which are the failures goal shielding and the gates address. The test is the same as for columns: beat a compute-matched single agent and a plain majority vote. Multi-agent work should start only after the single-agent modules have passed the ablation.
 
-References are collected at the end of [Derived features](02_features.md#references).
+References are collected in [References](references.md).
