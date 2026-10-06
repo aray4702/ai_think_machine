@@ -327,6 +327,8 @@ A telling result: in the *s1* paper (2025), suppressing the end-of-thinking toke
 - **Curiosity bonuses** (ICM, RND) and **learning progress as intrinsic reward** (Oudeyer). Learning progress is almost exactly Joffily's valence.
 - **Process reward models and value heads** score intermediate reasoning steps, a kind of progress signal.
 
+
+
 What's missing is that these are mostly used **during training**. At inference time, an LLM agent has no running felt state that shapes its next step. II.2 sketches one.
 
 ## I.5 The context mixes sources → the goal must be shielded
@@ -335,7 +337,9 @@ What's missing is that these are mostly used **during training**. At inference t
 
 **Consequence.** The goal must be **maintained** and **shielded**: information that *informs the next step* must be kept separate from information that *changes the goal*. Content can be mimicked, so shielding has to work by **source** and **salience**, not by content. Without a protected goal there is nothing to judge relevance against, and everything in context competes equally.
 
-**What a goal is.** Every process in section 0 "starts with a goal," and that is the one part the loop itself can't explain. One answer: a goal is **a prediction the agent makes come true**.
+![I.5: inputs arrive tagged by source; a gate lets a trusted source or a high-salience event change the shielded goal, while everything else, including instructions found in a web page, may only inform the next step. Without a gate, a transformer's context is one flat stream in which injected text can act as an instruction. Shielding is a dial between distractibility (prompt injection) and perseveration.](../assets/images/one-loop-i5-goal-gate.svg)
+
+**What a goal is.** Every process in the Observation section  "starts with a goal," and that is the one part the loop itself can't explain. One answer: a goal is **a prediction the agent makes come true**.
 
 - **Active inference.** Goals are prior preferences: the organism expects to be in viable states ("I'll be fed"). When reality doesn't match, the error can be resolved two ways: change the belief (perception), or change the world so the prediction comes true (action). Goals and beliefs are the same kind of object, distinguished only by **which side yields**.
 - **Transformers work this way literally.** A prompt like "Here is a correct proof:" is a conditioning prefix, and the model generates a continuation in which the goal is achieved. The Decision Transformer (Chen et al., 2021) makes it explicit: condition on a desired future reward, and the model predicts the actions that would produce it. Goal-conditioning as prediction may be the deepest point of contact between the seven processes and the transformer.
@@ -355,12 +359,13 @@ What's missing is that these are mostly used **during training**. At inference t
 | Human failure                                                   | Agent failure                                      |
 | --------------------------------------------------------------- | -------------------------------------------------- |
 | Utilization behavior (frontal patients use any object they see) | Prompt injection                                   |
-| Goal neglect (Duncan)                                           | Goal drift in long tasks                           |
+| Goal neglect (Duncan): a known rule ignored as rules pile up    | Dropping one instruction among many                |
+| Losing the goal over time (vigilance decrement)                 | Goal drift in long tasks                           |
 | Habit capture                                                   | Repeating a learned pattern after the goal changed |
 | Performing for approval                                         | Sycophancy                                         |
 
 
-Frontal patients with utilization behavior (Lhermitte) pick up and use whatever is put in front of them, unprompted; text in the context grabbing the goal is the same failure. Healthy people with goal neglect know the rule but drift from it over a long task; so do LLM agents. Both suggest LLMs lack a strong goal-shielding mechanism.
+Frontal patients with utilization behavior (Lhermitte, 1983) pick up and use whatever is put in front of them, unprompted; text in the context taking over the goal looks like the same failure. Goal neglect shows that even intact shielding is fragile: healthy people can state a task rule yet fail to act on it, more often as the number of rules grows (Duncan et al., 1996), and LLMs likewise drop one instruction among many in a complex prompt. The first suggests LLMs lack a dedicated goal-shielding mechanism; the second, that even one would need support as task demands grow.
 
 **Why transformers struggle: the missing prefrontal cortex.**
 
@@ -385,7 +390,7 @@ Not having intrinsic needs at the top is arguably a feature: it keeps an agent's
 
 So interruptions are absorbed with **graceful degradation, not robustness**: recovery depends on how well the goal was maintained (I.8).
 
-**Back to section 0.** The observation said every process "attends to relevant information and ignores irrelevant information." This makes it precise. Relevance is defined *relative to a shielded goal*; without one, everything in context competes equally, which is the transformer's weakness. Humans handle interruptions well not because they attend to everything, but because a source-aware gate, tuned by salience, decides what may **change the goal** and what may only **inform the next step**. That distinction is probably the most useful practical takeaway for building agents.
+**Back to the Observation section.** Every case there "attends to relevant information and ignores irrelevant information." The shielded goal is what makes that possible. Relevance exists only relative to a goal: without a protected goal, nothing in the context has priority over anything else, which is the transformer's weakness. Humans cope with interruptions as well as they do not by attending to everything, but because a gate checks where each input came from and how salient it is, then decides whether it may **change the goal** or only **inform the next step**. That distinction is probably the most useful practical lesson for building agents.
 
 ## I.6 Learning fast overwrites old knowledge → separate memories and consolidate
 
@@ -1026,7 +1031,7 @@ Each skill in P records:
 | Follows injected instructions     | Utilization behavior | Tighten source tagging; quarantine untrusted data          |
 | Overthinks easy steps             | Elliot               | Steeper urgency; stronger fast path                        |
 | Rash irreversible actions         | Impulsivity          | Raise the commit threshold by irreversibility; action gate |
-| Forgets the goal over a long task | Goal neglect         | Recitation; protected W                                    |
+| Forgets the goal over a long task | Vigilance decrement  | Recitation; protected W                                    |
 | Learns wrong lessons              | False memory         | Stricter consolidation gate; verification                  |
 
 
