@@ -1,8 +1,8 @@
 # One Loop: References
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [References](references.md)
 
-References for all six documents, grouped by topic in the order the documents take them up.
+References for all seven documents, grouped by topic in the order the documents take them up.
 
 ## Contents
 
@@ -23,6 +23,7 @@ References for all six documents, grouped by topic in the order the documents ta
 - [Applications](#applications)
 - [State of the field, 2026](#state-of-the-field-2026)
 - [Media creation](#media-creation)
+- [Companion](#companion)
 
 ## Serial order, hierarchy, procedural memory
 
@@ -285,3 +286,11 @@ References for all six documents, grouped by topic in the order the documents ta
 - Khattab et al. (2023). DSPy: compiling declarative language model calls into self-improving pipelines.
 - Hao et al. (2022). Optimizing prompts for text-to-image generation (Promptist).
 - Coalition for Content Provenance and Authenticity (C2PA). Content Credentials technical specification. c2pa.org
+
+## Companion
+
+- Reis & Shaver (1988). Intimacy as an interpersonal process. In *Handbook of Personal Relationships.*
+- De Freitas, Oguz-Uguralp & Kaan-Uguralp (2025). Emotional manipulation by AI companions. arXiv:2508.19258.
+- Fang, Liu, Danry, Lee, Chan, Pataranutaporn, Maes, Phang, Lampe, Ahmad & Agarwal (2025). How AI and human behaviors shape psychosocial effects of chatbot use: a longitudinal randomized controlled study. arXiv:2503.17473.
+- Zhang, Zhao, Wang, Anselmetti, Hancock, Kraut & Yang (2026). Living with AI companions: sustained AI companionship predicts lower well-being through lower human interaction. arXiv:2609.07243.
+- California Senate Bill 243 (2025). Companion chatbots. In force January 1, 2026.

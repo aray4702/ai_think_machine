@@ -14,6 +14,7 @@ The design of an agent built around a control structure that brains and transfor
 4. **[Implementation plan](docs/one_loop/04_implementation_plan.md).** What current models already provide, the build stages, how the learned components are bootstrapped, acceptance criteria and ablations for each module, and the design's assumptions and risks.
 5. **[Applications](docs/one_loop/05_applications.md).** Where to use the agent, in the recommended order: software engineering first, then formal mathematics and open-world games, agents in untrusted environments, discovery and explanation, and decision support last.
 6. **[Media creation](docs/one_loop/06_media_creation.md).** One Loop as a director for AI-generated audio, images, slides, web pages, apps and video: it keeps the person's intent and personality, delegates generation to specialist agents, and edits the results with tools.
+7. **[Companion](docs/one_loop/07_companion.md).** One Loop as a personal companion with a stable character, empathy and memory the person controls, aimed at the person's flourishing rather than engagement.
 
 References for the series are collected in [References](docs/one_loop/references.md).
 

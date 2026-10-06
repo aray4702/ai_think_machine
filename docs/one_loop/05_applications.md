@@ -1,6 +1,6 @@
 # One Loop: Applications
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [References](references.md)
 
 The builder's next question is: *where should this agent be used first?* This document ranks candidate domains by how well they fit the design, and gives them in the recommended order: the first application, the domains that test the design in its purest form, then the domains where its safety and learning parts pay off, and last the domains where it should only support human decisions.
 
@@ -56,9 +56,10 @@ The [comparison with AlphaZero, MuZero and AlphaFold](03_system_design.md#alphaz
 | 9     | Drug and materials discovery         | Simulated proxies; lab experiments                   | Reversibility classes; value-of-information experiment choice | Human-gated            |
 | 10    | Robotics                             | Task success; physical safety                        | Tiers and reflexes; action gate; simulation as scratch      | Human-gated             |
 | 11    | Tutoring                             | Student progress                                     | ZPD model of the student; fading scaffolds                  | Collaborator            |
-| 12    | Business strategy                    | Slow, sparse outcomes                                | Goal shielding; one-way vs two-way doors; scenarios         | Decision support        |
-| 13    | Art                                  | Human taste                                          | Divergence; recombination; memory of what worked            | Collaborator            |
-| 14    | Portfolio management                 | Noisy, adversarial returns                           | Action gate; mandate shielding; disciplined inaction        | Risk wrapper            |
+| 12    | Personal companion                   | The person's wellbeing over time; slow and partly subjective | User model; memory under the person's control; shielded persona; honesty over flattery | Collaborator; very high harm ceiling ([companion](07_companion.md)) |
+| 13    | Business strategy                    | Slow, sparse outcomes                                | Goal shielding; one-way vs two-way doors; scenarios         | Decision support        |
+| 14    | Art                                  | Human taste                                          | Divergence; recombination; memory of what worked            | Collaborator            |
+| 15    | Portfolio management                 | Noisy, adversarial returns                           | Action gate; mandate shielding; disciplined inaction        | Risk wrapper            |
 | —     | Board games                          | Perfect                                              | Almost nothing                                              | Already solved          |
 
 
@@ -83,6 +84,7 @@ Every domain runs inside explicit grants (R9) and follows the [safety recipe](03
 | Invention, discovery    | Synthesis, trials, scale-up                                  | Proxy hacking; **dual-use designs**                 | Act in simulation; every experiment human-gated; hazard screening on what is designed     |
 | Robotics                | Physical harm                                                | Situations unlike training                          | Reflex tier with hard limits; validated in simulation first                               |
 | Tutoring                | Harm to a learner's trust and development                    | Sycophancy                                          | Collaborator; the teacher sets goals and limits                                            |
+| Personal companion      | Disclosure of intimate data; harm to the person's relationships and wellbeing | Engagement optimization; manipulation; dependence; sycophancy | Collaborator; no engagement objective; memory the person controls; crisis referral; disclosure as AI |
 | Business, finance       | Contracts, trades, public statements                         | Manipulation by persuasive documents; acting on noise | Decision support; people execute                                                        |
 | Art                     | Plagiarism; harmful content                                  | Copying training data                               | Collaborator; the person decides what is published                                        |
 
