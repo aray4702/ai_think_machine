@@ -19,6 +19,7 @@ References for all five documents, grouped by topic in the order the documents t
 - [Intuition and insight](#intuition-and-insight)
 - [Beauty](#beauty)
 - [Machines and agents](#machines-and-agents)
+- [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
 
 ## Serial order, hierarchy, procedural memory
@@ -56,6 +57,7 @@ References for all five documents, grouped by topic in the order the documents t
 - Barrett (2017). *How Emotions Are Made.*
 - Kurzban et al. (2013). An opportunity cost model of subjective effort and task performance.
 - Schultz, Dayan & Montague (1997). A neural substrate of prediction and reward.
+- O'Doherty et al. (2004). Dissociable roles of ventral and dorsal striatum in instrumental conditioning.
 - Pathak et al. (2017). Curiosity-driven exploration by self-supervised prediction (ICM).
 - Burda et al. (2018). Exploration by random network distillation (RND).
 - Man & Damasio (2019). Homeostasis and soft robotics in the design of feeling machines.
@@ -179,6 +181,8 @@ References for all five documents, grouped by topic in the order the documents t
 - Anthony, Tian & Barber (2017). Thinking fast and slow with deep learning and tree search (expert iteration).
 - Schrittwieser et al. (2021). Online and offline reinforcement learning by planning with a learned model (MuZero Reanalyse).
 - Danihelka et al. (2022). Policy improvement by planning with Gumbel (Gumbel MuZero).
+- Grill et al. (2020). Monte-Carlo tree search as regularized policy optimization.
+- Sutton & Barto (2018). *Reinforcement Learning: An Introduction* (2nd ed.), on actor-critic methods.
 - Google DeepMind (2024). AlphaProof: AI achieves silver-medal standard solving International Mathematical Olympiad problems.
 - Jumper et al. (2021). Highly accurate protein structure prediction with AlphaFold.
 - Abramson et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3.
@@ -215,6 +219,24 @@ References for all five documents, grouped by topic in the order the documents t
 - Garcia-Molina & Salem (1987). Sagas.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
+
+## Bootstrapping
+
+- Zheng et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena.
+- Lightman et al. (2023). Let's verify step by step.
+- Wang et al. (2024). Math-Shepherd: verify and reinforce LLMs step-by-step without human annotations.
+- Kadavath et al. (2022). Language models (mostly) know what they know.
+- OpenAI (2023). GPT-4 technical report.
+- Zelikman et al. (2022). STaR: bootstrapping reasoning with reasoning.
+- Eysenbach et al. (2018). Diversity is all you need: learning skills without a reward function (DIAYN).
+- Mouret & Clune (2015). Illuminating search spaces by mapping elites (MAP-Elites).
+- Wang et al. (2019). Paired open-ended trailblazer (POET).
+- Finn, Abbeel & Levine (2017). Model-agnostic meta-learning for fast adaptation of deep networks (MAML).
+- Blundell et al. (2016). Model-free episodic control.
+- Pritzel et al. (2017). Neural episodic control.
+- Trinh et al. (2024). Solving olympiad geometry without human demonstrations (AlphaGeometry).
+- Brohan et al. (2023). RT-2: vision-language-action models transfer web knowledge to robotic control.
+- Bruce et al. (2024). Genie: generative interactive environments.
 
 ## Applications
 

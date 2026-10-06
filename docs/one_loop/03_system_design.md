@@ -12,6 +12,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [The step cycle](#step-cycle)
   - [The sleep cycle](#sleep-cycle)
   - [Intuition: compiled judgment](#intuition)
+  - [Two ways to improve: actor-critic and search](#actor-critic)
   - [Beauty: the aesthetic signal](#beauty)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Closest existing systems: AlphaZero, MuZero and AlphaFold](#alphazero)
@@ -79,7 +80,7 @@ K keeps a few running scalars about the *process*, not the content, each a funct
 
 | Signal      | Computed from                                                    | Analogue           |
 | ----------- | ---------------------------------------------------------------- | ------------------ |
-| Progress    | Change in estimated value (from a process reward model)          | Valence            |
+| Progress    | Change in estimated value (from a process reward model): a TD error ([actor-critic](#actor-critic)) | Valence |
 | Uncertainty | Entropy, or disagreement across sampled continuations            | Arousal            |
 | Info gain   | Information gained per step                                      | Curiosity, boredom |
 | Budget      | Budget used vs remaining                                         | Fatigue, urgency   |
@@ -165,6 +166,42 @@ Intuition is **compiled deliberation**: judgments that once needed search, disti
 
 
 **The felt side.** K's signals are intuition as feeling: falling predicted error is the sense of getting close, rising surprise is the sense that something is wrong, and info gain is curiosity. Damasio's somatic markers make the same claim for brains, although the classic evidence for them, the Iowa Gambling Task, is contested ([F4](02_features.md#f4)).
+
+<a id="actor-critic"></a>
+
+### Two ways to improve: actor-critic and search
+
+The proposal and evaluation parts of intuition can be read as an actor and a critic, but AlphaZero uses them differently from standard actor-critic, and One Loop needs both uses.
+
+
+|                          | Actor-critic (A3C, PPO)                                              | AlphaZero                                                                   |
+| ------------------------ | -------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| How the actor learns     | Policy gradient weighted by the critic's advantage or TD error, δ = r + γV(s′) − V(s) | Supervised training toward the search's visit counts; the critic sends no gradient to the actor |
+| How the critic helps     | Directly, through the gradient                                       | Through search: the value guides search, search finds better moves, the actor imitates them |
+| The critic's target      | Its own next estimate (TD bootstrapping)                             | The game result (AlphaZero); n-step bootstrapped returns (MuZero)          |
+| When the critic is used  | Training only                                                        | Also at decision time, inside search                                        |
+| Who acts                 | The actor                                                            | The search; the policy is its prior                                         |
+| World model              | None                                                                 | The rules (AlphaZero) or a learned model (MuZero)                           |
+
+
+AlphaZero is approximate policy iteration: the value network evaluates, search improves, and the improved policy is distilled back (expert iteration). Grill et al. (2020) showed that its search approximately solves a regularized policy-optimization problem, which links the two families.
+
+The brain has both. In the classic actor-critic model of the basal ganglia, dorsal striatum is the actor, ventral striatum the critic, and dopamine carries the TD error (Schultz, Dayan & Montague, 1997; O'Doherty et al., 2004). Model-based planning runs in prefrontal cortex and hippocampus, and the brain arbitrates between the two by their reliability (Daw, Niv & Dayan, 2005).
+
+One Loop maps onto the same split:
+
+
+| System                                | Parts                                                                                   | Learns by                                                        |
+| ------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Model-free actor-critic: habit, the fast path | Actor: skills in P. Critic: the value function. TD error: the Progress signal  | Actor-critic updates while awake: a skill is strengthened when progress rises |
+| Model-based search: deliberation      | Proposer: intuition's proposal. Evaluator: the value function. Search: scratch          | Expert iteration in sleep: distill what search found              |
+| Arbitration                           | K chooses *run skill* or *think* by the reliability of each                             | Calibration against outcomes                                     |
+
+
+Two distinctions follow:
+
+- **Progress is a reward prediction error; surprise is a sensory prediction error.** The first says how well things are going, the second that the world did not behave as predicted. The brain keeps them apart, and so do K's [signals](#controller-signals).
+- **Skills improve in two ways.** Habits are refined online by actor-critic while awake; what deliberation discovers is compiled offline by distillation in sleep. Actor-critic sharpens what the agent already does. Only search plus distillation brings something new, such as move 37, into its habits.
 
 <a id="beauty"></a>
 

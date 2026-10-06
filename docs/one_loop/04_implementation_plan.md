@@ -2,12 +2,16 @@
 
 **One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
 
-This document turns the [system design](03_system_design.md) into a plan: what current models already provide, the build stages and the development process that orders them, how each module is validated before it is kept, and the assumptions and risks the plan rests on.
+This document turns the [system design](03_system_design.md) into a plan: what current models already provide, the build stages and the development process that orders them, how the learned components are bootstrapped, how each module is validated before it is kept, and the assumptions and risks the plan rests on.
 
 ## Contents
 
 - [Starting point: what transformers provide](#starting-point)
 - [Development process: build stages](#build-stages)
+- [Bootstrapping the learned components](#bootstrapping)
+  - [Distilling from an LLM](#bootstrap-llm)
+  - [Other sources](#bootstrap-alternatives)
+  - [Mixing sources by domain](#bootstrap-mix)
 - [Validation](#validation)
   - [Acceptance criteria](#acceptance-criteria)
   - [Module ablation against scale](#ablation)
@@ -123,6 +127,97 @@ So the path for an LLM agent isn't building from scratch. It is **back-filling t
 - **Stage 5:** simulate a change before making it.
 - **Stage 8:** maintain invariants (tests keep passing = conservation), and verify by reverting.
 - **Stage 9:** debug hypothetico-deductively, isolating variables like the pendulum task.
+
+<a id="bootstrapping"></a>
+
+## Bootstrapping the learned components
+
+Four components start empty and must be learned: the value function (the progress estimate), the [beauty](03_system_design.md#beauty) function, the [intuition](03_system_design.md#intuition) generator (proposal, confidence, surprise, interest), and procedural memory P. The gates and the first controller rules are not learned: they are hand-coded and stay fixed ([safety](03_system_design.md#safety)). The question is where the learned components get their first prior.
+
+One rule holds for every source: **the prior is the starting point; verified outcomes are the ground truth.** Distillation alone copies the teacher, blind spots included. AlphaGo is the model: it started from a policy trained on human games, and surpassed it through search and self-play.
+
+<a id="bootstrap-llm"></a>
+
+### Distilling from an LLM
+
+LLMs arrived with the culture absorbed, so they are the cheapest prior for language and code.
+
+- **Value function.** Asking the LLM to score partial solutions works, but LLM judges favor the first option shown, longer answers and their own outputs (Zheng et al., 2023). A better bootstrap uses the LLM as a *policy*, not a judge: from each intermediate step, sample several completions, check them with a verifier, and take the success rate as a Monte Carlo value estimate (Math-Shepherd). Human step labels are the costlier alternative (Lightman et al., 2023). Distill the labels into a small process reward model, retrain it on newly verified outcomes, and keep a held-out verifier that search never sees.
+- **Beauty function.** Combine features computed in code (description length, free parameters, symmetry checks, compression of M) with the LLM's pairwise preferences ("which proof is more elegant?"), and distill them into a fast ranker. An LLM's taste leans toward the fluent and familiar, the bias the [beauty guardrails](03_system_design.md#beauty) warn about, so the ranker is weighted only as far as its beauty hit rate allows.
+- **Intuition generator.**
+
+
+| Part       | Bootstrap from the LLM                                                                                   | Ground with                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Proposal   | The LLM's probabilities as search priors, or a small proposer distilled from it                         | Expert iteration: train toward what search found and verification confirmed |
+| Confidence | "Is this true?" and "do I know this?" probabilities (Kadavath et al., 2022); sample agreement; probes on hidden states | Calibration against outcomes; chat fine-tuning (RLHF) can degrade calibration (GPT-4 technical report) |
+| Surprise   | Free: the surprisal of an observation under the LLM's own prediction                                     | Comparison with actual errors                                               |
+| Interest   | The change in belief after an observation (info gain)                                                    | Whether it led to verified progress                                         |
+
+
+- **Procedural memory.** Have the LLM write procedures, scripts and skill documents for each task family (as in Voyager), and admit each only after it has been executed and tested, with its reliability tracked (R5, R6). For skills in weights, fine-tune on the agent's own verified successful trajectories (STaR; Zelikman et al., 2022).
+
+**The recipe.**
+
+1. **Call the LLM directly** for each function. It is slow and costly, but works from day one.
+2. **Log** every judgment beside its verified outcome.
+3. **Distill** small, fast models for value, beauty and confidence, weighting the LLM's labels by how well they predicted outcomes. Admit skills only after testing.
+4. **Iterate:** search with the new models, retrain on verified results, and rely less on the LLM judge wherever a verifier exists.
+5. **Keep the LLM as a fallback** for situations unlike anything the small models were trained on.
+
+**Why distill rather than keep calling the LLM.** Speed and cost: K reads these signals every step. Calibration: a dedicated model trained on outcomes can be calibrated; a chat model often is not. Independent errors: when one LLM both proposes and judges, it rates its own blind spots as fine; a separate model trained on verified data breaks that correlation.
+
+**Limits.** The teacher is a ceiling unless verification breaks through it (AlphaGo's prior rated move 37 at about 1 in 10,000). Distillation copies the teacher's sycophancy, overconfidence and preference for the familiar (R8). Where no reliable verifier exists, distillation copies opinion, so hit rates stay low and people judge.
+
+<a id="bootstrap-alternatives"></a>
+
+### Other sources
+
+
+| Source                          | Prior comes from                                         | Examples                                                                                     | Strength                                    | Weakness                                      |
+| ------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- |
+| Learning from scratch           | Interaction with a simulator or verifier                 | AlphaZero; curriculum learner (i) ([curriculum check](#curriculum-check))                    | No inherited bias; no teacher ceiling       | Needs a simulator and reward; slow; narrow    |
+| Human data                      | Demonstrations, expert labels, preferences, step labels  | PRM800K; RLHF; runbooks and textbooks                                                        | High quality where experts exist            | Expensive; limited by expert availability     |
+| Hand-coded knowledge            | Engineers and science                                    | Chess evaluation functions; symbolic planners; prover tactics; the hand-coded controller rules | Transparent, verifiable, works at once    | Brittle; does not scale (the bitter lesson)   |
+| Domain foundation models        | Large domain datasets                                    | AlphaFold; protein language models; materials graph networks; robot vision-language-action models (RT-2); world models (Dreamer, Genie) | Strong priors beyond language | Only as good as domain coverage |
+| Intrinsic motivation            | The agent's own curiosity                                | Curiosity-driven exploration (Pathak et al., 2017); unsupervised skill discovery (DIAYN)    | Skills without task reward; matches F7      | Skills found may not serve real goals         |
+| Evolution and open-endedness    | Selection over populations                               | Quality-diversity search (MAP-Elites); POET; meta-learning (MAML)                            | Diverse skills; tunes the "genome"          | Costly in compute; hard to steer              |
+| Episodic memory, no distillation | Stored episodes                                         | Episodic control (Blundell et al., 2016; neural episodic control); case-based reasoning     | Useful values after very few experiences    | Poor generalization; memory grows             |
+| Records of real work            | Logs of human work                                       | Git history (what was reverted?); postmortems; lab notebooks; game replays; inverse RL       | Real outcomes, labeled by time              | Noisy; skewed toward successes                |
+| Synthetic data with known answers | Generated problems                                     | AlphaGeometry (about 100 million synthetic proofs)                                           | Unlimited verified labels                   | Only where a generator exists                 |
+| Multi-agent and social learning | Other agents and people                                  | Debate; teaching between agents; the teacher channel                                         | Errors get checked; culture spreads         | Errors spread too (R8)                        |
+
+
+Best sources per component:
+
+
+| Component                      | Best sources other than an LLM                                                                       |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Value function                 | Self-play with verifiers; episodic control early on; synthetic data with known answers; reverts and postmortems in work records |
+| Beauty function                | Computed features (description length, symmetry, free parameters); expert preferences; compression progress measured in sleep |
+| Intuition: proposal            | Domain foundation models; quality-diversity populations                                              |
+| Intuition: confidence, surprise | A world model's own prediction error; calibration against episodic memory                           |
+| Procedural memory              | Human runbooks; unsupervised skill discovery; mined workflows; evolved skills                        |
+| The "genome"                   | Evolution and meta-learning: the outer loop of [innate structure](03_system_design.md#innate-structure) |
+
+
+The [curriculum check](#curriculum-check) already compares two of these routes: learner (i) learns from scratch, and learner (ii) back-fills from an LLM.
+
+<a id="bootstrap-mix"></a>
+
+### Mixing sources by domain
+
+No single source is enough. The general pattern: **hand-code** the gates and the first controller rules; take the prior from the **richest available source** (an LLM, a domain model or human data); **ground it in verifiers** through self-improvement; and use **episodic memory** for fast value before there is enough data to distill. It is the brain's pattern: genome, then culture, then experience.
+
+
+| Domain               | Bootstrap mix                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| Software engineering | LLM; mined git and CI history (reverts, failed builds); verified self-improvement                     |
+| Formal mathematics   | LLM; synthetic proofs with known answers (AlphaGeometry-style); self-play against the proof checker   |
+| Open-world games     | Self-play; curiosity and skill discovery; episodic control                                              |
+| Discovery            | Domain foundation models; Bayesian optimization; expert labels; the LLM for literature and hypotheses |
+| Robotics             | Vision-language-action models; simulation; human demonstrations; hand-coded safety reflexes           |
+
 
 <a id="validation"></a>
 
