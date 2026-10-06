@@ -13,6 +13,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [The sleep cycle](#sleep-cycle)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
+  - [Innate structure, learned contents](#innate-structure)
   - [Option: one loop per cortical column](#columns)
 - [Design rules](#design-rules)
 
@@ -160,6 +161,38 @@ The brain appears to combine them the same way. The prefrontal cortex organizes 
 
 Every piece maps to a brain mechanism, and most can be prototyped with current LLMs ([starting point](04_implementation_plan.md#starting-point)).
 
+<a id="innate-structure"></a>
+
+### Innate structure, learned contents
+
+The brain is not purely trained. About 20,000 genes cannot specify about 10¹⁴ synapses (the *genomic bottleneck*, Zador 2019), so the genome specifies how to build the brain, not what it knows:
+
+- **A column template** repeated across the cortex (Mountcastle).
+- **A map of regions**, laid down early by gradients of gene expression before any input arrives (Rakic's *protomap*, 1988) and refined later by experience.
+- **Initial connections between regions**, which largely decide what each region becomes. The column algorithm is generic: when visual input is rerouted to auditory cortex in ferrets, that cortex develops visual-style orientation maps (Sharma, Angelucci & Sur, 2000).
+- **Learning rules, reflexes and core-knowledge priors**, which must work before any learning has happened.
+
+Development then starts with more connections than it keeps and prunes the unused ones. Evolution is the outer loop that tunes the genome; learning is the inner loop that fills in a lifetime.
+
+The architecture diagram plays the role of the genome. The split:
+
+
+| Innate: set by the design ("genome")                              | Learned: filled in by experience                         |
+| ----------------------------------------------------------------- | -------------------------------------------------------- |
+| The column template: one loop, with weights shared across columns | What each column knows                                   |
+| The list of regions: G, K, W, C, P, E, M                          | The contents of each store                               |
+| Initial wiring between regions ([architecture](#architecture))   | Connection strengths; pruning of links that go unused    |
+| Gates and reflexes: the [tiers](#hierarchy-for-the-task-tiers-for-authority) | When to escalate past a reflex                |
+| Learning rules: salience tags, replay, the consolidation gate     | Skills in P, lessons in M, weights θ                     |
+| Core-knowledge priors ([stage 0](04_implementation_plan.md#build-stages)) | Everything built on top of them                  |
+
+
+Three consequences for the design:
+
+- **Safety belongs on the innate side.** The gates are fixed for the same reason reflexes are: they must work before the agent has learned anything, and must not be unlearned. This is the tiers argument above, stated developmentally.
+- **The ablation is the outer loop.** [Module ablation](04_implementation_plan.md#ablation) selects among candidate genomes: a module survives only if it earns its place. Wiring can follow development too: start the regions densely connected and prune by use, rather than hand-picking every link.
+- **Judge innate structure by how fast it learns.** In animals, built-in structure pays off mostly in learning from little data (a foal walks within hours; a child learns a word from a few examples), less in final performance once data is plentiful. So modules are compared at matched data as well as at matched compute ([validation](04_implementation_plan.md#validation)).
+
 <a id="columns"></a>
 
 ### Option: one loop per cortical column
@@ -194,7 +227,7 @@ The unit is the **cortical column, not the minicolumn**. A minicolumn is about 1
 
 **Risks.**
 
-- **Functions, not boxes.** Many small loops is hand-built structure of exactly the kind the bitter lesson warns about, so it must beat a larger plain model ([ablation](04_implementation_plan.md#ablation)).
+- **Functions, not boxes.** Many small loops is hand-built structure, so it must beat a larger plain model, at matched compute or at matched data ([innate structure](#innate-structure); [ablation](04_implementation_plan.md#ablation)).
 - **Earlier attempts.** Capsule networks (Sabour, Frosst & Hinton, 2017) and GLOM (Hinton, 2021) used column-like units that settle on shared answers, and neither has scaled. The closest working build is Monty, from the Thousand Brains Project (Clay, Leadholm & Hawkins, 2024): its learning modules are columns that vote. It works on sensorimotor object recognition but has not been shown on language or planning, so it is the first thing to study.
 - **Cost.** One LLM call per column is too expensive at any real scale. A column should be a small model, or a parallel stream inside one model with shared weights, which also matches the claim that every column runs the same algorithm.
 

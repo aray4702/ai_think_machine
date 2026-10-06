@@ -680,6 +680,12 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Sabour, Frosst & Hinton (2017). Dynamic routing between capsules.
 - Hinton (2021). How to represent part-whole hierarchies in a neural network (GLOM).
 
+**Innate structure and development**
+
+- Rakic (1988). Specification of cerebral cortical areas.
+- Sharma, Angelucci & Sur (2000). Induction of visual orientation modules in auditory cortex.
+- Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains.
+
 **Control, stopping, emotion**
 
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.

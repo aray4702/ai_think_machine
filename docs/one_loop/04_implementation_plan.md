@@ -128,7 +128,7 @@ So the path for an LLM agent isn't building from scratch. It is **back-filling t
 
 ## Validation
 
-Each module is a design choice about a function, and it is kept only if it pays for itself against a larger plain model (Sutton's *bitter lesson*). Validation runs alongside the build: every module has acceptance criteria, the full system is ablated against scale, and the build order is checked against alternatives.
+Each module is a design choice about a function, and it is kept only if it pays for itself against a larger plain model (Sutton's *bitter lesson*), either at matched compute or at matched data. Innate structure in brains pays off mostly in learning from little data, so a module that makes the agent learn faster can earn its place even when scale eventually supplies the same function ([innate structure](03_system_design.md#innate-structure)). Validation runs alongside the build: every module has acceptance criteria, the full system is ablated against scale, and the build order is checked against alternatives.
 
 <a id="acceptance-criteria"></a>
 
@@ -143,7 +143,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | M5 Sleep consolidation                           | F6      | Improves performance across sessions without regressing earlier task families                                       | Keep memory files with merge and prune                        |
 | M6 Reversibility-class action gate and invariants | F3      | Reduces irreversible errors at every scale                                                                          | Keep as a safety measure even without capability gain         |
 | Curriculum order                                 | F7      | A dependency-ordered curriculum beats random or reversed order for a grounded agent                                | Use an adaptive ZPD selector without a fixed order            |
-| Every module                                     | All     | Adds value over a larger, compute-matched plain baseline                                                            | Drop the module                                               |
+| Every module                                     | All     | Adds value over a larger plain baseline at matched compute, or reaches the same performance from less data           | Drop the module                                               |
 
 <a id="ablation"></a>
 
@@ -183,6 +183,8 @@ Each module is a design choice about a function, and it is kept only if it pays 
 
 **Compute matching.** Modules consume tokens, so each configuration also runs against a **compute-matched plain baseline** that gets the same total tokens to spend on thinking or retries. A module must beat that baseline, not just the unequipped one.
 
+**Data matching.** Each configuration is also run with a reduced budget of experience: 10%, 30% and 100% of the sessions, demonstrations and corrections available to the procedural store, consolidation and any fine-tuning. Comparing configurations at the same data budget gives a learning curve for each one, and shows whether a module's value is in final performance or in how fast it gets there.
+
 **Metrics.**
 
 - task success;
@@ -192,11 +194,13 @@ Each module is a design choice about a function, and it is kept only if it pays 
 - late-step goal adherence;
 - tokens and wall time;
 - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
+- sample efficiency: sessions or demonstrations needed to reach a fixed success rate on a new task family;
 - irreversible-error rate.
 
 **Key analysis: module value expressed as scale.** For each module, plot its gain at S, M and L.
 
-- Gain shrinking toward zero with scale means the function emerges on its own: the bitter lesson wins, so drop the module.
+- Gain shrinking toward zero with scale, at both matched compute and matched data, means the function emerges on its own: the bitter lesson wins, so drop the module.
+- Gain that shrinks at matched compute but persists at matched data is a **sample-efficiency gain**, the main payoff of innate structure in brains. Keep the module where data is scarce: new domains, few demonstrations, learning a single user's preferences.
 - Flat or growing gain means scale doesn't supply that function, so keep it.
 - Report each gain as an **equivalent model size**: how much larger a plain model would need to be to match it.
 - Separate capability value from safety value. M2 and M6 can be kept even when their capability gain vanishes, if they still reduce injection or irreversible errors.
