@@ -142,6 +142,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | M4 Procedural store                              | F2      | Cuts compute and errors on repeated task families                                                                   | Keep skill documents and code tools only                      |
 | M5 Sleep consolidation                           | F6      | Improves performance across sessions without regressing earlier task families                                       | Keep memory files with merge and prune                        |
 | M6 Reversibility-class action gate and invariants | F3      | Reduces irreversible errors at every scale                                                                          | Keep as a safety measure even without capability gain         |
+| Recall from E and M                              | F6      | Retrieved items improve answers over no retrieval, and answer quality tracks retrieval quality as retrieval is degraded | Keep plain context; fix retrieval before adding memory stores |
 | Curriculum order                                 | F7      | A dependency-ordered curriculum beats random or reversed order for a grounded agent                                | Use an adaptive ZPD selector without a fixed order            |
 | Every module                                     | All     | Adds value over a larger plain baseline at matched compute, or reaches the same performance from less data           | Drop the module                                               |
 
@@ -221,7 +222,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 
 - **Implementation quality:** a weak implementation doesn't prove the function useless. Build two independent implementations per module, with the same iteration budget for each.
 - **Prompt differences between harnesses:** share a base prompt and add only module-specific content.
-- **Benchmark contamination:** use freshly generated tasks.
+- **Benchmark contamination:** use freshly generated tasks, and a time split: evaluate on tasks created after the model's training cutoff, as CASP does by scoring predictions of structures not yet published.
 - **Realism of interruptions:** draw injection text from real attack corpora, and corrections from real user logs where possible.
 
 

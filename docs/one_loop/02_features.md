@@ -686,6 +686,17 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Sharma, Angelucci & Sur (2000). Induction of visual orientation modules in auditory cortex.
 - Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains.
 
+**Search, self-play and structure prediction**
+
+- Silver et al. (2018). A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play (AlphaZero).
+- Anthony, Tian & Barber (2017). Thinking fast and slow with deep learning and tree search (expert iteration).
+- Schrittwieser et al. (2021). Online and offline reinforcement learning by planning with a learned model (MuZero Reanalyse).
+- Danihelka et al. (2022). Policy improvement by planning with Gumbel (Gumbel MuZero).
+- Google DeepMind (2024). AlphaProof: AI achieves silver-medal standard solving International Mathematical Olympiad problems.
+- Jumper et al. (2021). Highly accurate protein structure prediction with AlphaFold.
+- Abramson et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3.
+- Mirdita et al. (2022). ColabFold: making protein folding accessible to all.
+
 **Control, stopping, emotion**
 
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.

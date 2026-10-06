@@ -12,6 +12,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [The step cycle](#step-cycle)
   - [The sleep cycle](#sleep-cycle)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
+  - [Closest existing systems: AlphaZero, MuZero and AlphaFold](#alphazero)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
   - [Innate structure, learned contents](#innate-structure)
   - [Option: one loop per cortical column](#columns)
@@ -49,7 +50,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 | K: controller    | Emotion; ACC; basal ganglia    | Running process signals; chooses the next control action                      | —                                                                               |
 | W: working state | Prefrontal cortex              | Goal stack (each goal paired with its TOTE test), current belief, plan sketch | Only through the goal gate (trusted source or high salience); recited each step |
 | C: context       | Episodic buffer                | Recent raw trajectory, every token source-tagged                              | Anything, but tool and data tokens can inform steps, never set goals            |
-| Scratch          | Imagination                    | Simulated branches (the inner loop)                                           | G in simulate mode; discarded after use, and only conclusions go to W           |
+| Scratch          | Imagination                    | Simulated branches, or a draft being refined (the inner loop)                 | G in simulate mode; discarded after use, and only conclusions go to W           |
 | P: procedures    | Basal ganglia; cerebellum      | Skills for the fast path                                                      | Only through the consolidation gate                                             |
 | E → M → θ        | Hippocampus → neocortex        | Episodes, then distilled lessons, then weights and skills                     | Only through the consolidation gate                                             |
 
@@ -76,6 +77,7 @@ K keeps a few running scalars about the *process*, not the content, each a funct
 | Info gain   | Information gained per step                                      | Curiosity, boredom |
 | Budget      | Budget used vs remaining                                         | Fatigue, urgency   |
 | Surprise    | Mismatch between predicted and actual tool or environment output | Interrupt          |
+| Predicted error | A head trained against the agent's actual errors, per part of the output and per relation between parts (as AlphaFold's pLDDT and PAE) | Feeling of knowing |
 
 
 Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop.
@@ -92,7 +94,7 @@ Each cycle of the step loop:
   - A confident skill matches → **run skill** (the fast path, a habit), monitoring only its forward model and escalating to deliberation only on surprise.
   - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
   - Progress has stalled → **backtrack** or **switch**.
-  - Uncertainty × stakes is high and budget remains → **think**: G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator.
+  - Uncertainty × stakes is high and budget remains → **think**. When the task is a sequence of choices, G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator. When the output is one artifact that can be revised before it is committed (a plan, code, a document), G instead refines the whole draft, feeding it back until it stops changing, and spends the most effort on the parts with the highest predicted error.
   - Information is missing → **recall** from E or M by cue.
   - The goal is ambiguous → **ask** the user.
   - Otherwise → **commit** one step.
@@ -108,14 +110,14 @@ Between sessions:
 - **Wake.** Act, and log episodes to E with salience tags: surprises, errors, user corrections, successes.
 - **Phase 1 (NREM-like, memory level).**
   1. Select episodes by tag.
-  2. Replay them in reverse to assign credit to the steps that caused each outcome; extract lessons (episode → gist).
+  2. Replay them in reverse to assign credit to the steps that caused each outcome; extract lessons (episode → gist). Re-run search on old episodes with the current model, so that replay produces better targets than the ones recorded at the time (MuZero's *Reanalyse*).
   3. Integrate with M: merge duplicates, resolve contradictions.
   4. Prune what is stale.
   - File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
-- **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. Compile plans that repeatedly succeed into skills in P.
+- **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. The training target is the improved answer that search found in scratch, not the answer the agent first produced (*expert iteration*, as in AlphaZero): search makes a better policy, and distillation makes it the fast one. Compile plans that repeatedly succeed into skills in P.
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
 
-Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6).
+Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6). A calibrated confidence score can count as partial evidence, as when AlphaFold 2 trained on its own high-confidence predictions, but only as far as its calibration has been measured. Confidence is not verification.
 
 ### How the parts map to the features
 
@@ -130,6 +132,54 @@ Only trusted, verified experience passes the consolidation gate, and any change 
 | Simulate mode and sleep | Replay as planning ([F6](02_features.md#f6))       |
 | P                       | Compiled procedures ([F2](02_features.md#f2))      |
 
+
+<a id="alphazero"></a>
+
+### Closest existing systems: AlphaZero, MuZero and AlphaFold
+
+AlphaZero and MuZero already run one level of this design, in a single domain with a clean reward. AlphaZero searches with the game's rules; MuZero learns its own model of the game and plans inside it.
+
+
+| One Loop                                | AlphaZero / MuZero                                                                                                   | Match                                                  |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Step loop ([F1](02_features.md#f1))     | Search, play one move, observe, search again                                                                         | Exact: the cleanest working instance of F1            |
+| Belief state                            | MuZero's representation network: a hidden state computed from history                                               | Close: a learned belief, not a reconstruction         |
+| G in simulate mode                      | AlphaZero: the given rules. MuZero: a learned dynamics model                                                         | MuZero matches; AlphaZero has a perfect simulator     |
+| Scratch ([F3](02_features.md#f3))       | The search tree: forked, explored, mostly discarded after the move                                                   | Exact: a reversible inner loop before an irreversible move |
+| Which branch to expand (gain × need)    | PUCT: prior × value plus an exploration bonus                                                                        | Same idea, different formula                          |
+| Controller K ([F4](02_features.md#f4))  | A fixed number of simulations per move                                                                               | Missing: easy and hard moves get the same thinking    |
+| Compile into P ([F2](02_features.md#f2)) | The policy network is trained toward the search's visit counts                                                       | Strong, but flat: no skills, no hierarchy             |
+| Sleep ([F6](02_features.md#f6))         | Replay of self-play games, prioritized by value error; Reanalyse re-runs search on old games with the newer network | Close to Phases 1 and 2; no separate E and M          |
+| Goal gate ([F5](02_features.md#f5))     | Fixed goal: win                                                                                                      | Not needed: one goal, no user, no injection           |
+| Action gate                             | Every move is irreversible and equally safe                                                                          | Not needed                                            |
+| Curriculum ([F7](02_features.md#f7))    | Self-play: the opponent is always at the agent's level                                                              | Strong: win rates near 50% keep training at the edge of competence |
+| [Innate structure](#innate-structure)   | Innate: the search algorithm (and, for AlphaZero, the rules). Learned: everything else                              | MuZero moved the rules to the learned side, kept search innate |
+
+
+**What One Loop takes from them.**
+
+- **Expert iteration as the recipe for compiling.** Train the fast policy toward what search found (Anthony, Tian & Barber, 2017, "Thinking fast and slow with deep learning and tree search"). One mechanism serves both F2 and Phase 2 of [sleep](#sleep-cycle).
+- **Reanalyse as replay.** Revisiting old episodes with the current model gives better credit assignment without new data (Phase 1 of sleep).
+- **Value-equivalent models.** MuZero's model predicts only what planning needs (reward, value, policy), not the next observation. One Loop needs both kinds: value-equivalent predictions for planning in scratch, and observation-level forward models in P for detecting surprise.
+- **Search is on the safe side of the bitter lesson.** Sutton names search and learning as the two general methods that scale. The inner loop is the least risky part of the design; the hand-built parts (gates, controller, stores) are the ones the [ablation](04_implementation_plan.md#ablation) has to justify.
+
+**What One Loop adds, and why it matters outside games.**
+
+- **Hierarchy.** MuZero plans at one level and one time scale. Open tasks need goals that decompose (claim 2).
+- **A controller for compute.** A fixed simulation budget suits a game clock. Gumbel MuZero (Danihelka et al., 2022) needs far fewer simulations, but the budget is still fixed; K decides it per step by value of computation.
+- **Goals that can change, and gates.** A game has one fixed goal and no one injecting another. An agent has users, tools and adversaries.
+- **Memory across sessions.** MuZero learns only through its weights, over millions of games; One Loop also learns in context and through E and M.
+
+**The hard gap: the value signal.** AlphaZero works because the outcome is unambiguous and the simulator is exact (AlphaZero) or learnable from an honest reward (MuZero). One Loop's progress signal comes from a process reward model, and in open tasks that estimator is the weak link: search against a noisy value function finds its errors (reward hacking). This is why the recipe has moved into language models mainly where answers can be verified, as in AlphaProof's search over proofs checked by Lean. In One Loop, the action gate, invariant checks and the teacher channel stand in for that verifier. How far that substitute reaches is the main open question.
+
+**AlphaFold: refinement instead of search.** AlphaFold is not an agent: it takes no actions and pursues no goals. It is closer to a generator with a well-built inner loop, and four of its mechanisms carry over.
+
+- **Recycling is the other kind of inner loop.** AlphaFold 2 feeds its predicted structure back in as input and refines it, three times by default; ColabFold stops early once the structure stops changing. Tree search suits a sequence of irreversible choices. Refining the whole draft suits an artifact that can be revised before it is committed, which describes most plans, code and documents. Scratch supports both, and K sets how many refinement passes to run ([step cycle](#step-cycle)).
+- **Confidence trained against real error.** AlphaFold predicts its own error per residue (pLDDT) and per pair of residues (PAE), and both are calibrated well enough that biologists use them to decide what to trust. That is a better uncertainty signal than entropy or sample disagreement, and it says *where* the doubt is. It becomes the predicted-error signal in [controller signals](#controller-signals).
+- **Self-distillation behind a confidence gate.** AlphaFold 2 also trained on its own high-confidence predictions for sequences with no known structure, and AlphaFold 3 learned to draw disordered regions as loose loops from AlphaFold 2's predictions instead of inventing structure there. That is the consolidation gate working on the system's own output. It works only because the confidence has been checked against ground truth ([sleep cycle](#sleep-cycle)).
+- **Retrieval as input.** At inference AlphaFold retrieves related sequences (the multiple sequence alignment) and known structures (templates) and reasons over them, and its accuracy falls when the alignment is shallow. That is the recall mode: the quality of what is retrieved bounds the quality of the answer, so recall gets its own [acceptance test](04_implementation_plan.md#acceptance-criteria).
+
+AlphaFold also traces the arc of the [innate structure](#innate-structure) argument. AlphaFold 2 built geometry into its wiring (triangle updates that keep pairwise distances consistent; attention that respects rotation and translation) when data was scarce, about 170,000 known structures. AlphaFold 3 removed much of it, replacing the structure module with diffusion, once data and compute had grown. Built-in structure earned its place, then gave way to general methods, which is the pattern the matched-data comparison in the [ablation](04_implementation_plan.md#ablation) is designed to detect. And AlphaFold avoided the value-signal gap above by choosing a problem with ground truth: experimentally solved structures. That argues for starting One Loop where answers can be checked (code with tests, proofs, simulators) and widening from there.
 
 ### Hierarchy for the task, tiers for authority
 
