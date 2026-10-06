@@ -1,0 +1,148 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="580" viewBox="0 0 960 580" role="img" aria-labelledby="title desc">
+  <title id="title">One loop per cortical column</title>
+  <desc id="desc">Left: one column runs the step loop. It receives a goal and its TOTE test from its parent and reports back done or failed, surprise and confidence. It takes input as a feature plus a location, and sends its committed step down as a child's goal or as an action to the world. It exchanges votes with peer columns. Inside it holds a belief in its own reference frame, a forward model and a scratch space. Its minicolumns code features in context: they are variables inside the loop, not loops. Middle: columns arranged on two axes. Vertically, plan, action and perception levels: each column's committed step becomes the goal of the columns below, and they report back up. Horizontally, peer columns on the same level vote until they agree. Right: the tiers stay global and are not replicated per column: gates control goal changes and world actions from any column, controller K can interrupt any column and reads disagreement between peers as uncertainty, and sleep consolidates across all columns.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+    <marker id="arrow-l" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#8895a1"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#16755d"/>
+    </marker>
+    <marker id="arrow-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#b54a3a"/>
+    </marker>
+    <marker id="arrow-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#202b35"/>
+    </marker>
+    <g id="col">
+      <rect x="-32" y="-35" width="64" height="70" rx="8" fill="#e8f5f1" stroke="#16755d" stroke-width="2"/>
+      <path d="M-12 -6 A12 12 0 1 1 0 6" fill="none" stroke="#16755d" stroke-width="2" marker-end="url(#arrow-g)"/>
+      <text x="0" y="26" font-size="11" fill="#125c49">loop</text>
+    </g>
+  </defs>
+  <rect width="960" height="580" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">One Loop per Column: Hierarchy Plus Voting</text>
+
+    <!-- Left: one column -->
+    <rect x="24" y="60" width="300" height="496" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="40" y="86" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">ONE COLUMN</text>
+
+    <path d="M150 104 V166" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="142" y="128" font-size="13" font-weight="700" text-anchor="end">goal</text>
+    <text x="142" y="143" font-size="10" fill="#53606c" text-anchor="end">+ TOTE test</text>
+    <path d="M198 166 V104" fill="none" stroke="#8895a1" stroke-width="2" marker-end="url(#arrow-l)"/>
+    <text x="206" y="128" font-size="13" font-weight="700" text-anchor="start">report</text>
+    <text x="206" y="143" font-size="10" fill="#53606c" text-anchor="start">done · surprise · conf.</text>
+
+    <rect x="104" y="170" width="140" height="250" rx="10" fill="#e8f5f1" stroke="#16755d" stroke-width="2"/>
+    <g stroke="#d5ece5" stroke-width="5">
+      <path d="M116 180 V410 M128 180 V410 M140 180 V410 M152 180 V410 M164 180 V410 M176 180 V410 M188 180 V410 M200 180 V410 M212 180 V410 M224 180 V410 M236 180 V410"/>
+    </g>
+    <rect x="116" y="192" width="116" height="48" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="174" y="213" font-size="13" font-weight="700">belief</text>
+    <text x="174" y="230" font-size="10" fill="#53606c">in its reference frame</text>
+    <rect x="116" y="252" width="116" height="36" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="174" y="275" font-size="12">forward model</text>
+    <rect x="116" y="300" width="116" height="36" rx="6" fill="#ffffff" stroke="#8895a1" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="174" y="323" font-size="12">scratch</text>
+    <path d="M162 366 A12 12 0 1 1 174 378" fill="none" stroke="#16755d" stroke-width="2" marker-end="url(#arrow-g)"/>
+    <text x="174" y="404" font-size="12" font-weight="700" fill="#125c49">step loop (F1)</text>
+
+    <path d="M150 482 V424" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="142" y="452" font-size="13" font-weight="700" text-anchor="end">input</text>
+    <text x="142" y="467" font-size="10" fill="#53606c" text-anchor="end">feature + location</text>
+    <path d="M198 424 V482" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="206" y="452" font-size="13" font-weight="700" text-anchor="start">step</text>
+    <text x="206" y="467" font-size="10" fill="#53606c" text-anchor="start">to child or world</text>
+
+    <path d="M38 300 H100" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 3" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+    <text x="69" y="290" font-size="12" font-weight="700" fill="#16755d">votes</text>
+    <path d="M248 300 H310" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 3" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+    <text x="279" y="290" font-size="12" font-weight="700" fill="#16755d">votes</text>
+
+    <text x="174" y="516" font-size="11" fill="#53606c">Stripes = minicolumns: features in context.</text>
+    <text x="174" y="534" font-size="11" fill="#53606c">Variables inside the loop, not loops.</text>
+
+    <!-- Middle: hierarchy plus voting -->
+    <rect x="340" y="60" width="420" height="496" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="356" y="86" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">HIERARCHY + VOTING</text>
+    <g font-size="11" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">
+      <text x="356" y="159">PLAN</text>
+      <text x="356" y="299">ACTION</text>
+      <text x="356" y="439">PERCEPTION</text>
+    </g>
+
+    <!-- goal down (solid) and report up (thin) -->
+    <g fill="none" stroke-width="2">
+      <path d="M584 190 L544 258" stroke="#465462" marker-end="url(#arrow)"/>
+      <path d="M560 262 L598 197" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+      <path d="M616 190 L656 258" stroke="#465462" marker-end="url(#arrow)"/>
+      <path d="M640 262 L602 197" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+      <path d="M524 330 L484 398" stroke="#465462" marker-end="url(#arrow)"/>
+      <path d="M500 402 L538 337" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+      <path d="M556 330 L590 398" stroke="#465462" marker-end="url(#arrow)"/>
+      <path d="M606 400 L570 336" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+      <path d="M676 330 L710 398" stroke="#465462" marker-end="url(#arrow)"/>
+      <path d="M726 400 L690 336" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+    </g>
+
+    <use href="#col" x="600" y="155"/>
+    <use href="#col" x="540" y="295"/>
+    <use href="#col" x="660" y="295"/>
+    <use href="#col" x="480" y="435"/>
+    <use href="#col" x="600" y="435"/>
+    <use href="#col" x="720" y="435"/>
+
+    <!-- votes between peers -->
+    <g fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 3">
+      <path d="M576 295 H624" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+      <path d="M516 435 H564" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+      <path d="M636 435 H684" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+    </g>
+
+    <!-- legend -->
+    <g font-size="11" text-anchor="start" fill="#53606c">
+      <path d="M362 506 H392" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+      <text x="400" y="510">goal down</text>
+      <path d="M478 506 H508" fill="none" stroke="#8895a1" stroke-width="1.5" marker-end="url(#arrow-l)"/>
+      <text x="516" y="510">report up</text>
+      <path d="M592 506 H630" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 3" marker-start="url(#arrow-g)" marker-end="url(#arrow-g)"/>
+      <text x="638" y="510">peers vote</text>
+      <text x="362" y="536">A step at one level is a whole loop at the next (claim 2).</text>
+    </g>
+
+    <!-- Right: global tiers -->
+    <rect x="776" y="60" width="160" height="496" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="792" y="86" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">GLOBAL TIERS</text>
+    <text x="792" y="102" font-size="10" fill="#53606c" text-anchor="start">not replicated per column</text>
+
+    <rect x="788" y="120" width="136" height="110" rx="6" fill="#f6e3df" stroke="#b54a3a" stroke-width="2"/>
+    <text x="856" y="146" font-size="14" font-weight="700" fill="#b54a3a">GATES</text>
+    <text x="856" y="170" font-size="12">goal changes and</text>
+    <text x="856" y="188" font-size="12">world actions</text>
+    <text x="856" y="206" font-size="12">from any column</text>
+
+    <rect x="788" y="244" width="136" height="110" rx="6" fill="#202b35"/>
+    <text x="856" y="270" font-size="14" font-weight="700" fill="#ffffff">CONTROLLER K</text>
+    <text x="856" y="294" font-size="12" fill="#ffffff">interrupts any</text>
+    <text x="856" y="312" font-size="12" fill="#ffffff">column; reads peer</text>
+    <text x="856" y="330" font-size="12" fill="#ffffff">disagreement</text>
+
+    <rect x="788" y="368" width="136" height="110" rx="6" fill="#ffffff" stroke="#465462" stroke-width="2"/>
+    <text x="856" y="394" font-size="14" font-weight="700">SLEEP</text>
+    <text x="856" y="418" font-size="12">consolidates</text>
+    <text x="856" y="436" font-size="12">across all</text>
+    <text x="856" y="454" font-size="12">columns</text>
+
+    <path d="M786 175 H750" fill="none" stroke="#b54a3a" stroke-width="2" marker-end="url(#arrow-r)"/>
+    <path d="M786 299 H750" fill="none" stroke="#202b35" stroke-width="2" marker-end="url(#arrow-d)"/>
+    <path d="M786 423 H760" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="856" y="510" font-size="10" fill="#53606c">They cut across every</text>
+    <text x="856" y="524" font-size="10" fill="#53606c">level without waiting</text>
+    <text x="856" y="538" font-size="10" fill="#53606c">for the hierarchy.</text>
+  </g>
+</svg>
