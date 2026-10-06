@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">I.6: separate fast and slow stores, consolidate selectively</title>
+  <desc id="desc">Left: one network learning fast. After learning task A, skill on A is high; after quickly learning task B, skill on B is high but skill on A has collapsed. This is catastrophic interference, and naive fine-tuning does the same to an LLM. Right: separate stores that learn at different speeds. Working memory W holds the goal and belief for seconds in about four shielded chunks. Episodic memory E logs events verbatim in one shot and recalls them by cue. Consolidation runs offline in sleep: replay keeps what is tagged by reward, surprise or emotion and prunes the rest. Slow stores hold semantic gist M and procedural skills P. Below, what transformer agents have today: no working memory, since the context does double duty; context window plus retrieval for episodic memory; consolidation mostly missing, with compaction and memory files as stand-ins; and huge weights that are frozen after training.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+  </defs>
+  <rect width="960" height="560" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Fast Stores, Slow Stores, and Consolidation Between</text>
+
+    <!-- Left: one fast store -->
+    <rect x="24" y="64" width="260" height="472" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="154" y="92" font-size="17" font-weight="700">One network, learning fast</text>
+    <path d="M56 330 H268" stroke="#465462" stroke-width="1.5"/>
+    <path d="M56 330 V150" stroke="#465462" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="44" y="240" font-size="12" fill="#53606c" transform="rotate(-90 44 240)">skill</text>
+    <!-- after A -->
+    <rect x="80" y="180" width="30" height="150" fill="#465462"/>
+    <rect x="116" y="326" width="30" height="4" fill="#16755d"/>
+    <!-- after B -->
+    <rect x="186" y="180" width="30" height="110" fill="none" stroke="#b54a3a" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="186" y="290" width="30" height="40" fill="#465462"/>
+    <rect x="222" y="180" width="30" height="150" fill="#16755d"/>
+    <text x="201" y="238" font-size="12" font-weight="700" fill="#b54a3a">lost</text>
+    <text x="113" y="350" font-size="12" fill="#53606c">after learning A</text>
+    <text x="219" y="350" font-size="12" fill="#53606c">after learning B</text>
+    <g font-size="12" text-anchor="start">
+      <rect x="70" y="372" width="12" height="12" rx="2" fill="#465462"/>
+      <text x="88" y="382">task A</text>
+      <rect x="160" y="372" width="12" height="12" rx="2" fill="#16755d"/>
+      <text x="178" y="382">task B</text>
+    </g>
+    <g font-size="13">
+      <text x="154" y="428">New learning overwrites old:</text>
+      <text x="154" y="446" font-weight="700">catastrophic interference</text>
+      <text x="154" y="476" fill="#53606c">An LLM fine-tuned naively</text>
+      <text x="154" y="494" fill="#53606c">on today's session loses</text>
+      <text x="154" y="512" fill="#53606c">some of what it knew.</text>
+    </g>
+
+    <!-- Right: separate stores -->
+    <rect x="304" y="64" width="632" height="472" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="620" y="92" font-size="17" font-weight="700" fill="#125c49">Separate stores, consolidated selectively</text>
+    <path d="M326 118 H914" stroke="#16755d" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="326" y="112" font-size="12" font-weight="700" fill="#125c49" text-anchor="start">learns fast</text>
+    <text x="896" y="112" font-size="12" font-weight="700" fill="#125c49" text-anchor="end">learns slowly</text>
+    <rect x="324" y="140" width="120" height="150" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <text x="384.0" y="164" font-size="14" font-weight="700" fill="#202b35">Working W</text>
+    <text x="384.0" y="182" font-size="11" font-weight="700" fill="#53606c" letter-spacing="0.5">SECONDS</text>
+    <text x="384.0" y="204" font-size="12" fill="#202b35">goal + belief</text>
+    <text x="384.0" y="220" font-size="12" fill="#202b35">~4 chunks,</text>
+    <text x="384.0" y="236" font-size="12" fill="#202b35">shielded</text>
+    <rect x="476" y="140" width="120" height="150" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <text x="536.0" y="164" font-size="14" font-weight="700" fill="#202b35">Episodic E</text>
+    <text x="536.0" y="182" font-size="11" font-weight="700" fill="#53606c" letter-spacing="0.5">ONE SHOT</text>
+    <text x="536.0" y="204" font-size="12" fill="#202b35">events logged</text>
+    <text x="536.0" y="220" font-size="12" fill="#202b35">verbatim,</text>
+    <text x="536.0" y="236" font-size="12" fill="#202b35">recalled by cue</text>
+    <rect x="628" y="140" width="120" height="150" rx="6" fill="#202b35" stroke="#202b35" stroke-width="2"/>
+    <text x="688.0" y="164" font-size="14" font-weight="700" fill="#ffffff">Consolidation</text>
+    <text x="688.0" y="182" font-size="11" font-weight="700" fill="#d5ece5" letter-spacing="0.5">IN SLEEP</text>
+    <text x="688.0" y="204" font-size="12" fill="#ffffff">replay; keep</text>
+    <text x="688.0" y="220" font-size="12" fill="#ffffff">what is tagged by</text>
+    <text x="688.0" y="236" font-size="12" fill="#ffffff">reward, surprise,</text>
+    <text x="688.0" y="252" font-size="12" fill="#ffffff">emotion</text>
+    <rect x="780" y="140" width="140" height="70" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <text x="850.0" y="164" font-size="14" font-weight="700" fill="#202b35">Semantic M</text>
+    <text x="850.0" y="182" font-size="11" font-weight="700" fill="#53606c" letter-spacing="0.5">DAYS TO YEARS</text>
+    <text x="850.0" y="204" font-size="12" fill="#202b35">gist; world facts</text>
+    <rect x="780" y="220" width="140" height="70" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <text x="850.0" y="244" font-size="14" font-weight="700" fill="#202b35">Procedural P</text>
+    <text x="850.0" y="262" font-size="11" font-weight="700" fill="#53606c" letter-spacing="0.5">PRACTICE</text>
+    <text x="850.0" y="284" font-size="12" fill="#202b35">skills, the steps (I.2)</text>
+    <g fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M446 215 H473"/>
+      <path d="M598 215 H625"/>
+      <path d="M750 200 L777 178"/>
+      <path d="M750 230 L777 252"/>
+      <path d="M688 292 V316"/>
+    </g>
+    <text x="688" y="332" font-size="12" fill="#53606c">prune the rest</text>
+    <text x="324" y="366" font-size="13" font-weight="700" text-anchor="start">Transformer agents today</text>
+    <rect x="324" y="378" width="120" height="64" rx="5" fill="#ffffff" stroke="#b54a3a" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="384.0" y="398" font-size="12" fill="#b54a3a" font-weight="700">✗ none: the</text>
+    <text x="384.0" y="415" font-size="12" fill="#202b35">context does</text>
+    <text x="384.0" y="432" font-size="12" fill="#202b35">double duty</text>
+    <rect x="476" y="378" width="120" height="64" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5" stroke-dasharray=""/>
+    <text x="536.0" y="398" font-size="12" fill="#202b35">context window</text>
+    <text x="536.0" y="415" font-size="12" fill="#202b35">+ retrieval</text>
+    <text x="536.0" y="432" font-size="12" fill="#202b35">(RAG)</text>
+    <rect x="628" y="378" width="120" height="64" rx="5" fill="#ffffff" stroke="#b54a3a" stroke-width="1.5" stroke-dasharray="5 3"/>
+    <text x="688.0" y="398" font-size="12" fill="#b54a3a" font-weight="700">✗ mostly missing:</text>
+    <text x="688.0" y="415" font-size="12" fill="#202b35">compaction,</text>
+    <text x="688.0" y="432" font-size="12" fill="#202b35">memory files</text>
+    <rect x="780" y="378" width="140" height="64" rx="5" fill="#ffffff" stroke="#8895a1" stroke-width="1.5" stroke-dasharray=""/>
+    <text x="850.0" y="398" font-size="12" fill="#202b35">weights: huge,</text>
+    <text x="850.0" y="415" font-size="12" fill="#202b35">but frozen</text>
+    <text x="850.0" y="432" font-size="12" fill="#202b35">after training</text>
+    <text x="620" y="484" font-size="13">Fast stores catch new experience without overwriting the old;</text>
+    <text x="620" y="503" font-size="13">consolidation moves the selected few into slow, lasting form.</text>
+  </g>
+</svg>
