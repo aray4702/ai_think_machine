@@ -1,8 +1,8 @@
 # One Loop: References
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [References](references.md)
 
-References for all five documents, grouped by topic in the order the documents take them up.
+References for all seven documents, grouped by topic in the order the documents take them up.
 
 ## Contents
 
@@ -21,6 +21,9 @@ References for all five documents, grouped by topic in the order the documents t
 - [Machines and agents](#machines-and-agents)
 - [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
+- [State of the field, 2026](#state-of-the-field-2026)
+- [Media creation](#media-creation)
+- [Companion](#companion)
 
 ## Serial order, hierarchy, procedural memory
 
@@ -241,6 +244,12 @@ References for all five documents, grouped by topic in the order the documents t
 ## Applications
 
 - Jimenez et al. (2024). SWE-bench: can language models resolve real-world GitHub issues?
+- METR (2026). Time Horizon 1.1. metr.org/blog/2026-1-29-time-horizon-1-1
+- METR (2026). Frontier Risk Report (February to March 2026). metr.org/blog/2026-05-19-frontier-risk-report
+- SWE-EVO: benchmarking coding agents in long-horizon software evolution scenarios. arXiv:2512.18470.
+- Coding agents have converged: why the SWE-bench leaderboard can no longer order its top entries, and what to measure instead (2026). arXiv:2609.17394.
+- The tasteful agent: measuring and improving taste in long-horizon tasks (2026). arXiv:2609.25804.
+- CodeAnt (2026). SWE-bench leaderboard 2026: every model score explained (secondary source for the contamination and audit figures). codeant.ai/blogs/swe-bench-scores
 - Chamberlin (1890). The method of multiple working hypotheses.
 - Campbell (1960). Blind variation and selective retention in creative thought as in other knowledge processes.
 - Cemri et al. (2025). Why do multi-agent LLM systems fail?
@@ -251,3 +260,37 @@ References for all five documents, grouped by topic in the order the documents t
 - Merchant et al. (2023). Scaling deep learning for materials discovery (GNoME).
 - Leeman et al. (2024). Challenges in high-throughput inorganic materials prediction and autonomous synthesis.
 - Cheetham & Seshadri (2024). Artificial intelligence driving materials discovery? Perspective on the article: Scaling deep learning for materials discovery.
+
+## State of the field, 2026
+
+- When continual learning moves to memory: a study of experience reuse in LLM agents (April 2026). arXiv:2604.27003.
+- RPMem: learning long-term recurrent parametric memory across sessions for LLM agents (September 2026). arXiv:2609.23466.
+- How well do agentic skills work in the wild: benchmarking LLM skill usage in realistic settings (April 2026). arXiv:2604.04323.
+- SkillGLoW: procedural-family skill consolidation for self-improving agents on long-horizon task streams (September 2026). arXiv:2609.02217.
+- Governance decay: how context compaction silently erases safety constraints in long-horizon LLM agents (June 2026). arXiv:2606.22528.
+- Push your agent: measuring and enforcing quantitative goal persistence in long-horizon LLM agents (May 2026). arXiv:2605.23574.
+- Abdelnabi & Bagdasarian (2026). AI agents may always fall for prompt injections. arXiv:2605.17634.
+- Calibration drift under reasoning: how chain-of-thought budgets induce overconfidence in large language models (April 2026). arXiv:2606.11211.
+- SelfBudgeter: adaptive token allocation for efficient LLM reasoning (2026). Findings of ACL 2026.
+- Conformal thinking: risk control for reasoning on a compute budget (2026). arXiv:2602.03814.
+- Model Context Protocol (2026). Authorization specification, revision 2026-07-28. modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+- Single-agent LLMs outperform multi-agent systems on multi-hop reasoning under equal thinking token budgets (April 2026). arXiv:2604.02460.
+- Axiom Math (2026). IMO 2026 Lean 4 solutions. github.com/AxiomMath/IMO2026
+- Digital Applied (2026). Four AIs scored a perfect 42/42 on IMO 2026. So what? (secondary source for the grading status of IMO 2026 results)
+- Thousand-brains systems: sensorimotor intelligence for rapid, robust learning and inference. *Neural Computation*. doi:10.1162/NECO.a.1508.
+
+## Media creation
+
+- Zhou et al. (2022). Large language models are human-level prompt engineers (APE).
+- Yang et al. (2023). Large language models as optimizers (OPRO).
+- Khattab et al. (2023). DSPy: compiling declarative language model calls into self-improving pipelines.
+- Hao et al. (2022). Optimizing prompts for text-to-image generation (Promptist).
+- Coalition for Content Provenance and Authenticity (C2PA). Content Credentials technical specification. c2pa.org
+
+## Companion
+
+- Reis & Shaver (1988). Intimacy as an interpersonal process. In *Handbook of Personal Relationships.*
+- De Freitas, Oguz-Uguralp & Kaan-Uguralp (2025). Emotional manipulation by AI companions. arXiv:2508.19258.
+- Fang, Liu, Danry, Lee, Chan, Pataranutaporn, Maes, Phang, Lampe, Ahmad & Agarwal (2025). How AI and human behaviors shape psychosocial effects of chatbot use: a longitudinal randomized controlled study. arXiv:2503.17473.
+- Zhang, Zhao, Wang, Anselmetti, Hancock, Kraut & Yang (2026). Living with AI companions: sustained AI companionship predicts lower well-being through lower human interaction. arXiv:2609.07243.
+- California Senate Bill 243 (2025). Companion chatbots. In force January 1, 2026.

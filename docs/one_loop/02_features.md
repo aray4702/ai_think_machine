@@ -1,8 +1,8 @@
 # One Loop: Derived Features
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [References](references.md)
 
-Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R8 are in its [design rules](03_system_design.md#design-rules).
+Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R9 are in its [design rules](03_system_design.md#design-rules).
 
 ## Contents
 
@@ -96,7 +96,7 @@ Each level runs its own step-by-step loop on its own timescale. The brain has a 
 | Adapters or weights trained by practice    | Autonomous: true procedural memory                            | Fine-tuning or distillation from successful trajectories   |
 
 
-The missing piece in LLMs is **practice-driven compilation**: moving a procedure from the first row to the second and third automatically through repetition, with forward models and reliability estimates attached (R5).
+The missing piece in LLMs is **practice-driven compilation**: moving a procedure from the first row to the second and third automatically through repetition, with forward models and reliability estimates attached (R5). Self-revising skill libraries appeared in 2026, but retrieving and testing the right skill remains the bottleneck ([state of the field](04_implementation_plan.md#field-2026)).
 
 **Feature F2: compiled skills, stacked into a hierarchy.** Sequences that repeatedly succeed are compiled into skills, and a skill at one level becomes a single step for the level above. Each skill carries a forward model, so running it yields predictions the controller can check, and the controller can veto a skill whose goal no longer applies. *Components:* procedural store P; goal stack in W; the skill life cycle (R5).
 
@@ -432,7 +432,7 @@ Agents are reinventing Complementary Learning Systems one piece at a time:
 - **Compaction** (summarizing old context) acts as compression into a working state.
 - **Retrieval** acts as episodic recall.
 - **Memory files** act as primitive consolidation.
-- **Continual learning into weights** is the missing last step.
+- **Continual learning into weights** is the missing last step. Early parametric-memory systems in 2026 consolidate sessions into adapters, but forgetting is not solved ([state of the field](04_implementation_plan.md#field-2026)).
 
 On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest the field is converging on the brain's split. AI has also borrowed pieces of sleep itself:
 
@@ -489,7 +489,7 @@ Transformers have 2 and 3, and a huge built-in version of 4; agent scaffolding f
 | Hours–days      | Consolidation (offline loop over a whole day) | Reverse replay: credit assignment back through the day |
 
 
-Sleep is the revisable inner loop applied to a whole day of experience. Today's agents mostly lack it, which is why they act within a session but don't learn across sessions.
+Sleep is the revisable inner loop applied to a whole day of experience. Today's agents mostly lack it, which is why they act within a session but don't learn across sessions. Memory tools and skill libraries are partial versions of it as of 2026.
 
 **Feature F6: separate memories, joined by consolidation.** A small protected working state, an episodic log, slow semantic knowledge and a procedural store, linked by a between-session sleep cycle that consolidates only trusted, verified experience into memory, skills and weights. *Components:* W, E, M, P, θ; the [sleep cycle](03_system_design.md#sleep-cycle); rule R6.
 
