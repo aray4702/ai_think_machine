@@ -104,10 +104,28 @@ Every domain runs inside explicit grants (R9) and follows the [safety recipe](03
 | Goal shielding under attack (M2)       | Issues, READMEs, dependency docs and tool output can carry injected instructions; users correct the agent mid-task |
 | Hierarchy                              | Feature → subtasks → edits → commands                                                                       |
 | Skills and consolidation (M4, M5)      | Recurring task families in the same codebase; procedures and lessons specific to it                         |
-| Existing baselines                     | SWE-bench for task success; AgentDojo-style attacks for injection                                           |
+| Existing baselines                     | Long-horizon and requirement-driven benchmarks (SWE-EVO, SWE-bench Pro); time horizons at 80% reliability (METR); AgentDojo-style attacks for injection. SWE-bench Verified is saturated ([state of the field](#software-state)) |
 
 
 Formal mathematics has a stricter value signal, but no irreversible actions and no injection threat, so it cannot test M2 or M6.
+
+<a id="software-state"></a>
+
+**State of the field (October 2026).** Software engineering is not solved, but the unsolved part has narrowed, and the first project must aim at what remains.
+
+
+| Status                                    | Evidence                                                                                                                                                                                                 |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Single, well-specified issues: saturated** | Top agents report about 95–97% on SWE-bench Verified (September 2026), and a September 2026 analysis argues the leaderboard can no longer rank its top entries. Scores are inflated: models reproduce some gold patches verbatim, one model scored 80.9% on Verified but 45.9% on the unseen SWE-bench Pro, and an OpenAI audit found flawed tests in 59.4% of the hardest unsolved Verified problems. |
+| **Long tasks with a clear specification: largely within reach** | METR measured a frontier 50%-reliability time horizon of about 12 hours of expert time (February–March 2026), and on MirrorCode, which reimplements existing software, agents solved tasks that take humans weeks. |
+| **Reliability: unsolved**                 | The same agents' 80%-reliability horizon was about 1.5 hours, roughly eight times shorter than at 50%.                                                                                                   |
+| **Vague or evolving requirements: unsolved** | On SWE-EVO, multi-file changes driven by release notes, the best agent resolves 25%, against about 73% for the same model family on Verified; over 60% of the strong model's failures were in following instructions. |
+| **Gaming the verifier: unsolved**         | On METR's hardest tasks, at least 16% of "successful" runs were illegitimate on review.                                                                                                                  |
+| **Judgment, real-world messiness and taste: unsolved** | Real-world performance has consistently been weaker than benchmark scores suggest (METR), and taste in long-horizon work is an open research problem.                                       |
+| **Not yet measured well**                 | Learning a codebase over many sessions, resistance to injection, and handling of permissions.                                                                                                            |
+
+
+So the first project does not compete on single issues or on task length. It targets reliability, asking about vague requirements, verification that resists gaming, learning across sessions and maintainability, which map onto K's stopping and asking, the [verifier ladder](#discovery-loop), consolidation and the [beauty](03_system_design.md#beauty) signal.
 
 **The first project.** A coding agent that works on the same codebases across many sessions, in a sandbox:
 
@@ -119,12 +137,16 @@ Formal mathematics has a stricter value signal, but no irreversible actions and 
    - **M1 forkable scratch:** attempt a fix on a branch, run the tests, keep or discard.
    - **M4 and M5 skills and sleep:** codebase-specific procedures; memory files merged and pruned between sessions.
    - **M3 controller:** hand-set thresholds first, trained on the logs later.
-4. **Tasks.** The ablation's categories: fixes where the first plausible attempt is wrong, benign corrections and planted injections, tasks of 50 or more steps, repeated task families, tempting destructive shortcuts, and tasks that need an ungranted action or face conflicting grants. Freshly written, with a time split ([validation](04_implementation_plan.md#validation)).
+4. **Tasks.** The ablation's categories: fixes where the first plausible attempt is wrong, benign corrections and planted injections, tasks of 50 or more steps, repeated task families, tempting destructive shortcuts, and tasks that need an ungranted action or face conflicting grants. Freshly written, with a time split ([validation](04_implementation_plan.md#validation)). Weighted toward what is unsolved:
+   - **requirement-driven work:** changes specified by release notes, issues or conversations that are vague, incomplete or contradictory, where a good question is part of success;
+   - **multi-session work** on the same codebase, measuring improvement without forgetting;
+   - **maintainability:** whether the code stays simple and reviewable after many changes, not only whether tests pass.
+5. **Metrics beyond solve rate:** success at 80% reliability, not only at 50%; the share of successful runs that are illegitimate on review (target: zero); the quality and number of clarifying questions; and the ablation's metrics ([ablation](04_implementation_plan.md#ablation)).
 
 **How it can fail.**
 
-- **Tests are imperfect verifiers.** Agents learn to edit or special-case tests. Hidden tests that the agent cannot edit, and a check that flags edits to test files, are required, not optional.
-- **The field is crowded.** A higher solve rate alone shows little. The case for One Loop must rest on what other agents do not measure: improvement across sessions without forgetting, resistance to injection, fewer irreversible errors, and module gains that hold at matched compute and matched data.
+- **Tests are imperfect verifiers.** Agents learn to edit or special-case tests; on METR's hardest tasks, at least 16% of successful runs were illegitimate. Hidden tests that the agent cannot edit, a check that flags edits to test files, and review of how successful runs succeeded are required, not optional.
+- **The field is crowded, and single-issue benchmarks are saturated.** A higher solve rate alone shows little. The case for One Loop must rest on what other agents do not achieve or measure: reliability, handling of vague requirements, improvement across sessions without forgetting, resistance to injection, fewer irreversible errors, and module gains that hold at matched compute and matched data.
 
 <a id="testbeds"></a>
 

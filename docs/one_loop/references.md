@@ -241,6 +241,12 @@ References for all five documents, grouped by topic in the order the documents t
 ## Applications
 
 - Jimenez et al. (2024). SWE-bench: can language models resolve real-world GitHub issues?
+- METR (2026). Time Horizon 1.1. metr.org/blog/2026-1-29-time-horizon-1-1
+- METR (2026). Frontier Risk Report (February to March 2026). metr.org/blog/2026-05-19-frontier-risk-report
+- SWE-EVO: benchmarking coding agents in long-horizon software evolution scenarios. arXiv:2512.18470.
+- Coding agents have converged: why the SWE-bench leaderboard can no longer order its top entries, and what to measure instead (2026). arXiv:2609.17394.
+- The tasteful agent: measuring and improving taste in long-horizon tasks (2026). arXiv:2609.25804.
+- CodeAnt (2026). SWE-bench leaderboard 2026: every model score explained (secondary source for the contamination and audit figures). codeant.ai/blogs/swe-bench-scores
 - Chamberlin (1890). The method of multiple working hypotheses.
 - Campbell (1960). Blind variation and selective retention in creative thought as in other knowledge processes.
 - Cemri et al. (2025). Why do multi-agent LLM systems fail?
