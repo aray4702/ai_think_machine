@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="770" viewBox="0 0 960 770" role="img" aria-labelledby="title desc">
+  <title id="title">One Loop: scope and relationships</title>
+  <desc id="desc">The thesis covers shared supporting functions at the serial control level. They coordinate domain-specific knowledge and skills, which provide information and possible actions. Underlying biological or computational mechanisms implement and constrain the supporting functions. Domain-specific theories and detailed mechanisms are outside the scope; shared functions do not imply identical mechanisms.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+  </defs>
+  <rect width="960" height="770" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">One Loop: What the Thesis Covers</text>
+
+    <rect x="110" y="64" width="740" height="160" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="480" y="96" font-size="20" font-weight="700">DOMAIN-SPECIFIC CAPABILITIES</text>
+    <text x="480" y="127" font-size="18">Language | Spatial reasoning | Social and emotional understanding</text>
+    <text x="480" y="158" font-size="18">Specialized knowledge, representations and skills</text>
+    <text x="480" y="198" font-size="16" fill="#53606c">Used as examples; complete theories of these domains are outside scope</text>
+
+    <path d="M290 224 V326" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="275" y="261" font-size="16" text-anchor="end">Supply information</text>
+    <text x="275" y="284" font-size="16" text-anchor="end">and possible actions</text>
+    <path d="M670 326 V224" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="685" y="261" font-size="16" text-anchor="start">Coordinate use,</text>
+    <text x="685" y="284" font-size="16" text-anchor="start">revision and learning</text>
+
+    <rect x="110" y="328" width="740" height="190" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="480" y="361" font-size="20" font-weight="700" fill="#125c49">THESIS FOCUS: SHARED SUPPORTING FUNCTIONS</text>
+    <text x="480" y="393" font-size="18">Maintain goals | Select and sequence steps | Use feedback</text>
+    <text x="480" y="424" font-size="18">Simulate and revise | Continue or stop | Learn and consolidate</text>
+    <text x="480" y="462" font-size="18" font-weight="700">Serial control: commit successive steps toward a goal</text>
+    <text x="480" y="492" font-size="16" fill="#125c49">A proposed functional structure shared across domains</text>
+
+    <path d="M480 608 V520" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="497" y="559" font-size="16" text-anchor="start">Implement and constrain</text>
+    <text x="497" y="582" font-size="16" text-anchor="start">the supporting functions</text>
+
+    <rect x="110" y="610" width="740" height="124" rx="6" fill="#fff4dc" stroke="#a17a2b" stroke-width="2"/>
+    <text x="480" y="641" font-size="20" font-weight="700">UNDERLYING MECHANISMS</text>
+    <text x="480" y="671" font-size="18">Biological or computational implementations</text>
+    <text x="480" y="699" font-size="16">Parallel processing, recognition, motor dynamics and monitoring</text>
+    <text x="480" y="722" font-size="15" fill="#695321">Detailed mechanisms are outside scope; shared functions need not share a mechanism</text>
+  </g>
+</svg>

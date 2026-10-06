@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="530" viewBox="0 0 960 530" role="img" aria-labelledby="title desc">
+  <title id="title">Plan everything, or commit one step at a time</title>
+  <desc id="desc">Left: planning the whole sequence first means searching a tree of b to the n complete sequences (27 at three options and three steps, about 3.5 billion at twenty steps), then executing one path as a script; the world changes partway, so the script goes stale. Right: the closed loop. Choose the next step from b options, conditioned on the goal and a belief state; commit one step to a noisy, changing, partly hidden world; observe what actually happened; update the belief state, a summary of history; repeat. This needs n choices of size b, and a plan or map guides the choice only as a prior, not a script.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#b54a3a"/>
+    </marker>
+  </defs>
+  <rect width="960" height="530" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Plan Everything, or Commit One Step at a Time</text>
+
+    <!-- Left panel: open loop -->
+    <rect x="24" y="64" width="440" height="440" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="244" y="94" font-size="18" font-weight="700">Plan the whole sequence first</text>
+    <g stroke="#aab4be" stroke-width="1.2">
+      <line x1="224" y1="128" x2="98" y2="196"/>
+      <line x1="224" y1="128" x2="224" y2="196"/>
+      <line x1="224" y1="128" x2="350" y2="196"/>
+      <line x1="98" y1="196" x2="56" y2="264"/>
+      <line x1="98" y1="196" x2="98" y2="264"/>
+      <line x1="98" y1="196" x2="140" y2="264"/>
+      <line x1="224" y1="196" x2="182" y2="264"/>
+      <line x1="224" y1="196" x2="224" y2="264"/>
+      <line x1="224" y1="196" x2="266" y2="264"/>
+      <line x1="350" y1="196" x2="308" y2="264"/>
+      <line x1="350" y1="196" x2="350" y2="264"/>
+      <line x1="350" y1="196" x2="392" y2="264"/>
+      <line x1="56" y1="264" x2="42" y2="332"/>
+      <line x1="56" y1="264" x2="56" y2="332"/>
+      <line x1="56" y1="264" x2="70" y2="332"/>
+      <line x1="98" y1="264" x2="84" y2="332"/>
+      <line x1="98" y1="264" x2="98" y2="332"/>
+      <line x1="98" y1="264" x2="112" y2="332"/>
+      <line x1="140" y1="264" x2="126" y2="332"/>
+      <line x1="140" y1="264" x2="140" y2="332"/>
+      <line x1="140" y1="264" x2="154" y2="332"/>
+      <line x1="182" y1="264" x2="168" y2="332"/>
+      <line x1="182" y1="264" x2="182" y2="332"/>
+      <line x1="182" y1="264" x2="196" y2="332"/>
+      <line x1="224" y1="264" x2="210" y2="332"/>
+      <line x1="224" y1="264" x2="224" y2="332"/>
+      <line x1="224" y1="264" x2="238" y2="332"/>
+      <line x1="266" y1="264" x2="252" y2="332"/>
+      <line x1="266" y1="264" x2="266" y2="332"/>
+      <line x1="266" y1="264" x2="280" y2="332"/>
+      <line x1="308" y1="264" x2="294" y2="332"/>
+      <line x1="308" y1="264" x2="308" y2="332"/>
+      <line x1="308" y1="264" x2="322" y2="332"/>
+      <line x1="350" y1="264" x2="336" y2="332"/>
+      <line x1="350" y1="264" x2="350" y2="332"/>
+      <line x1="350" y1="264" x2="364" y2="332"/>
+      <line x1="392" y1="264" x2="378" y2="332"/>
+      <line x1="392" y1="264" x2="392" y2="332"/>
+      <line x1="392" y1="264" x2="406" y2="332"/>
+    </g>
+    <g fill="#8895a1">
+      <circle cx="224" cy="128" r="5"/>
+      <circle cx="98" cy="196" r="5"/>
+      <circle cx="224" cy="196" r="5"/>
+      <circle cx="350" cy="196" r="5"/>
+      <circle cx="56" cy="264" r="5"/>
+      <circle cx="98" cy="264" r="5"/>
+      <circle cx="140" cy="264" r="5"/>
+      <circle cx="182" cy="264" r="5"/>
+      <circle cx="224" cy="264" r="5"/>
+      <circle cx="266" cy="264" r="5"/>
+      <circle cx="308" cy="264" r="5"/>
+      <circle cx="350" cy="264" r="5"/>
+      <circle cx="392" cy="264" r="5"/>
+      <circle cx="42" cy="332" r="4"/>
+      <circle cx="56" cy="332" r="4"/>
+      <circle cx="70" cy="332" r="4"/>
+      <circle cx="84" cy="332" r="4"/>
+      <circle cx="98" cy="332" r="4"/>
+      <circle cx="112" cy="332" r="4"/>
+      <circle cx="126" cy="332" r="4"/>
+      <circle cx="140" cy="332" r="4"/>
+      <circle cx="154" cy="332" r="4"/>
+      <circle cx="168" cy="332" r="4"/>
+      <circle cx="182" cy="332" r="4"/>
+      <circle cx="196" cy="332" r="4"/>
+      <circle cx="210" cy="332" r="4"/>
+      <circle cx="224" cy="332" r="4"/>
+      <circle cx="238" cy="332" r="4"/>
+      <circle cx="252" cy="332" r="4"/>
+      <circle cx="266" cy="332" r="4"/>
+      <circle cx="280" cy="332" r="4"/>
+      <circle cx="294" cy="332" r="4"/>
+      <circle cx="308" cy="332" r="4"/>
+      <circle cx="322" cy="332" r="4"/>
+      <circle cx="336" cy="332" r="4"/>
+      <circle cx="350" cy="332" r="4"/>
+      <circle cx="364" cy="332" r="4"/>
+      <circle cx="378" cy="332" r="4"/>
+      <circle cx="392" cy="332" r="4"/>
+      <circle cx="406" cy="332" r="4"/>
+    </g>
+    <path d="M224 128 L350 196 L350 264" fill="none" stroke="#b54a3a" stroke-width="3"/>
+    <path d="M350 264 L350 332" fill="none" stroke="#b54a3a" stroke-width="3" stroke-dasharray="5 4"/>
+    <circle cx="224" cy="128" r="6" fill="#b54a3a"/>
+    <circle cx="350" cy="196" r="6" fill="#b54a3a"/>
+    <circle cx="350" cy="264" r="6" fill="#b54a3a"/>
+    <circle cx="350" cy="332" r="6" fill="#b54a3a"/>
+    <path d="M341.0 289.0 L359.0 307.0 M359.0 289.0 L341.0 307.0" stroke="#b54a3a" stroke-width="3"/>
+    <g font-size="13" font-weight="700" fill="#b54a3a" text-anchor="start" stroke="#f3f5f7" stroke-width="5" stroke-linejoin="round" paint-order="stroke">
+      <text x="366.0" y="294.0">world changed:</text>
+      <text x="366.0" y="310.0">script is stale</text>
+    </g>
+    <g font-size="13" fill="#53606c" text-anchor="start">
+      <text x="366" y="136">pre-chosen</text>
+      <text x="366" y="152">path</text>
+    </g>
+    <text x="40" y="140" font-size="13" fill="#53606c" text-anchor="start">b = 3 options</text>
+    <text x="40" y="156" font-size="13" fill="#53606c" text-anchor="start">per step</text>
+    <text x="244" y="370" font-size="15" font-weight="700">bⁿ complete sequences to search</text>
+    <text x="244" y="392" font-size="14" fill="#53606c">27 at n = 3; about 3.5 billion at n = 20</text>
+    <text x="244" y="448" font-size="14">Search everything, then run one path as a script.</text>
+    <text x="244" y="470" font-size="14">The world changes before the script finishes.</text>
+
+    <!-- Right panel: closed loop -->
+    <rect x="496" y="64" width="440" height="440" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="716" y="94" font-size="18" font-weight="700" fill="#125c49">Commit one step, observe, update</text>
+
+    <g fill="#ffffff" stroke="#16755d" stroke-width="2">
+      <rect x="626" y="128" width="180" height="52" rx="6"/>
+      <rect x="790" y="245" width="136" height="70" rx="6" stroke="#8895a1"/>
+      <rect x="626" y="380" width="180" height="52" rx="6"/>
+      <rect x="506" y="245" width="136" height="70" rx="6"/>
+    </g>
+    <text x="716" y="150" font-size="15" font-weight="700">Choose next step</text>
+    <text x="716" y="169" font-size="13" fill="#53606c">from b options</text>
+    <text x="858" y="270" font-size="15" font-weight="700">World</text>
+    <text x="858" y="288" font-size="13" fill="#53606c">noisy, changing,</text>
+    <text x="858" y="304" font-size="13" fill="#53606c">partly hidden</text>
+    <text x="716" y="402" font-size="15" font-weight="700">Observe</text>
+    <text x="716" y="421" font-size="13" fill="#53606c">what actually happened</text>
+    <text x="574" y="270" font-size="15" font-weight="700">Belief state</text>
+    <text x="574" y="288" font-size="13" fill="#53606c">summary of</text>
+    <text x="574" y="304" font-size="13" fill="#53606c">history so far</text>
+
+    <circle cx="716" cy="280" r="36" fill="#16755d"/>
+    <text x="716" y="285" font-size="15" font-weight="700" fill="#ffffff">Goal</text>
+    <path d="M716 243 V183" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+
+    <g fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M808 154 Q858 154 858 242"/>
+      <path d="M858 318 Q858 406 809 406"/>
+      <path d="M624 406 Q574 406 574 318"/>
+      <path d="M574 242 Q574 154 623 154"/>
+    </g>
+    <g font-size="13" font-weight="700">
+      <text x="866" y="186" text-anchor="start">commit</text>
+      <text x="866" y="202" text-anchor="start">1 step</text>
+      <text x="866" y="372" text-anchor="start">outcome</text>
+      <text x="566" y="372" text-anchor="end">update</text>
+      <text x="566" y="186" text-anchor="end">condition</text>
+      <text x="566" y="202" text-anchor="end">on</text>
+    </g>
+
+    <text x="716" y="460" font-size="14">n choices of size b, each from a belief built</text>
+    <text x="716" y="478" font-size="14">from previous steps. A plan is a prior, not a script.</text>
+  </g>
+</svg>

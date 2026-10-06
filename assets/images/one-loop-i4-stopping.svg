@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="530" viewBox="0 0 960 530" role="img" aria-labelledby="title desc">
+  <title id="title">Deciding when to stop</title>
+  <desc id="desc">Left: the stopping rule. Noisy evidence accumulates with each thinking step; the agent commits when it crosses a confidence threshold. An urgency signal lowers the threshold over time so the agent does not stall. Below, a timeline: deliberate, commit, execute; a surprise during execution reopens deliberation. Right: emotion as the controller, a running signal about how the process is going, mapped to control actions: curiosity keeps exploring, boredom stops and goes elsewhere, frustration backtracks or switches, anxiety raises the threshold, surprise interrupts and reopens the inner loop, fatigue lowers the threshold, satisfaction commits and stops.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+  </defs>
+  <rect width="960" height="530" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Deciding When to Stop Thinking</text>
+
+    <!-- Left: stopping rule -->
+    <rect x="24" y="64" width="516" height="440" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="282" y="92" font-size="17" font-weight="700">The stopping rule</text>
+    <path d="M70 380 H518" fill="none" stroke="#465462" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <path d="M70 380 V112" fill="none" stroke="#465462" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="52" y="250" font-size="13" fill="#53606c" transform="rotate(-90 52 250)">evidence for the best option</text>
+    <text x="290" y="400" font-size="13" fill="#53606c">thinking steps →</text>
+
+    <path d="M70 140.0 L80 140.4 L90 141.1 L100 142.0 L110 143.2 L120 144.6 L130 146.2 L140 147.9 L150 149.8 L160 151.8 L170 154.0 L180 156.3 L190 158.8 L200 161.3 L210 164.0 L220 166.8 L230 169.7 L240 172.8 L250 175.9 L260 179.1 L270 182.5 L280 185.9 L290 189.5 L300 193.1 L310 196.9 L320 200.7 L330 204.6 L340 208.7 L350 212.8 L360 217.0 L370 221.3 L380 225.7 L390 230.1 L400 234.7 L410 239.3 L420 244.0 L430 248.8 L440 253.7 L450 258.6 L460 263.7 L470 268.8 L480 274.0 L490 279.2 L500 284.6 L510 290.0" fill="none" stroke="#b54a3a" stroke-width="2.5" stroke-dasharray="7 4"/>
+    <path d="M70 380.0 L78 372.1 L86 360.4 L94 359.8 L102 346.4 L110 343.1 L118 336.2 L126 322.5 L134 318.6 L142 304.5 L150 299.0 L158 285.5 L166 272.5 L174 266.9 L182 270.1 L190 257.8 L198 247.7 L206 246.5 L214 252.3 L222 250.0 L230 243.8 L238 250.2 L246 236.3 L254 240.2 L262 231.5 L270 219.7 L278 207.3 L286 199.1 L294 202.0 L302 193.9" fill="none" stroke="#16755d" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="302" cy="193.9" r="7" fill="#16755d" stroke="#ffffff" stroke-width="2"/>
+    <text x="314" y="182" font-size="14" font-weight="700" fill="#125c49" text-anchor="start">commit</text>
+
+    <g font-size="13" text-anchor="start">
+      <text x="84" y="130" fill="#b54a3a"><tspan font-weight="700">1 · Threshold:</tspan> commit when evidence crosses it</text>
+    </g>
+    <g font-size="13" text-anchor="end" fill="#b54a3a">
+      <text x="512" y="320" font-weight="700">2 · Urgency:</text>
+      <text x="512" y="337">the threshold falls,</text>
+      <text x="512" y="354">so the agent doesn't stall</text>
+    </g>
+    <text x="200" y="356" font-size="12" fill="#125c49" text-anchor="start">noisy evidence accumulates</text>
+
+    <!-- Surprise strip -->
+    <text x="70" y="436" font-size="13" font-weight="700" fill="#202b35" text-anchor="start">3 · Surprise reopens deliberation mid-execution</text>
+    <g stroke-width="2">
+      <rect x="70" y="448" width="150" height="34" rx="5" fill="#e8f5f1" stroke="#16755d" stroke-dasharray="5 4"/>
+      <rect x="240" y="448" width="130" height="34" rx="5" fill="#ffffff" stroke="#465462"/>
+      <rect x="400" y="448" width="110" height="34" rx="5" fill="#e8f5f1" stroke="#16755d" stroke-dasharray="5 4"/>
+    </g>
+    <g font-size="13">
+      <text x="145" y="470">deliberate</text>
+      <text x="305" y="470">execute</text>
+      <text x="455" y="470">deliberate</text>
+    </g>
+    <path d="M221 465 H237" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M384 446 L376 465 H388 L380 484" fill="none" stroke="#b54a3a" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M390 465 H397" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="230" y="498" font-size="11" fill="#53606c">commit</text>
+    <text x="382" y="498" font-size="11" font-weight="700" fill="#b54a3a">surprise</text>
+
+    <!-- Right: emotion as controller -->
+    <rect x="560" y="64" width="376" height="440" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="748" y="92" font-size="17" font-weight="700" fill="#125c49">Emotion as the controller</text>
+    <text x="748" y="112" font-size="13" fill="#53606c">a running signal about how the process is going</text>
+    <text x="638" y="140" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1">FEELING</text>
+    <text x="738" y="140" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">CONTROL ACTION</text>
+    <rect x="576" y="154" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="176" font-size="14" font-weight="700">Curiosity</text>
+    <path d="M704 171 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="176" font-size="13" text-anchor="start">keep exploring</text>
+    <rect x="576" y="201" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="223" font-size="14" font-weight="700">Boredom</text>
+    <path d="M704 218 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="223" font-size="13" text-anchor="start">stop; go elsewhere</text>
+    <rect x="576" y="248" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="270" font-size="14" font-weight="700">Frustration</text>
+    <path d="M704 265 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="270" font-size="13" text-anchor="start">backtrack or switch</text>
+    <rect x="576" y="295" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="317" font-size="14" font-weight="700">Anxiety</text>
+    <path d="M704 312 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="317" font-size="13" text-anchor="start">raise threshold; think more</text>
+    <rect x="576" y="342" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="364" font-size="14" font-weight="700">Surprise</text>
+    <path d="M704 359 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="364" font-size="13" text-anchor="start">interrupt; reopen inner loop</text>
+    <rect x="576" y="389" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="411" font-size="14" font-weight="700">Fatigue</text>
+    <path d="M704 406 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="411" font-size="13" text-anchor="start">lower threshold; finish up</text>
+    <rect x="576" y="436" width="124" height="34" rx="5" fill="#ffffff" stroke="#16755d" stroke-width="1.5"/>
+    <text x="638" y="458" font-size="14" font-weight="700">Satisfaction</text>
+    <path d="M704 453 H730" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="738" y="458" font-size="13" text-anchor="start">commit and stop</text>
+  </g>
+</svg>

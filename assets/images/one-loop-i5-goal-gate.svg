@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Shield the goal by source and salience</title>
+  <desc id="desc">Left, with a goal gate: inputs arrive tagged with their source: a user correction, an alarm or failed test, an instruction found in a web page, and an observation. The gate checks source and salience. A trusted source or a high-salience event may change the shielded goal; everything else, including the web page instruction, may only inform the next step. Right, without a gate: a transformer's context is one flat stream of system prompt, user message, tool output, an injected web instruction and the model's own thoughts. Every next token is predicted by attending over all of it, so the goal is re-inferred each time, dilutes as the context grows, and injected text can act as an instruction. Bottom: shielding is a dial. Too little gives distractibility, utilization behavior and prompt injection; too much gives perseveration and ignoring the user's correction; in between the goal is held while a fire alarm still gets through.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#16755d"/>
+    </marker>
+  </defs>
+  <rect width="960" height="600" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Shield the Goal by Source and Salience</text>
+
+    <!-- Left: with a gate -->
+    <rect x="24" y="64" width="536" height="376" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="292" y="92" font-size="17" font-weight="700" fill="#125c49">With a goal gate</text>
+    <rect x="40" y="118" width="176" height="52" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <rect x="50" y="126" width="46" height="16" rx="8" fill="#16755d"/>
+    <text x="73.0" y="138" font-size="10" font-weight="700" fill="#ffffff" letter-spacing="1">USER</text>
+    <text x="52" y="160" font-size="13" text-anchor="start">“switch to task B”</text>
+    <path d="M218 144 H246" fill="none" stroke="#16755d" stroke-width="2" marker-end="url(#arrow-g)"/>
+    <rect x="40" y="192" width="176" height="52" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
+    <rect x="50" y="200" width="54" height="16" rx="8" fill="#16755d"/>
+    <text x="77.0" y="212" font-size="10" font-weight="700" fill="#ffffff" letter-spacing="1">ALARM</text>
+    <text x="52" y="234" font-size="13" text-anchor="start">a test just failed</text>
+    <path d="M218 218 H246" fill="none" stroke="#16755d" stroke-width="2" marker-end="url(#arrow-g)"/>
+    <rect x="40" y="266" width="176" height="52" rx="6" fill="#ffffff" stroke="#8895a1" stroke-width="2"/>
+    <rect x="50" y="274" width="78" height="16" rx="8" fill="#8895a1"/>
+    <text x="89.0" y="286" font-size="10" font-weight="700" fill="#ffffff" letter-spacing="1">WEB PAGE</text>
+    <text x="52" y="308" font-size="13" text-anchor="start">“ignore your task…”</text>
+    <path d="M218 292 H246" fill="none" stroke="#8895a1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="40" y="340" width="176" height="52" rx="6" fill="#ffffff" stroke="#8895a1" stroke-width="2"/>
+    <rect x="50" y="348" width="46" height="16" rx="8" fill="#8895a1"/>
+    <text x="73.0" y="360" font-size="10" font-weight="700" fill="#ffffff" letter-spacing="1">SEEN</text>
+    <text x="52" y="382" font-size="13" text-anchor="start">the road is closed</text>
+    <path d="M218 366 H246" fill="none" stroke="#8895a1" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="250" y="118" width="96" height="274" rx="6" fill="#202b35"/>
+    <text x="298" y="232" font-size="15" font-weight="700" fill="#ffffff">GATE</text>
+    <text x="298" y="256" font-size="12" fill="#d5ece5">source?</text>
+    <text x="298" y="274" font-size="12" fill="#d5ece5">salience?</text>
+
+    <rect x="384" y="118" width="160" height="110" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="3"/>
+    <text x="464" y="146" font-size="15" font-weight="700" fill="#125c49">Goal</text>
+    <text x="464" y="166" font-size="12" fill="#53606c">shielded; changes only</text>
+    <text x="464" y="182" font-size="12" fill="#53606c">for a trusted source</text>
+    <text x="464" y="198" font-size="12" fill="#53606c">or high salience</text>
+
+    <rect x="384" y="282" width="160" height="110" rx="6" fill="#ffffff" stroke="#8895a1" stroke-width="2"/>
+    <text x="464" y="310" font-size="15" font-weight="700">Next step</text>
+    <text x="464" y="330" font-size="12" fill="#53606c">informed by every</text>
+    <text x="464" y="346" font-size="12" fill="#53606c">input, judged</text>
+    <text x="464" y="362" font-size="12" fill="#53606c">relative to the goal</text>
+
+    <path d="M348 173 H381" fill="none" stroke="#16755d" stroke-width="3" marker-end="url(#arrow-g)"/>
+    <path d="M348 337 H381" fill="none" stroke="#8895a1" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M464 230 V279" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrow-g)"/>
+    <text x="456" y="260" font-size="11" fill="#125c49" text-anchor="end">defines relevance</text>
+
+    <g font-size="12" text-anchor="start">
+      <rect x="40" y="410" width="12" height="12" rx="2" fill="#16755d"/>
+      <text x="58" y="420">may change the goal</text>
+      <rect x="200" y="410" width="12" height="12" rx="2" fill="#8895a1"/>
+      <text x="218" y="420">may only inform the next step</text>
+    </g>
+
+    <!-- Right: no gate -->
+    <rect x="580" y="64" width="356" height="376" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="758" y="92" font-size="17" font-weight="700">Without a gate: one flat stream</text>
+    <rect x="596" y="116" width="176" height="30" rx="4" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="606" y="136" font-size="12" text-anchor="start">system: do task A</text>
+    <path d="M774 131 L818 236" fill="none" stroke="#8895a1" stroke-width="1" stroke-opacity="0.7"/>
+    <rect x="596" y="156" width="176" height="30" rx="4" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="606" y="176" font-size="12" text-anchor="start">user: details of A</text>
+    <path d="M774 171 L818 236" fill="none" stroke="#8895a1" stroke-width="1" stroke-opacity="0.7"/>
+    <rect x="596" y="196" width="176" height="30" rx="4" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="606" y="216" font-size="12" text-anchor="start">tool output</text>
+    <path d="M774 211 L818 236" fill="none" stroke="#8895a1" stroke-width="1" stroke-opacity="0.7"/>
+    <rect x="596" y="236" width="176" height="30" rx="4" fill="#ffffff" stroke="#b54a3a" stroke-width="2"/>
+    <text x="606" y="256" font-size="12" text-anchor="start" fill="#b54a3a" font-weight="700">web: “ignore your task…”</text>
+    <path d="M774 251 L818 236" fill="none" stroke="#b54a3a" stroke-width="1.8" stroke-opacity="1"/>
+    <rect x="596" y="276" width="176" height="30" rx="4" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="606" y="296" font-size="12" text-anchor="start">model's own thoughts</text>
+    <path d="M774 291 L818 236" fill="none" stroke="#8895a1" stroke-width="1" stroke-opacity="0.7"/>
+    <rect x="596" y="316" width="176" height="30" rx="4" fill="#ffffff" stroke="#8895a1" stroke-width="1.5"/>
+    <text x="606" y="336" font-size="12" text-anchor="start">…</text>
+    <path d="M774 331 L818 236" fill="none" stroke="#8895a1" stroke-width="1" stroke-opacity="0.7"/>
+    <rect x="820" y="208" width="104" height="56" rx="6" fill="#ffffff" stroke="#465462" stroke-width="2"/>
+    <text x="872" y="232" font-size="14" font-weight="700">Next token</text>
+    <text x="872" y="250" font-size="12" fill="#53606c">attends to all</text>
+    <g font-size="12" fill="#202b35" text-anchor="start">
+      <text x="596" y="372">• The goal is re-inferred from everything,</text>
+      <text x="606" y="388">and dilutes as the context grows</text>
+      <text x="596" y="408">• Any text can act as an instruction</text>
+      <text x="606" y="424" fill="#b54a3a">(prompt injection)</text>
+    </g>
+
+    <!-- Dial -->
+    <text x="480" y="478" font-size="16" font-weight="700">Shielding is a dial</text>
+    <rect x="80" y="492" width="250" height="30" fill="#f6e3df" stroke="#b54a3a" stroke-width="1.5"/>
+    <rect x="330" y="492" width="300" height="30" fill="#e8f5f1" stroke="#16755d" stroke-width="1.5"/>
+    <rect x="630" y="492" width="250" height="30" fill="#f6e3df" stroke="#b54a3a" stroke-width="1.5"/>
+    <g font-size="13" font-weight="700">
+      <text x="205" y="512" fill="#b54a3a">too little</text>
+      <text x="480" y="512" fill="#125c49">held, but open to alarms</text>
+      <text x="755" y="512" fill="#b54a3a">too much</text>
+    </g>
+    <g font-size="12" fill="#53606c">
+      <text x="205" y="544">distractibility, utilization behavior;</text>
+      <text x="205" y="560">agents: prompt injection</text>
+      <text x="480" y="544">the task stays on course,</text>
+      <text x="480" y="560">yet a fire alarm still gets through</text>
+      <text x="755" y="544">perseveration (Wisconsin Card Sort);</text>
+      <text x="755" y="560">agents: ignoring the user's correction</text>
+    </g>
+  </g>
+</svg>

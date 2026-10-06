@@ -4,9 +4,14 @@
 
 My understanding of AI: how minds and machines decide what comes next.
 
-## [One Loop: Minds and Transformers](docs/one_loop.md)
+## One Loop: design of a brain-inspired agent
 
-**Summary.** Perception, reasoning, planning, action and language all work like transformer generation: *next step = f(goal, everything so far)*. The essay argues they share one structure, a hierarchy of goal-driven loops that try options reversibly before committing, decide when to stop, and protect their goal from interruptions. Transformers already handle the step-by-step generation well; whether they need the other parts built in, or will learn them with scale, is an open question the essay proposes tests for.
+The design of an agent built around a control structure that brains and transformers share: a hierarchy of goal-conditioned loops that commit one step at a time. Each feature is derived from a constraint every agent faces, informed by recent advances in AI and neuroscience, then turned into components, design rules and a staged implementation plan.
+
+1. **[Observations and design principles](docs/one_loop/01_observations.md).** The observation that perception, reasoning, planning, action and language work like transformer generation; what the design covers; the seven constraints the features come from; and the design stance.
+2. **[Derived features](docs/one_loop/02_features.md).** Seven features (F1–F7), each derived from a constraint with evidence from brains and machines: the step loop, compiled skills, a reversible inner loop, a controller that decides when to stop, a shielded goal, memory with consolidation, and learning at the edge of competence.
+3. **[System design](docs/one_loop/03_system_design.md).** Requirements, the architecture and its components, the step and sleep cycles, and the design rules (R1–R8).
+4. **[Implementation plan](docs/one_loop/04_implementation_plan.md).** What current models already provide, the build stages, acceptance criteria and ablations for each module, and the design's assumptions and risks.
 
 ## Copyright
 

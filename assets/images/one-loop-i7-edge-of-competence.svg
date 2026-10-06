@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Learning happens at the edge of competence, in order</title>
+  <desc id="desc">Left: learning signal plotted against a task's pass rate. It is zero when the task always fails and zero when it always succeeds, and peaks in between, in the zone of proximal development, where success is possible but unreliable. Group-relative RL such as GRPO gets no gradient at 0 or 100 percent. Scaffolding moves a task that is too hard alone into the zone; it should fade as competence grows. Right: development has an order. A staircase of capabilities, each built on the one below: forward models (sensorimotor), planning (semiotic function), verification by reversible checks (concrete operations), and hypotheses and metareasoning (formal operations). The first two are mastered, learning happens on the next step up, and the step beyond is still too hard. A shielded goal likewise comes before safe autonomy. Piaget's stages are one human route through these dependencies, not fixed ages.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
+    </marker>
+    <marker id="arrow-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#16755d"/>
+    </marker>
+  </defs>
+  <rect width="960" height="540" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
+    <text x="480" y="36" font-size="23" font-weight="700">Learn at the Edge, Build in Order</text>
+
+    <!-- Left: edge of competence -->
+    <rect x="24" y="64" width="440" height="452" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="244" y="92" font-size="17" font-weight="700">Learning signal peaks at the edge</text>
+    <path d="M152.0 370 L152.0 235.6 L155.6 230.6 L159.2 225.9 L162.8 221.2 L166.4 216.8 L170.0 212.5 L173.6 208.4 L177.2 204.4 L180.8 200.7 L184.4 197.0 L188.0 193.6 L191.6 190.3 L195.2 187.2 L198.8 184.3 L202.4 181.5 L206.0 178.9 L209.6 176.5 L213.2 174.2 L216.8 172.1 L220.4 170.2 L224.0 168.4 L227.6 166.8 L231.2 165.4 L234.8 164.1 L238.4 163.0 L242.0 162.1 L245.6 161.3 L249.2 160.8 L252.8 160.3 L256.4 160.1 L260.0 160.0 L263.6 160.1 L267.2 160.3 L270.8 160.8 L274.4 161.3 L278.0 162.1 L281.6 163.0 L285.2 164.1 L288.8 165.4 L292.4 166.8 L296.0 168.4 L299.6 170.2 L303.2 172.1 L306.8 174.2 L310.4 176.5 L314.0 178.9 L317.6 181.5 L321.2 184.3 L324.8 187.2 L328.4 190.3 L332.0 193.6 L335.6 197.0 L339.2 200.7 L342.8 204.4 L346.4 208.4 L350.0 212.5 L353.6 216.8 L357.2 221.2 L360.8 225.9 L364.4 230.6 L368.0 235.6 L368.0 370 Z" fill="#e8f5f1" stroke="none"/>
+    <line x1="152.0" y1="370" x2="152.0" y2="130" stroke="#16755d" stroke-width="1" stroke-dasharray="4 3"/>
+    <line x1="368.0" y1="370" x2="368.0" y2="130" stroke="#16755d" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="260.0" y="128" font-size="13" font-weight="700" fill="#125c49">Zone of proximal development</text>
+    <text x="260.0" y="144" font-size="12" fill="#125c49">success possible, not reliable</text>
+    <path d="M80 370 H450" stroke="#465462" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M80 370 V118" stroke="#465462" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="60" y="250" font-size="12" fill="#53606c" transform="rotate(-90 60 250)">learning signal</text>
+    <path d="M80.0 370.0 L83.6 361.7 L87.2 353.5 L90.8 345.6 L94.4 337.7 L98.0 330.1 L101.6 322.6 L105.2 315.3 L108.8 308.2 L112.4 301.2 L116.0 294.4 L119.6 287.8 L123.2 281.3 L126.8 275.0 L130.4 268.9 L134.0 262.9 L137.6 257.1 L141.2 251.5 L144.8 246.0 L148.4 240.7 L152.0 235.6 L155.6 230.6 L159.2 225.9 L162.8 221.2 L166.4 216.8 L170.0 212.5 L173.6 208.4 L177.2 204.4 L180.8 200.7 L184.4 197.0 L188.0 193.6 L191.6 190.3 L195.2 187.2 L198.8 184.3 L202.4 181.5 L206.0 178.9 L209.6 176.5 L213.2 174.2 L216.8 172.1 L220.4 170.2 L224.0 168.4 L227.6 166.8 L231.2 165.4 L234.8 164.1 L238.4 163.0 L242.0 162.1 L245.6 161.3 L249.2 160.8 L252.8 160.3 L256.4 160.1 L260.0 160.0 L263.6 160.1 L267.2 160.3 L270.8 160.8 L274.4 161.3 L278.0 162.1 L281.6 163.0 L285.2 164.1 L288.8 165.4 L292.4 166.8 L296.0 168.4 L299.6 170.2 L303.2 172.1 L306.8 174.2 L310.4 176.5 L314.0 178.9 L317.6 181.5 L321.2 184.3 L324.8 187.2 L328.4 190.3 L332.0 193.6 L335.6 197.0 L339.2 200.7 L342.8 204.4 L346.4 208.4 L350.0 212.5 L353.6 216.8 L357.2 221.2 L360.8 225.9 L364.4 230.6 L368.0 235.6 L371.6 240.7 L375.2 246.0 L378.8 251.5 L382.4 257.1 L386.0 262.9 L389.6 268.9 L393.2 275.0 L396.8 281.3 L400.4 287.8 L404.0 294.4 L407.6 301.2 L411.2 308.2 L414.8 315.3 L418.4 322.6 L422.0 330.1 L425.6 337.7 L429.2 345.6 L432.8 353.5 L436.4 361.7 L440.0 370.0" fill="none" stroke="#16755d" stroke-width="3"/>
+    <g font-size="12" fill="#53606c">
+      <text x="80" y="388">0%</text>
+      <text x="260.0" y="388">50%</text>
+      <text x="440" y="388">100%</text>
+      <text x="260.0" y="406">pass rate</text>
+    </g>
+    <g font-size="12" fill="#b54a3a">
+      <text x="66" y="406" font-weight="700" text-anchor="start">too hard</text>
+      <text x="66" y="421" text-anchor="start">always fails: no signal</text>
+      <text x="454" y="406" font-weight="700" text-anchor="end">too easy</text>
+      <text x="454" y="421" text-anchor="end">always succeeds: no signal</text>
+    </g>
+    <circle cx="98.0" cy="330.1" r="6" fill="#ffffff" stroke="#465462" stroke-width="2"/>
+    <circle cx="231.2" cy="165.4" r="6" fill="#16755d"/>
+    <path d="M102.0 320.1 Q108.0 185.4 222.2 169.4" fill="none" stroke="#16755d" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrow-g)"/>
+    <text x="162.6" y="277.7" font-size="12" font-weight="700" fill="#125c49" text-anchor="start">with</text>
+    <text x="162.6" y="292.7" font-size="12" font-weight="700" fill="#125c49" text-anchor="start">scaffolding</text>
+
+    <g font-size="13">
+      <text x="244" y="448">Practice teaches nothing at 0% or 100% success;</text>
+      <text x="244" y="466">in GRPO such problems give zero gradient.</text>
+      <text x="244" y="492" fill="#53606c">Scaffolding pulls a hard task into the zone.</text>
+      <text x="244" y="508" fill="#53606c">Fade it as competence grows.</text>
+    </g>
+
+    <!-- Right: dependency order -->
+    <rect x="484" y="64" width="452" height="452" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
+    <text x="710" y="92" font-size="17" font-weight="700" fill="#125c49">Development has an order</text>
+    <text x="710" y="112" font-size="13" fill="#53606c">each capability is built on the one below</text>
+    <rect x="504" y="338" width="100" height="62" rx="4" fill="#16755d" stroke="#16755d" stroke-width="2"/>
+    <text x="554.0" y="358" font-size="13" font-weight="700" fill="#ffffff">Forward</text>
+    <text x="554.0" y="374" font-size="13" font-weight="700" fill="#ffffff">models</text>
+    <text x="554.0" y="392" font-size="11" fill="#d5ece5" font-style="italic">sensorimotor</text>
+    <rect x="608" y="276" width="100" height="124" rx="4" fill="#16755d" stroke="#16755d" stroke-width="2"/>
+    <text x="658.0" y="296" font-size="13" font-weight="700" fill="#ffffff">Planning</text>
+    <text x="658.0" y="314" font-size="11" fill="#d5ece5" font-style="italic">semiotic</text>
+    <text x="658.0" y="328" font-size="11" fill="#d5ece5" font-style="italic">function</text>
+    <rect x="712" y="214" width="100" height="186" rx="4" fill="#ffffff" stroke="#16755d" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="762.0" y="234" font-size="13" font-weight="700" fill="#125c49">Verification</text>
+    <text x="762.0" y="252" font-size="11" fill="#53606c" font-style="italic">concrete</text>
+    <text x="762.0" y="266" font-size="11" fill="#53606c" font-style="italic">operations</text>
+    <rect x="816" y="152" width="100" height="248" rx="4" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <text x="866.0" y="172" font-size="13" font-weight="700" fill="#53606c">Hypotheses,</text>
+    <text x="866.0" y="188" font-size="13" font-weight="700" fill="#53606c">metareasoning</text>
+    <text x="866.0" y="206" font-size="11" fill="#8895a1" font-style="italic">formal</text>
+    <text x="866.0" y="220" font-size="11" fill="#8895a1" font-style="italic">operations</text>
+    <path d="M504 408 V416 H708 V408" fill="none" stroke="#16755d" stroke-width="1.5"/>
+    <text x="606" y="432" font-size="12" font-weight="700" fill="#125c49">mastered</text>
+    <text x="762" y="194" font-size="12" font-weight="700" fill="#125c49">learn here</text>
+    <text x="762" y="208" font-size="11" fill="#125c49">(the ZPD)</text>
+    <text x="866" y="132" font-size="12" font-weight="700" fill="#53606c">too hard</text>
+    <text x="866" y="146" font-size="11" fill="#53606c">for now</text>
+    <g font-size="13">
+      <text x="710" y="458">Forward models before planning, planning before</text>
+      <text x="710" y="476">verification; a shielded goal before safe autonomy.</text>
+      <text x="710" y="500" font-size="12" fill="#53606c">Piaget's stages are one human route, not fixed ages.</text>
+    </g>
+  </g>
+</svg>
