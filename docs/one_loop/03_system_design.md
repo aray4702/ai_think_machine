@@ -45,7 +45,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 
 ## Architecture
 
-![One Loop architecture. During a session, controller K tracks process signals and chooses control actions; it sets the mode of generator G and gates writes to the protected working state W and the procedural store P. Source-tagged input enters context C and reaches G, which simulates in a discardable scratch and acts through an action gate that checks reversibility. Between sessions, sleep replays the tagged episodic log E into M, generates counterfactuals and distills; only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.](../../assets/images/one-loop-architecture.svg)
+![One Loop architecture. During a session, controller K tracks process signals (including predicted error and permission gaps) and chooses control actions, including incubating a stalled problem; it sets the mode of generator G and gates writes to the protected working state W and the procedural store P. Source-tagged input enters context C and reaches G, which simulates in a discardable scratch and acts through an action gate that checks grants and reversibility. Between sessions, sleep replays the tagged episodic log E into M, generates counterfactuals and distills; only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.](../../assets/images/one-loop-architecture.svg)
 
 **Components**, with the brain parallel for each:
 

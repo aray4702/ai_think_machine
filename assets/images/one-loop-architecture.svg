@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="668" viewBox="0 0 960 668" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="704" viewBox="0 0 960 704" role="img" aria-labelledby="title desc">
   <title id="title">One Loop architecture</title>
-  <desc id="desc">During a session: controller K tracks process signals (progress, uncertainty, info gain, budget, surprise) and chooses control actions (run skill, think, recall, backtrack, switch, ask, commit, stop). It sets the mode of generator G and gates writes to working state W and procedural store P. Input from the user, tools or environment is source-tagged, enters context C and reaches generator G, which perceives, recalls, simulates and acts. G reads and writes the protected working state W: the goal stack with TOTE tests, the belief and the plan. G simulates in scratch, a forkable inner loop discarded after use; its output passes the action gate, which checks reversibility class, before reaching the world. Between sessions: the salience-tagged episodic log E feeds sleep, which selects episodes, replays them in reverse, extracts gist into M, generates counterfactuals and distills. Only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.</desc>
+  <desc id="desc">During a session: controller K tracks process signals (progress, uncertainty, info gain, budget, surprise, predicted error, permission gap) and chooses control actions (run skill, think, recall, backtrack, switch, ask, incubate, commit, stop). It sets the mode of generator G and gates writes to working state W and procedural store P. Input from the user, tools or environment is source-tagged, enters context C and reaches generator G, which perceives, recalls, simulates and acts. G reads and writes the protected working state W: the goal stack with TOTE tests, the belief, the plan and the permission envelope. G simulates in scratch, a forkable inner loop discarded after use; its output passes the action gate, which checks grants and reversibility class, before reaching the world. Between sessions: the salience-tagged episodic log E feeds sleep, which selects episodes, replays them in reverse, extracts gist into M, generates counterfactuals and distills. Only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
@@ -12,19 +12,23 @@
       <path d="M0 0 L10 5 L0 10 Z" fill="#b54a3a"/>
     </marker>
   </defs>
-  <rect width="960" height="668" fill="#ffffff"/>
+  <rect width="960" height="704" fill="#ffffff"/>
   <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#202b35">
     <text x="480" y="36" font-size="23" font-weight="700">One Loop Architecture</text>
 
     <!-- During a session -->
-    <rect x="24" y="56" width="912" height="348" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
+    <rect x="24" y="56" width="912" height="384" rx="6" fill="#f3f5f7" stroke="#8895a1" stroke-width="2"/>
     <text x="40" y="82" font-size="12" font-weight="700" fill="#53606c" letter-spacing="1" text-anchor="start">DURING A SESSION</text>
 
     <!-- Controller K -->
-    <rect x="330" y="72" width="592" height="74" rx="6" fill="#202b35"/>
+    <rect x="330" y="72" width="592" height="110" rx="6" fill="#202b35"/>
     <text x="626" y="96" font-size="15" font-weight="700" fill="#ffffff">CONTROLLER K</text>
-    <text x="626" y="116" font-size="12" fill="#ffffff">signals: progress · uncertainty · info gain · budget · surprise</text>
-    <text x="626" y="134" font-size="12" fill="#ffffff">actions: RUN SKILL · THINK · RECALL · BACKTRACK · SWITCH · ASK · COMMIT · STOP</text>
+    <text x="626" y="118" font-size="12" fill="#ffffff">signals: progress · uncertainty · info gain · budget · surprise ·</text>
+    <text x="626" y="134" font-size="12" fill="#ffffff">predicted error · permission gap</text>
+    <text x="626" y="154" font-size="12" fill="#ffffff">actions: RUN SKILL · THINK · RECALL · BACKTRACK · SWITCH ·</text>
+    <text x="626" y="170" font-size="12" fill="#ffffff">ASK · INCUBATE · COMMIT · STOP</text>
+
+    <g transform="translate(0 36)">
 
     <path d="M415 146 V208" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
     <text x="423" y="182" font-size="11" fill="#53606c" text-anchor="start">mode</text>
@@ -53,9 +57,10 @@
 
     <!-- Working state W -->
     <rect x="540" y="210" width="180" height="80" rx="6" fill="#e8f5f1" stroke="#16755d" stroke-width="3"/>
-    <text x="630" y="236" font-size="14" font-weight="700" fill="#125c49">WORKING STATE W</text>
-    <text x="630" y="256" font-size="12">goal stack (TOTE)</text>
-    <text x="630" y="274" font-size="12">belief · plan (protected)</text>
+    <text x="630" y="232" font-size="14" font-weight="700" fill="#125c49">WORKING STATE W</text>
+    <text x="630" y="250" font-size="12">goal stack (TOTE) · belief</text>
+    <text x="630" y="266" font-size="12">plan · permissions</text>
+    <text x="630" y="282" font-size="11" fill="#53606c">(protected)</text>
 
     <!-- Procedural store P -->
     <rect x="742" y="200" width="180" height="100" rx="6" fill="#ffffff" stroke="#465462" stroke-width="2"/>
@@ -79,8 +84,9 @@
     <!-- Action gate and world -->
     <path d="M505 351 H554" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
     <path d="M572 320 H728 L744 351 L728 382 H572 L556 351 Z" fill="#f6e3df" stroke="#b54a3a" stroke-width="2"/>
-    <text x="650" y="347" font-size="13" font-weight="700" fill="#b54a3a">ACTION GATE</text>
-    <text x="650" y="366" font-size="12">reversibility class</text>
+    <text x="650" y="342" font-size="13" font-weight="700" fill="#b54a3a">ACTION GATE</text>
+    <text x="650" y="359" font-size="12">grants</text>
+    <text x="650" y="375" font-size="12">reversibility class</text>
     <path d="M744 351 H778" fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)"/>
     <rect x="780" y="331" width="120" height="40" rx="20" fill="#202b35"/>
     <text x="840" y="356" font-size="14" font-weight="700" fill="#ffffff">world</text>
@@ -129,5 +135,6 @@
     <text x="878" y="551" font-size="12" font-weight="700">θ (weights)</text>
     <rect x="828" y="586" width="100" height="40" rx="6" fill="#ffffff" stroke="#465462" stroke-width="2"/>
     <text x="878" y="611" font-size="12" font-weight="700">new skills in P</text>
+    </g>
   </g>
 </svg>
