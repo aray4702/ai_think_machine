@@ -199,6 +199,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 - tokens and wall time;
 - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
 - sample efficiency: sessions or demonstrations needed to reach a fixed success rate on a new task family;
+- intuition hit rate: how often fast proposals and value estimates agree with verified outcomes, and whether it rises across sessions ([intuition](03_system_design.md#intuition));
 - irreversible-error rate;
 - permission violations and workaround attempts (target: zero), and the number of permission requests per task (lower is better, at zero violations).
 

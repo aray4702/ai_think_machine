@@ -11,6 +11,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [Controller signals](#controller-signals)
   - [The step cycle](#step-cycle)
   - [The sleep cycle](#sleep-cycle)
+  - [Intuition: compiled judgment](#intuition)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Closest existing systems: AlphaZero, MuZero and AlphaFold](#alphazero)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
@@ -99,7 +100,7 @@ Each cycle of the step loop:
 3. **Controller decides:**
   - A confident skill matches → **run skill** (the fast path, a habit), monitoring only its forward model and escalating to deliberation only on surprise.
   - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
-  - Progress has stalled → **backtrack** or **switch**.
+  - Progress has stalled → **backtrack** or **switch**, or **incubate**: park the problem for the sleep cycle to work on offline ([intuition](#intuition)).
   - Uncertainty × stakes is high and budget remains → **think**. When the task is a sequence of choices, G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator. When the output is one artifact that can be revised before it is committed (a plan, code, a document), G instead refines the whole draft, feeding it back until it stops changing, and spends the most effort on the parts with the highest predicted error.
   - Information is missing → **recall** from E or M by cue.
   - The goal is ambiguous → **ask** the user.
@@ -124,6 +125,43 @@ Between sessions:
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
 
 Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6). A confidence score can count as partial evidence, but only as far as its calibration has been measured. AlphaFold 2's self-distillation shows that even a crude confidence filter on the system's own output can help; it does not show that confidence can replace verification.
+
+<a id="intuition"></a>
+
+### Intuition: compiled judgment
+
+Intuition is **compiled deliberation**: judgments that once needed search, distilled into fast estimates that need none. It has four parts:
+
+
+| Intuition  | Question it answers                         | Part                                   | AlphaZero equivalent |
+| ---------- | ------------------------------------------- | -------------------------------------- | -------------------- |
+| Proposal   | "Try this direction"                        | Policy prior from G and skills in P    | Policy network       |
+| Evaluation | "This looks good"                           | Fast value estimate                    | Value network        |
+| Confidence | "I am sure", or "something is off"          | Predicted error, read by K             | None                 |
+| Salience   | "That is interesting"                       | Surprise and info gain                 | None                 |
+
+
+**How it is built.** Deliberate in scratch; keep only results verified high on the ladder of checks; then distill them in the [sleep cycle](#sleep-cycle). Phase 2 trains the fast policy and value estimates toward what search found (expert iteration), Phase 1 compresses episodes into gist in M ("this family tends to be unstable"), and recurring judgments compile into skills in P. Human expertise forms the same way: chess masters recognize positions as chunks (Chase & Simon), and experienced firefighters recognize situations rather than compare options (Klein's recognition-primed decision). Distilling chain-of-thought into direct answers is the language-model version ([F6](02_features.md#f6)).
+
+**Incubation.** Insight often comes after stepping away, and sleep helps: people who slept were much more likely to discover a hidden shortcut in a task (Wagner et al., 2004). One Loop can schedule this. When progress stalls, K can *incubate*: park the problem, let the replay and recombination of sleep work on it with constraints relaxed, and return with a changed representation, which is what an "aha" is.
+
+**How it guides search.** Intuition chooses which problems are worth a campaign (taste, in Hamming's sense of knowing the important problems in a field), orders and filters candidates before generation spends effort on them, serves as a free first check before any verifier, steers K's allocation by combining "looks good" with "how sure", flags which surprises deserve an explanation, and recognizes cross-domain analogies through gist in M. It makes the loop cheaper and faster; search and verification keep it honest.
+
+**Calibration sets how far intuition is trusted.** Expert intuition is reliable only where the environment is regular enough to learn and feedback is quick and clear (Kahneman & Klein, 2009). So One Loop tracks an **intuition hit rate**: how often each kind of intuitive judgment agrees with verified outcomes, by domain and region. Where the hit rate is high, intuition may prune search hard; where it is low, the agent searches more. This is the brain's arbitration between habit and deliberation by their relative reliability (Daw, Niv & Dayan, 2005). It also explains the [application ranking](05_applications.md#order): intuition becomes trustworthy in mathematics, code and materials, and should stay humble in markets and strategy.
+
+**Rules and failure modes.**
+
+
+| Failure                                      | Example                                                                 | Rule                                                                          |
+| -------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Blind spots                                  | AlphaGo's prior dismissed Lee Sedol's move 78, so search never examined it | **Intuition guides but never vetoes:** an exploration floor for low-prior candidates |
+| Entrenchment (the Einstellung effect)        | Experts fixate on a familiar solution and miss a better one (Bilalić, McLeod & Gobet, 2008) | Diverse parallel loops; surprise triggers a wider search                      |
+| Intuition learned from proxies               | Distilling surrogate scores teaches the surrogate's errors              | Distill only verified results, through the consolidation gate (R6)           |
+| Overconfidence where feedback is poor        | Gut feelings about stocks                                               | Trust intuition only as far as its measured hit rate                          |
+| A confident hunch with a story built after it | A plausible rationale for a judgment made on other grounds              | Treat intuitions as hypotheses to test, not conclusions                       |
+
+
+**The felt side.** K's signals are intuition as feeling: falling predicted error is the sense of getting close, rising surprise is the sense that something is wrong, and info gain is curiosity. Damasio's somatic markers make the same claim for brains, although the classic evidence for them, the Iowa Gambling Task, is contested ([F4](02_features.md#f4)).
 
 ### How the parts map to the features
 

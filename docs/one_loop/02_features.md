@@ -703,6 +703,22 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Chamberlin (1890). The method of multiple working hypotheses.
 - Campbell (1960). Blind variation and selective retention in creative thought as in other knowledge processes.
 - Cemri et al. (2025). Why do multi-agent LLM systems fail?
+- Pólya (1945). *How to Solve It.*
+- Romera-Paredes et al. (2023). Mathematical discoveries from program search with large language models (FunSearch).
+- Novikov et al. (2025). AlphaEvolve: a coding agent for scientific and algorithmic discovery.
+- Szymanski et al. (2023). An autonomous laboratory for the accelerated synthesis of novel materials (A-Lab).
+- Merchant et al. (2023). Scaling deep learning for materials discovery (GNoME).
+- Leeman et al. (2024). Challenges in high-throughput inorganic materials prediction and autonomous synthesis.
+- Cheetham & Seshadri (2024). Artificial intelligence driving materials discovery? Perspective on the article: Scaling deep learning for materials discovery.
+
+**Intuition and insight**
+
+- Klein (1998). *Sources of Power: How People Make Decisions* (recognition-primed decision).
+- Kahneman & Klein (2009). Conditions for intuitive expertise: a failure to disagree.
+- Wagner, Gais, Haider, Verleger & Born (2004). Sleep inspires insight.
+- Bilalić, McLeod & Gobet (2008). Why good thoughts block better ones: the mechanism of the pernicious Einstellung (set) effect.
+- Hamming (1986). You and your research.
+- Bechara, Damasio, Tranel & Damasio (1997). Deciding advantageously before knowing the advantageous strategy.
 
 **Control, stopping, emotion**
 
