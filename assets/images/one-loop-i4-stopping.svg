@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="530" viewBox="0 0 960 530" role="img" aria-labelledby="title desc">
-  <title id="title">I.4: deciding when to stop</title>
+  <title id="title">Deciding when to stop</title>
   <desc id="desc">Left: the stopping rule. Noisy evidence accumulates with each thinking step; the agent commits when it crosses a confidence threshold. An urgency signal lowers the threshold over time so the agent does not stall. Below, a timeline: deliberate, commit, execute; a surprise during execution reopens deliberation. Right: emotion as the controller, a running signal about how the process is going, mapped to control actions: curiosity keeps exploring, boredom stops and goes elsewhere, frustration backtracks or switches, anxiety raises the threshold, surprise interrupts and reopens the inner loop, fatigue lowers the threshold, satisfaction commits and stops.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

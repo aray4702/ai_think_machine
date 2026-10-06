@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
-  <title id="title">I.7: learning happens at the edge of competence, in order</title>
+  <title id="title">Learning happens at the edge of competence, in order</title>
   <desc id="desc">Left: learning signal plotted against a task's pass rate. It is zero when the task always fails and zero when it always succeeds, and peaks in between, in the zone of proximal development, where success is possible but unreliable. Group-relative RL such as GRPO gets no gradient at 0 or 100 percent. Scaffolding moves a task that is too hard alone into the zone; it should fade as competence grows. Right: development has an order. A staircase of capabilities, each built on the one below: forward models (sensorimotor), planning (semiotic function), verification by reversible checks (concrete operations), and hypotheses and metareasoning (formal operations). The first two are mastered, learning happens on the next step up, and the step beyond is still too hard. A shielded goal likewise comes before safe autonomy. Piaget's stages are one human route through these dependencies, not fixed ages.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -80,7 +80,7 @@
     <g font-size="13">
       <text x="710" y="458">Forward models before planning, planning before</text>
       <text x="710" y="476">verification; a shielded goal before safe autonomy.</text>
-      <text x="710" y="500" font-size="12" fill="#53606c">Piaget's stages are one human route, not fixed ages (I.9).</text>
+      <text x="710" y="500" font-size="12" fill="#53606c">Piaget's stages are one human route, not fixed ages.</text>
     </g>
   </g>
 </svg>

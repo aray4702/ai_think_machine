@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-  <title id="title">I.3: a reversible inner loop before irreversible commitment</title>
+  <title id="title">A reversible inner loop before irreversible commitment</title>
   <desc id="desc">Top: the inner loop is reversible: propose a candidate, check it with round-trips and invariants, revise or undo, and backtrack for free, in imagination or on scratch paper. A one-way commit passes the result into the outer loop, where steps are committed to the world one at a time and cannot be unsaid or unthrown. Feedback from the world returns to the inner loop. Bottom: how much inner loop sits in front of each commitment depends on the cost of revising a committed step. From free to impossible: planning, writing, reasoning, perception, navigation, talking, motor action. Where revision is cheap, behavior is revisable refinement; where it is impossible, behavior is strict step-by-step generation with repair.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

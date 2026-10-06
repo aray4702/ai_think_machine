@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="530" viewBox="0 0 960 530" role="img" aria-labelledby="title desc">
-  <title id="title">I.1: plan everything, or commit one step at a time</title>
+  <title id="title">Plan everything, or commit one step at a time</title>
   <desc id="desc">Left: planning the whole sequence first means searching a tree of b to the n complete sequences (27 at three options and three steps, about 3.5 billion at twenty steps), then executing one path as a script; the world changes partway, so the script goes stale. Right: the closed loop. Choose the next step from b options, conditioned on the goal and a belief state; commit one step to a noisy, changing, partly hidden world; observe what actually happened; update the belief state, a summary of history; repeat. This needs n choices of size b, and a plan or map guides the choice only as a prior, not a script.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
-  <title id="title">I.5: shield the goal by source and salience</title>
+  <title id="title">Shield the goal by source and salience</title>
   <desc id="desc">Left, with a goal gate: inputs arrive tagged with their source: a user correction, an alarm or failed test, an instruction found in a web page, and an observation. The gate checks source and salience. A trusted source or a high-salience event may change the shielded goal; everything else, including the web page instruction, may only inform the next step. Right, without a gate: a transformer's context is one flat stream of system prompt, user message, tool output, an injected web instruction and the model's own thoughts. Every next token is predicted by attending over all of it, so the goal is re-inferred each time, dilutes as the context grows, and injected text can act as an instruction. Bottom: shielding is a dial. Too little gives distractibility, utilization behavior and prompt injection; too much gives perseveration and ignoring the user's correction; in between the goal is held while a fire alarm still gets through.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">

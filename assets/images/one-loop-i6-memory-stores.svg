@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
-  <title id="title">I.6: separate fast and slow stores, consolidate selectively</title>
+  <title id="title">Separate fast and slow stores, consolidate selectively</title>
   <desc id="desc">Left: one network learning fast. After learning task A, skill on A is high; after quickly learning task B, skill on B is high but skill on A has collapsed. This is catastrophic interference, and naive fine-tuning does the same to an LLM. Right: separate stores that learn at different speeds. Working memory W holds the goal and belief for seconds in about four shielded chunks. Episodic memory E logs events verbatim in one shot and recalls them by cue. Consolidation runs offline in sleep: replay keeps what is tagged by reward, surprise or emotion and prunes the rest. Slow stores hold semantic gist M and procedural skills P. Below, what transformer agents have today: no working memory, since the context does double duty; context window plus retrieval for episodic memory; consolidation mostly missing, with compaction and memory files as stand-ins; and huge weights that are frozen after training.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -72,7 +72,7 @@
     <rect x="780" y="220" width="140" height="70" rx="6" fill="#ffffff" stroke="#16755d" stroke-width="2"/>
     <text x="850.0" y="244" font-size="14" font-weight="700" fill="#202b35">Procedural P</text>
     <text x="850.0" y="262" font-size="11" font-weight="700" fill="#53606c" letter-spacing="0.5">PRACTICE</text>
-    <text x="850.0" y="284" font-size="12" fill="#202b35">skills, the steps (I.2)</text>
+    <text x="850.0" y="284" font-size="12" fill="#202b35">skills, the steps (F2)</text>
     <g fill="none" stroke="#465462" stroke-width="2" marker-end="url(#arrow)">
       <path d="M446 215 H473"/>
       <path d="M598 215 H625"/>
