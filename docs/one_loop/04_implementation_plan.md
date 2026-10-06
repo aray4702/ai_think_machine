@@ -1,6 +1,6 @@
 # One Loop: Implementation Plan
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
 
 This document turns the [system design](03_system_design.md) into a plan: what current models already provide, the build stages and the development process that orders them, how each module is validated before it is kept, and the assumptions and risks the plan rests on.
 
@@ -363,4 +363,4 @@ The features rest on these assumptions. Confidence reflects the evidence gathere
 | "LLMs are preoperational"                    | A metaphor: LLMs pass many text conservation tasks, and their failures are inconsistent                                                                                      |
 | Reversal curse as missing reciprocity        | Weaker than claimed: models reverse relations fine in context. The curse concerns how training stores facts, an asymmetry in storage, not an inability to reverse operations |
 
-References are collected at the end of [Derived features](02_features.md#references).
+References are collected in [References](references.md).

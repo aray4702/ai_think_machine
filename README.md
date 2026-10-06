@@ -14,6 +14,8 @@ The design of an agent built around a control structure that brains and transfor
 4. **[Implementation plan](docs/one_loop/04_implementation_plan.md).** What current models already provide, the build stages, acceptance criteria and ablations for each module, and the design's assumptions and risks.
 5. **[Applications](docs/one_loop/05_applications.md).** Where to use the agent, in the recommended order: software engineering first, then formal mathematics and open-world games, agents in untrusted environments, discovery and explanation, and decision support last.
 
+References for the series are collected in [References](docs/one_loop/references.md).
+
 ## Copyright
 
 © 2026 David Xu. All rights reserved.

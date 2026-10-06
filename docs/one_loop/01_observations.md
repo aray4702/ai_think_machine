@@ -6,7 +6,7 @@
 
 
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
 
 The design is written as five documents, following the order of the design process:
 
@@ -122,4 +122,4 @@ Put together, the features give one structure: a hierarchy of goal-conditioned l
 - **The top goal stays with people.** Control signals are about the task, not the agent's own state, and the top of the goal hierarchy is set by the people the agent works for (R7).
 - **Safety value counts separately.** Modules such as the goal gate and the action gate can be kept for the errors they prevent even when their capability gain disappears with scale.
 
-References for all four documents are collected at the end of [Derived features](02_features.md#references).
+References for all five documents are collected in [References](references.md).
