@@ -670,6 +670,33 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Gat (1998). On three-layer architectures.
 - Prescott, Redgrave & Gurney (1999). Layered control architectures in robots and vertebrates.
 
+**Cortical columns**
+
+- Mountcastle (1997). The columnar organization of the neocortex.
+- Hawkins, Ahmad & Cui (2017). A theory of how columns in the neocortex enable learning the structure of the world.
+- Hawkins, Lewis, Klukas, Purdy & Ahmad (2019). A framework for intelligence and cortical function based on grid cells in the neocortex.
+- Hawkins (2021). *A Thousand Brains: A New Theory of Intelligence.*
+- Clay, Leadholm & Hawkins (2024). The Thousand Brains Project: a new paradigm for sensorimotor intelligence.
+- Sabour, Frosst & Hinton (2017). Dynamic routing between capsules.
+- Hinton (2021). How to represent part-whole hierarchies in a neural network (GLOM).
+
+**Innate structure and development**
+
+- Rakic (1988). Specification of cerebral cortical areas.
+- Sharma, Angelucci & Sur (2000). Induction of visual orientation modules in auditory cortex.
+- Zador (2019). A critique of pure learning and what artificial neural networks can learn from animal brains.
+
+**Search, self-play and structure prediction**
+
+- Silver et al. (2018). A general reinforcement learning algorithm that masters chess, shogi, and Go through self-play (AlphaZero).
+- Anthony, Tian & Barber (2017). Thinking fast and slow with deep learning and tree search (expert iteration).
+- Schrittwieser et al. (2021). Online and offline reinforcement learning by planning with a learned model (MuZero Reanalyse).
+- Danihelka et al. (2022). Policy improvement by planning with Gumbel (Gumbel MuZero).
+- Google DeepMind (2024). AlphaProof: AI achieves silver-medal standard solving International Mathematical Olympiad problems.
+- Jumper et al. (2021). Highly accurate protein structure prediction with AlphaFold.
+- Abramson et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3.
+- Mirdita et al. (2022). ColabFold: making protein folding accessible to all.
+
 **Control, stopping, emotion**
 
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.
