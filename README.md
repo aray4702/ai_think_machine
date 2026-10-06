@@ -10,9 +10,10 @@ The design of an agent built around a control structure that brains and transfor
 
 1. **[Observations and design principles](docs/one_loop/01_observations.md).** The observation that perception, reasoning, planning, action and language work like transformer generation; what the design covers; the seven constraints the features come from; and the design stance.
 2. **[Derived features](docs/one_loop/02_features.md).** Seven features (F1–F7), each derived from a constraint with evidence from brains and machines: the step loop, compiled skills, a reversible inner loop, a controller that decides when to stop, a shielded goal, memory with consolidation, and learning at the edge of competence.
-3. **[System design](docs/one_loop/03_system_design.md).** Requirements, the architecture and its components, the step and sleep cycles, and the design rules (R1–R8).
+3. **[System design](docs/one_loop/03_system_design.md).** Requirements, the architecture and its components, the step and sleep cycles, the design rules (R1–R9), and safety and permissions.
 4. **[Implementation plan](docs/one_loop/04_implementation_plan.md).** What current models already provide, the build stages, how the learned components are bootstrapped, acceptance criteria and ablations for each module, and the design's assumptions and risks.
 5. **[Applications](docs/one_loop/05_applications.md).** Where to use the agent, in the recommended order: software engineering first, then formal mathematics and open-world games, agents in untrusted environments, discovery and explanation, and decision support last.
+6. **[Media creation](docs/one_loop/06_media_creation.md).** One Loop as a director for AI-generated audio, images, slides, web pages, apps and video: it keeps the person's intent and personality, delegates generation to specialist agents, and edits the results with tools.
 
 References for the series are collected in [References](docs/one_loop/references.md).
 

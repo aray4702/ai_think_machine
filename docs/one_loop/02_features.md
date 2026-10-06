@@ -1,8 +1,8 @@
 # One Loop: Derived Features
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [References](references.md)
 
-Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R8 are in its [design rules](03_system_design.md#design-rules).
+Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R9 are in its [design rules](03_system_design.md#design-rules).
 
 ## Contents
 

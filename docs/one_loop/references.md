@@ -1,8 +1,8 @@
 # One Loop: References
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [References](references.md)
 
-References for all five documents, grouped by topic in the order the documents take them up.
+References for all six documents, grouped by topic in the order the documents take them up.
 
 ## Contents
 
@@ -22,6 +22,7 @@ References for all five documents, grouped by topic in the order the documents t
 - [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
 - [State of the field, 2026](#state-of-the-field-2026)
+- [Media creation](#media-creation)
 
 ## Serial order, hierarchy, procedural memory
 
@@ -276,3 +277,11 @@ References for all five documents, grouped by topic in the order the documents t
 - Axiom Math (2026). IMO 2026 Lean 4 solutions. github.com/AxiomMath/IMO2026
 - Digital Applied (2026). Four AIs scored a perfect 42/42 on IMO 2026. So what? (secondary source for the grading status of IMO 2026 results)
 - Thousand-brains systems: sensorimotor intelligence for rapid, robust learning and inference. *Neural Computation*. doi:10.1162/NECO.a.1508.
+
+## Media creation
+
+- Zhou et al. (2022). Large language models are human-level prompt engineers (APE).
+- Yang et al. (2023). Large language models as optimizers (OPRO).
+- Khattab et al. (2023). DSPy: compiling declarative language model calls into self-improving pipelines.
+- Hao et al. (2022). Optimizing prompts for text-to-image generation (Promptist).
+- Coalition for Content Provenance and Authenticity (C2PA). Content Credentials technical specification. c2pa.org
