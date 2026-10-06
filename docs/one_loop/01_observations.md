@@ -27,6 +27,8 @@ The design is written as five documents, following the order of the design proce
 
 
 
+<a id="observation"></a>
+
 ## The observation
 
 Many human processes seem to share a structure with transformer next-token generation:

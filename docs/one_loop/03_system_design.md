@@ -56,7 +56,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 | ---------------- | ------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | G: generator     | Cortex as one generative model | One sequence model used in four modes: perceive, recall, simulate, act        | —                                                                               |
 | K: controller    | Emotion; ACC; basal ganglia    | Running process signals; chooses the next control action                      | —                                                                               |
-| W: working state | Prefrontal cortex              | Goal stack (each goal paired with its TOTE test), current belief, plan sketch, permission envelope | Only through the goal gate (trusted source or high salience); recited each step |
+| W: working state | Prefrontal cortex              | Goal stack (each goal paired with its TOTE test), current belief, plan sketch, permission envelope | Only through the goal gate (trusted source or high salience); recited each step; never compacted |
 | C: context       | Episodic buffer                | Recent raw trajectory, every token source-tagged                              | Anything, but tool and data tokens can inform steps, never set goals            |
 | Scratch          | Imagination                    | Simulated branches, or a draft being refined (the inner loop)                 | G in simulate mode; discarded after use, and only conclusions go to W           |
 | P: procedures    | Basal ganglia; cerebellum      | Skills for the fast path                                                      | Only through the consolidation gate                                             |
@@ -90,7 +90,7 @@ K keeps a few running scalars about the *process*, not the content, each a funct
 | Beauty | Compression gain × reach × unexpectedness of a candidate; falling as description length per explained fact rises ([beauty](#beauty)) | Sense of beauty; ugliness |
 
 
-Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop.
+Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop. One caution: longer reasoning can make a model more confident without making it more accurate (calibration drift, 2026), so K reads calibrated predicted error, never the length of reasoning, as certainty.
 
 <a id="step-cycle"></a>
 
@@ -407,7 +407,7 @@ The unit is the **cortical column, not the minicolumn**. A minicolumn is about 1
 **Risks.**
 
 - **Functions, not boxes.** Many small loops is hand-built structure, so it must beat a larger plain model, at matched compute or at matched data ([innate structure](#innate-structure); [ablation](04_implementation_plan.md#ablation)).
-- **Earlier attempts.** Capsule networks (Sabour, Frosst & Hinton, 2017) and GLOM (Hinton, 2021) used column-like units that settle on shared answers, and neither has scaled. The closest working build is Monty, from the Thousand Brains Project (Clay, Leadholm & Hawkins, 2024): its learning modules are columns that vote. It works on sensorimotor object recognition but has not been shown on language or planning, so it is the first thing to study.
+- **Earlier attempts.** Capsule networks (Sabour, Frosst & Hinton, 2017) and GLOM (Hinton, 2021) used column-like units that settle on shared answers, and neither has scaled. The closest working build is Monty, from the Thousand Brains Project (Clay, Leadholm & Hawkins, 2024): its learning modules are columns that vote. It works on sensorimotor object recognition, and by 2026 had a peer-reviewed systems paper, robotics experiments and an attention prototype, but it has not been shown on language or planning, so it is the first thing to study.
 - **Cost.** One LLM call per column is too expensive at any real scale. A column should be a small model, or a parallel stream inside one model with shared weights, which also matches the claim that every column runs the same algorithm.
 
 **How to test it.** Run it as a follow-on to the [module ablation](04_implementation_plan.md#ablation), once M1–M6 are settled. Replace the single loop with N column loops that share weights, with voting on and off. Compare at matched compute against the plain baseline and against **N independent samples with a majority vote** (self-consistency). That second baseline is the key control, because voting without the column structure is just self-consistency. Keep the option only if it beats both on the long-horizon and interruption categories, and if peer disagreement predicts errors better than disagreement across sampled continuations.
@@ -535,6 +535,7 @@ Two design choices hold the safety parts in place:
 | Acting beyond authority                                               | Explicit grants enforced by the action gate; actions carry the authority of whoever asked for them        | R9, [permissions](#permissions) |
 | Irreversible mistakes                                                 | Reversibility classes; work moved toward the reversible end; action gate for irreversible or high-stakes actions | F3, R1     |
 | Goal drift over long tasks                                            | Protected goal in W, recited each step and checked by its TOTE test                                        | F5                |
+| Constraints lost to context compaction                                | W, its standing constraints and the permission envelope are pinned outside compaction, never summarized away | F5, R9          |
 | Overconfidence and overthinking                                       | K's surprise, uncertainty and predicted-error signals; stop, escalate or ask                              | F4                |
 | Poisoned learning (persistent injection)                              | Consolidation gate admits only trusted, verified experience; changes to values or goals go to human review | R6                |
 | The agent's own drives                                                | Control signals about the task, not the agent; no self-maintenance drive; the top goal comes from people  | R7                |
@@ -567,7 +568,7 @@ Four properties make grants hold:
 
 | Step    | What happens                                                                                                                                  |
 | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Plan    | W holds the **permission envelope** beside the goal. G plans within it, and steps that need a missing grant are found at planning time, not mid-task. |
+| Plan    | W holds the **permission envelope** beside the goal, pinned so that context compaction cannot drop it. G plans within it, and steps that need a missing grant are found at planning time, not mid-task. |
 | Think   | Simulation in scratch needs no grant, unless it touches the world or private data.                                                            |
 | Control | K tracks the **permission gap**: steps the goal needs that no grant covers. A gap triggers *ask*, *replan* or *stop*, never a workaround.    |
 | Act     | The action gate checks the grant, then reversibility × stakes, and logs which grant authorized each action.                                  |

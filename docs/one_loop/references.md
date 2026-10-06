@@ -21,6 +21,7 @@ References for all five documents, grouped by topic in the order the documents t
 - [Machines and agents](#machines-and-agents)
 - [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
+- [State of the field, 2026](#state-of-the-field-2026)
 
 ## Serial order, hierarchy, procedural memory
 
@@ -257,3 +258,21 @@ References for all five documents, grouped by topic in the order the documents t
 - Merchant et al. (2023). Scaling deep learning for materials discovery (GNoME).
 - Leeman et al. (2024). Challenges in high-throughput inorganic materials prediction and autonomous synthesis.
 - Cheetham & Seshadri (2024). Artificial intelligence driving materials discovery? Perspective on the article: Scaling deep learning for materials discovery.
+
+## State of the field, 2026
+
+- When continual learning moves to memory: a study of experience reuse in LLM agents (April 2026). arXiv:2604.27003.
+- RPMem: learning long-term recurrent parametric memory across sessions for LLM agents (September 2026). arXiv:2609.23466.
+- How well do agentic skills work in the wild: benchmarking LLM skill usage in realistic settings (April 2026). arXiv:2604.04323.
+- SkillGLoW: procedural-family skill consolidation for self-improving agents on long-horizon task streams (September 2026). arXiv:2609.02217.
+- Governance decay: how context compaction silently erases safety constraints in long-horizon LLM agents (June 2026). arXiv:2606.22528.
+- Push your agent: measuring and enforcing quantitative goal persistence in long-horizon LLM agents (May 2026). arXiv:2605.23574.
+- Abdelnabi & Bagdasarian (2026). AI agents may always fall for prompt injections. arXiv:2605.17634.
+- Calibration drift under reasoning: how chain-of-thought budgets induce overconfidence in large language models (April 2026). arXiv:2606.11211.
+- SelfBudgeter: adaptive token allocation for efficient LLM reasoning (2026). Findings of ACL 2026.
+- Conformal thinking: risk control for reasoning on a compute budget (2026). arXiv:2602.03814.
+- Model Context Protocol (2026). Authorization specification, revision 2026-07-28. modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+- Single-agent LLMs outperform multi-agent systems on multi-hop reasoning under equal thinking token budgets (April 2026). arXiv:2604.02460.
+- Axiom Math (2026). IMO 2026 Lean 4 solutions. github.com/AxiomMath/IMO2026
+- Digital Applied (2026). Four AIs scored a perfect 42/42 on IMO 2026. So what? (secondary source for the grading status of IMO 2026 results)
+- Thousand-brains systems: sensorimotor intelligence for rapid, robust learning and inference. *Neural Computation*. doi:10.1162/NECO.a.1508.

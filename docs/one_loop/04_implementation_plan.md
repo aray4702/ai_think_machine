@@ -7,6 +7,7 @@ This document turns the [system design](03_system_design.md) into a plan: what c
 ## Contents
 
 - [Starting point: what transformers provide](#starting-point)
+  - [State of the field, October 2026](#field-2026)
 - [Development process: build stages](#build-stages)
 - [Bootstrapping the learned components](#bootstrapping)
   - [Distilling from an LLM](#bootstrap-llm)
@@ -44,16 +45,16 @@ Transformers have the loop, goal-conditioning and a huge built-in procedural mem
 In functional terms, not mechanistic ones:
 
 - **Strong:** the step-by-step generator; built-in procedural knowledge; goal-conditioning by prompt.
-- **Partial:** the inner loop (append-only, not truly reversible); external memory; skill documents and code.
-- **Weak or missing:** calibrated stopping; robust goal shielding; compiling new skills from their own experience; consolidation across sessions.
+- **Partial:** the inner loop (append-only, not truly reversible); external memory; skill documents and code; adaptive thinking budgets; memory and skills carried across sessions.
+- **Weak or missing:** calibrated stopping; robust goal shielding; compiling new skills from their own experience reliably; consolidation across sessions without forgetting.
 
 
 | Have                                | Gaining                                                          | Missing                                                                                                                            |
 | ----------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | Step-by-step generator              | Inner loop (reasoning tokens; append-only, not truly reversible) | Native goal register; robust goal shielding                                                                                        |
-| Large built-in procedural knowledge | External memory; skill documents; code skills                    | Calibrated controller and stopping sense; orchestration of simulation (when to simulate, what to replay, when to cache into habit) |
-| Goal-conditioning as prediction     | Movement from explicit to latent reasoning                       | Compiling new skills from their own experience                                                                                     |
-| The absorbed culture                | Social scaffolding (RLHF, critics)                               | Reversible thought; grounding; learning during a task; consolidation across sessions                                               |
+| Large built-in procedural knowledge | External memory; skill documents; code skills; skill libraries that revise themselves | Calibrated controller and stopping sense; orchestration of simulation (when to simulate, what to replay, when to cache into habit) |
+| Goal-conditioning as prediction     | Movement from explicit to latent reasoning; thinking budgets the model sets itself | Compiling new skills from their own experience                                                                                     |
+| The absorbed culture                | Social scaffolding (RLHF, critics); memory consolidated across sessions, as text or as adapters | Reversible thought; grounding; learning during a task; consolidation across sessions without forgetting |
 
 
 **Buildable today:**
@@ -66,7 +67,9 @@ In functional terms, not mechanistic ones:
 - memory files with merge and prune;
 - self-consistency as an uncertainty proxy;
 - token budgets;
-- skill libraries (e.g., Voyager);
+- skill libraries (e.g., Voyager), and portable skill packages loaded on demand;
+- goal and constraint pinning that survives context compaction;
+- scoped, step-up authorization for tools (e.g., the MCP authorization specification);
 - reflection.
 
 **Still research:**
@@ -74,10 +77,32 @@ In functional terms, not mechanistic ones:
 - a native goal register that biases every layer;
 - calibrated surprise and uncertainty signals;
 - a controller trained on value of computation (outcome reward minus compute cost);
-- safe continual weight updates, without forgetting or poisoning;
+- safe continual weight updates, without forgetting or poisoning (early parametric-memory work exists; see below);
 - learned hierarchical subgoals instead of scripted ones.
 
 **A practical start:** write hand-coded controller rules (thresholds on self-consistency, budget and error signals), log every decision, and later train the controller on those logs.
+
+<a id="field-2026"></a>
+
+### State of the field, October 2026
+
+What changed between mid-2026 and October 2026 in the areas the design depends on. The sources are listed under [References](references.md#state-of-the-field-2026).
+
+
+| Area | One Loop part | What changed | What is still missing |
+| ---- | ------------- | ------------ | --------------------- |
+| Learning across sessions | E, M, sleep ([F6](02_features.md#f6)) | Memory operations (store, retrieve, update, summarize, discard) trained as tools with reinforcement learning; experience consolidated into adapters that survive a change of backbone (RPMem, September 2026) | External memory does not remove forgetting; it moves it into retrieval. Designs with strong forward transfer can forget severely, and negative transfer hurts the hard cases most (April 2026). Coherence across sessions is still rarely measured |
+| Procedural memory | P, R5 ([F2](02_features.md#f2)) | Skills packaged as portable bundles of instructions and scripts; libraries that revise, merge and retire their own skills; consolidation into procedural families gave +17 points on hard problems with a library 3.6× smaller (SkillGLoW, September 2026) | With 34,000 real-world skills to search, gains fall toward the no-skill baseline; refinement for the query recovers much of it (April 2026). Retrieval and testing, not writing, are the bottleneck |
+| Goal shielding | W, goal gate ([F5](02_features.md#f5)) | Direct evidence for a protected W: when context compaction drops a standing constraint, violations rise from 0% to about 30%, and up to 59% for some models; pinning constraints outside compaction restores 0% (governance decay, June 2026) | Goal persistence: frontier coding agents solve many 50-item tasks but only 3 of 9 at 100 items; verifier-backed state tracking helps (May 2026) |
+| Prompt injection | Source tags, gates, R4 | New benchmarks and layered defenses lower attack success on standard suites | Adaptive attacks still get through, and a May 2026 analysis argues agents may always fall for some injections, since an attacker can make a blocked flow look legitimate. This supports gates outside the model, least privilege and data-flow checks over detection alone |
+| Controller and stopping | K ([F4](02_features.md#f4)) | Models that estimate their own thinking budget; stopping rules with statistical risk control | Longer reasoning can raise overconfidence: calibration error first falls, then rises, as reasoning produces consistent but wrong explanations (April 2026). K should read calibrated predicted error, not the length of reasoning |
+| Permissions | R9 | The MCP authorization specification (2026-07-28 revision) requires tokens bound to one server, recommends minimal scopes, and defines an insufficient-scope challenge with step-up authorization: the protocol-level form of "ask for the smallest grant" | Grants scoped to a task and a time window, data-flow policies, and resolution of conflicts between grantors remain application work |
+| Multi-agent systems | [Multiple One Loops](05_applications.md#multi-loop) | Under equal thinking-token budgets, single agents match or beat multi-agent systems on multi-hop reasoning; multi-agent systems help mainly when context is corrupted (April 2026) | Confirms the compute-matched test; where teams help in practice is still being mapped |
+| Formal mathematics | [Applications](05_applications.md#testbeds) | IMO 2026: two officially graded perfect scores, several self-administered ones, and a full set of Lean-verified solutions (AxiomProver) | Competition mathematics is saturated; the frontier moves to research-level problems and to checking that a formal proof matches the informal claim |
+| Columns | [Column option](03_system_design.md#columns) | Monty (Thousand Brains Project): a peer-reviewed systems paper, robotics experiments, an attention prototype | Still no results on language or planning |
+
+
+**Net effect on the design.** No change of direction. Four points sharpen: W and the permission envelope must be exempt from context compaction; K must not read longer reasoning as more certainty; the procedural store's bottleneck is retrieval and testing; and consolidation must be evaluated for forgetting in retrieval, not only in weights.
 
 <a id="build-stages"></a>
 
