@@ -19,6 +19,7 @@ References for all five documents, grouped by topic in the order the documents t
 - [Intuition and insight](#intuition-and-insight)
 - [Beauty](#beauty)
 - [Machines and agents](#machines-and-agents)
+- [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
 
 ## Serial order, hierarchy, procedural memory
@@ -215,6 +216,25 @@ References for all five documents, grouped by topic in the order the documents t
 - Garcia-Molina & Salem (1987). Sagas.
 - Wang et al. (2023). Voyager.
 - Sutton (2019). The Bitter Lesson.
+
+## Bootstrapping
+
+- Zheng et al. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena.
+- Lightman et al. (2023). Let's verify step by step.
+- Wang et al. (2024). Math-Shepherd: verify and reinforce LLMs step-by-step without human annotations.
+- Kadavath et al. (2022). Language models (mostly) know what they know.
+- OpenAI (2023). GPT-4 technical report.
+- Zelikman et al. (2022). STaR: bootstrapping reasoning with reasoning.
+- Pathak et al. (2017). Curiosity-driven exploration by self-supervised prediction.
+- Eysenbach et al. (2018). Diversity is all you need: learning skills without a reward function (DIAYN).
+- Mouret & Clune (2015). Illuminating search spaces by mapping elites (MAP-Elites).
+- Wang et al. (2019). Paired open-ended trailblazer (POET).
+- Finn, Abbeel & Levine (2017). Model-agnostic meta-learning for fast adaptation of deep networks (MAML).
+- Blundell et al. (2016). Model-free episodic control.
+- Pritzel et al. (2017). Neural episodic control.
+- Trinh et al. (2024). Solving olympiad geometry without human demonstrations (AlphaGeometry).
+- Brohan et al. (2023). RT-2: vision-language-action models transfer web knowledge to robotic control.
+- Bruce et al. (2024). Genie: generative interactive environments.
 
 ## Applications
 
