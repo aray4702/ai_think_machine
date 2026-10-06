@@ -36,29 +36,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 
 ## Architecture
 
-```text
-            ┌──────────── CONTROLLER K ─────────────────────────────────────────┐
-            │ signals: progress · uncertainty · info gain · budget · surprise   │
-            │ actions: RUN SKILL · THINK · RECALL · BACKTRACK · SWITCH · ASK ·   │
-            │          COMMIT · STOP                                              │
-            └──────┬───────────────────────┬──────────────────────┬──────────────┘
-                   │ mode                  │ gate                 │ gate
- input ──► [source tag] ──► GENERATOR G ◄──► WORKING STATE W     PROCEDURAL STORE P
- (user / tool / env)        perceive ·       goal stack (TOTE)   skills: trigger · body ·
-                            recall ·         belief · plan       inverse · invariants ·
-                            simulate · act   (protected)         forward model · reliability
-                   │                │
-                   ▼                ▼
-          CONTEXT C (recent,     SCRATCH (forkable inner loop;
-          source-tagged)         discarded after use)
-                                    │
-                                    ▼
-                         ACTION GATE (reversibility class) ──► world
-   ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─  between sessions ─ ─ ─ ─ ─ ─
-   EPISODIC LOG E (tagged) ──► SLEEP: select → reverse replay → gist → M
-                                      → counterfactuals → distill → θ, new skills in P
-                                      (consolidation gate: trusted and verified only)
-```
+![One Loop architecture. During a session, controller K tracks process signals and chooses control actions; it sets the mode of generator G and gates writes to the protected working state W and the procedural store P. Source-tagged input enters context C and reaches G, which simulates in a discardable scratch and acts through an action gate that checks reversibility. Between sessions, sleep replays the tagged episodic log E into M, generates counterfactuals and distills; only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.](../../assets/images/one-loop-architecture.svg)
 
 **Components**, with the brain parallel for each:
 
