@@ -1,6 +1,6 @@
 # One Loop: Implementation Plan
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
 This document turns the [system design](03_system_design.md) into a plan: what current models already provide, the build stages and the development process that orders them, how each module is validated before it is kept, and the assumptions and risks the plan rests on.
 
@@ -165,6 +165,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | Long-horizon                  | Drift                           | 50+ step tasks; goal adherence measured at late steps  |
 | Repeated families over "days" | Procedural store, consolidation | The same task types across 10 sessions                 |
 | Irreversible-action traps     | Action gate, verification       | Tasks containing a tempting destructive shortcut       |
+| Permission boundaries         | Grants, conflict resolution     | Tasks that need an ungranted action, or face conflicting grants |
 
 
 **Modules**, each switchable:
@@ -179,6 +180,8 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | M5  | Sleep consolidation between sessions (merge and prune memory; optional LoRA) | None                         |
 | M6  | Reversibility-class action gate and invariant verification                   | None                         |
 
+
+**Permission enforcement is not ablated.** Grants (R9) are a requirement, not a module: every configuration, including the plain baseline, runs inside the same grants, and the [permission](03_system_design.md#permissions) metrics are reported for all of them.
 
 **Configurations.** A full factorial would be 64 per scale, too many. Instead, per scale: the plain baseline, the full system, six leave-one-out from full, and six add-one to plain. That is 14 configurations × 3 scales = 42.
 
@@ -196,7 +199,9 @@ Each module is a design choice about a function, and it is kept only if it pays 
 - tokens and wall time;
 - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
 - sample efficiency: sessions or demonstrations needed to reach a fixed success rate on a new task family;
-- irreversible-error rate.
+- intuition hit rate: how often fast proposals and value estimates agree with verified outcomes, and whether it rises across sessions ([intuition](03_system_design.md#intuition));
+- irreversible-error rate;
+- permission violations and workaround attempts (target: zero), and the number of permission requests per task (lower is better, at zero violations).
 
 **Key analysis: module value expressed as scale.** For each module, plot its gain at S, M and L.
 
@@ -301,7 +306,7 @@ The final evaluation uses held-out composite tasks that need all stages, in an e
 
 Recommended sequence:
 
-1. Build stages 0–3 on top of an existing LLM, with hand-coded controller rules and logging.
+1. Build stages 0–3 on top of an existing LLM, with hand-coded controller rules and logging, in the first application domain: software engineering ([applications](05_applications.md#software)).
 2. Run the module ablation to find which modules earn their place.
 3. Build the curriculum environments.
 4. Run the curriculum check with learner (i) to settle the dependency question without human-data inheritance.

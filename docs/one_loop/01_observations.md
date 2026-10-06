@@ -6,14 +6,15 @@
 
 
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
-The design is written as four documents, following the order of the design process:
+The design is written as five documents, following the order of the design process:
 
 1. **Observations and design principles** (this document): what was observed, what the design covers, and the constraints the features are derived from.
 2. **[Derived features](02_features.md)**: one section per feature (F1–F7). Each starts from a constraint, derives what the agent must do about it, and gathers evidence from brains and machines on how it can be done.
 3. **[System design](03_system_design.md)**: requirements, the architecture and its components, and the design rules (R1–R8).
 4. **[Implementation plan](04_implementation_plan.md)**: where current models stand, the build stages and development process, validation of each module, and the design's assumptions and risks.
+5. **[Applications](05_applications.md)**: candidate domains ranked by fit, in the recommended order, starting with software engineering.
 
 
 

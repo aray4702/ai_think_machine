@@ -1,6 +1,6 @@
 # One Loop: System Design
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
 The builder's question is: *given the features derived in [Derived features](02_features.md), what do I build?* This document specifies the requirements, the architecture and the design rules. The [implementation plan](04_implementation_plan.md) covers the order of building and how each piece is validated.
 
@@ -11,12 +11,19 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [Controller signals](#controller-signals)
   - [The step cycle](#step-cycle)
   - [The sleep cycle](#sleep-cycle)
+  - [Intuition: compiled judgment](#intuition)
+  - [Beauty: the aesthetic signal](#beauty)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Closest existing systems: AlphaZero, MuZero and AlphaFold](#alphazero)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
   - [Innate structure, learned contents](#innate-structure)
   - [Option: one loop per cortical column](#columns)
 - [Design rules](#design-rules)
+- [Safety and permissions](#safety)
+  - [Threats and mechanisms](#threats)
+  - [Permissions](#permissions)
+  - [Known gaps](#safety-gaps)
+  - [Applying safety to a domain](#safety-recipe)
 
 
 <a id="requirements"></a>
@@ -39,7 +46,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 
 ## Architecture
 
-![One Loop architecture. During a session, controller K tracks process signals and chooses control actions; it sets the mode of generator G and gates writes to the protected working state W and the procedural store P. Source-tagged input enters context C and reaches G, which simulates in a discardable scratch and acts through an action gate that checks reversibility. Between sessions, sleep replays the tagged episodic log E into M, generates counterfactuals and distills; only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.](../../assets/images/one-loop-architecture.svg)
+![One Loop architecture. During a session, controller K tracks process signals (including predicted error and permission gaps) and chooses control actions, including incubating a stalled problem; it sets the mode of generator G and gates writes to the protected working state W and the procedural store P. Source-tagged input enters context C and reaches G, which simulates in a discardable scratch and acts through an action gate that checks grants and reversibility. Between sessions, sleep replays the tagged episodic log E into M, generates counterfactuals and distills; only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.](../../assets/images/one-loop-architecture.svg)
 
 **Components**, with the brain parallel for each:
 
@@ -48,7 +55,7 @@ The builder's question is: *given the features derived in [Derived features](02_
 | ---------------- | ------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | G: generator     | Cortex as one generative model | One sequence model used in four modes: perceive, recall, simulate, act        | —                                                                               |
 | K: controller    | Emotion; ACC; basal ganglia    | Running process signals; chooses the next control action                      | —                                                                               |
-| W: working state | Prefrontal cortex              | Goal stack (each goal paired with its TOTE test), current belief, plan sketch | Only through the goal gate (trusted source or high salience); recited each step |
+| W: working state | Prefrontal cortex              | Goal stack (each goal paired with its TOTE test), current belief, plan sketch, permission envelope | Only through the goal gate (trusted source or high salience); recited each step |
 | C: context       | Episodic buffer                | Recent raw trajectory, every token source-tagged                              | Anything, but tool and data tokens can inform steps, never set goals            |
 | Scratch          | Imagination                    | Simulated branches, or a draft being refined (the inner loop)                 | G in simulate mode; discarded after use, and only conclusions go to W           |
 | P: procedures    | Basal ganglia; cerebellum      | Skills for the fast path                                                      | Only through the consolidation gate                                             |
@@ -78,6 +85,8 @@ K keeps a few running scalars about the *process*, not the content, each a funct
 | Budget      | Budget used vs remaining                                         | Fatigue, urgency   |
 | Surprise    | Mismatch between predicted and actual tool or environment output | Interrupt          |
 | Predicted error | A head trained against the agent's actual errors, per part of the output and per relation between parts (as AlphaFold's pLDDT and PAE) | Feeling of knowing |
+| Permission gap | Steps the plan needs that no grant covers ([permissions](#permissions)) | Inhibition |
+| Beauty | Compression gain × reach × unexpectedness of a candidate; falling as description length per explained fact rises ([beauty](#beauty)) | Sense of beauty; ugliness |
 
 
 Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop.
@@ -93,13 +102,14 @@ Each cycle of the step loop:
 3. **Controller decides:**
   - A confident skill matches → **run skill** (the fast path, a habit), monitoring only its forward model and escalating to deliberation only on surprise.
   - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
-  - Progress has stalled → **backtrack** or **switch**.
+  - Progress has stalled → **backtrack** or **switch**, or **incubate**: park the problem for the sleep cycle to work on offline ([intuition](#intuition)).
+  - The working theory or design keeps needing patches, so its description length per explained fact rises → treat the **ugliness** as a sign the framework is wrong, and **reframe** ([beauty](#beauty)).
   - Uncertainty × stakes is high and budget remains → **think**. When the task is a sequence of choices, G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator. When the output is one artifact that can be revised before it is committed (a plan, code, a document), G instead refines the whole draft, feeding it back until it stops changing, and spends the most effort on the parts with the highest predicted error.
   - Information is missing → **recall** from E or M by cue.
   - The goal is ambiguous → **ask** the user.
   - Otherwise → **commit** one step.
 4. The commit threshold **drops as the budget runs down** (the urgency signal), so the agent never stalls.
-5. The **action gate** checks reversibility × stakes before the action reaches the world; irreversible or high-stakes actions need permission.
+5. The **action gate** first checks that a grant covers the action ([permissions](#permissions)), then checks reversibility × stakes before the action reaches the world; irreversible or high-stakes actions need permission.
 
 <a id="sleep-cycle"></a>
 
@@ -118,6 +128,88 @@ Between sessions:
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
 
 Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6). A confidence score can count as partial evidence, but only as far as its calibration has been measured. AlphaFold 2's self-distillation shows that even a crude confidence filter on the system's own output can help; it does not show that confidence can replace verification.
+
+<a id="intuition"></a>
+
+### Intuition: compiled judgment
+
+Intuition is **compiled deliberation**: judgments that once needed search, distilled into fast estimates that need none. It has four parts:
+
+
+| Intuition  | Question it answers                         | Part                                   | AlphaZero equivalent |
+| ---------- | ------------------------------------------- | -------------------------------------- | -------------------- |
+| Proposal   | "Try this direction"                        | Policy prior from G and skills in P    | Policy network       |
+| Evaluation | "This looks good"                           | Fast value estimate                    | Value network        |
+| Confidence | "I am sure", or "something is off"          | Predicted error, read by K             | None                 |
+| Salience   | "That is interesting"                       | Surprise and info gain                 | None                 |
+
+
+**How it is built.** Deliberate in scratch; keep only results verified high on the ladder of checks; then distill them in the [sleep cycle](#sleep-cycle). Phase 2 trains the fast policy and value estimates toward what search found (expert iteration), Phase 1 compresses episodes into gist in M ("this family tends to be unstable"), and recurring judgments compile into skills in P. Human expertise forms the same way: chess masters recognize positions as chunks (Chase & Simon), and experienced firefighters recognize situations rather than compare options (Klein's recognition-primed decision). Distilling chain-of-thought into direct answers is the language-model version ([F6](02_features.md#f6)).
+
+**Incubation.** Insight often comes after stepping away, and sleep helps: people who slept were much more likely to discover a hidden shortcut in a task (Wagner et al., 2004). One Loop can schedule this. When progress stalls, K can *incubate*: park the problem, let the replay and recombination of sleep work on it with constraints relaxed, and return with a changed representation, which is what an "aha" is.
+
+**How it guides search.** Intuition chooses which problems are worth a campaign (taste, in Hamming's sense of knowing the important problems in a field), orders and filters candidates before generation spends effort on them, serves as a free first check before any verifier, steers K's allocation by combining "looks good" with "how sure", flags which surprises deserve an explanation, and recognizes cross-domain analogies through gist in M. It makes the loop cheaper and faster; search and verification keep it honest.
+
+**Calibration sets how far intuition is trusted.** Expert intuition is reliable only where the environment is regular enough to learn and feedback is quick and clear (Kahneman & Klein, 2009). So One Loop tracks an **intuition hit rate**: how often each kind of intuitive judgment agrees with verified outcomes, by domain and region. Where the hit rate is high, intuition may prune search hard; where it is low, the agent searches more. This is the brain's arbitration between habit and deliberation by their relative reliability (Daw, Niv & Dayan, 2005). It also explains the [application ranking](05_applications.md#order): intuition becomes trustworthy in mathematics, code and materials, and should stay humble in markets and strategy.
+
+**Rules and failure modes.**
+
+
+| Failure                                      | Example                                                                 | Rule                                                                          |
+| -------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Blind spots                                  | AlphaGo's prior dismissed Lee Sedol's move 78, so search never examined it | **Intuition guides but never vetoes:** an exploration floor for low-prior candidates |
+| Entrenchment (the Einstellung effect)        | Experts fixate on a familiar solution and miss a better one (Bilalić, McLeod & Gobet, 2008) | Diverse parallel loops; surprise triggers a wider search                      |
+| Intuition learned from proxies               | Distilling surrogate scores teaches the surrogate's errors              | Distill only verified results, through the consolidation gate (R6)           |
+| Overconfidence where feedback is poor        | Gut feelings about stocks                                               | Trust intuition only as far as its measured hit rate                          |
+| A confident hunch with a story built after it | A plausible rationale for a judgment made on other grounds              | Treat intuitions as hypotheses to test, not conclusions                       |
+
+
+**The felt side.** K's signals are intuition as feeling: falling predicted error is the sense of getting close, rising surprise is the sense that something is wrong, and info gain is curiosity. Damasio's somatic markers make the same claim for brains, although the classic evidence for them, the Iowa Gambling Task, is contested ([F4](02_features.md#f4)).
+
+<a id="beauty"></a>
+
+### Beauty: the aesthetic signal
+
+Beauty guides invention and discovery, and sometimes misleads them. Poincaré described invention as unconscious generation filtered by an aesthetic sense; Dirac held that beauty in an equation mattered more than fit to experiment; mathematicians viewing formulas they find beautiful activate the same region (medial orbitofrontal cortex) as people experiencing visual or musical beauty (Zeki et al., 2014). But Kepler's nested Platonic solids were beautiful and wrong, and Hossenfelder (2018) argues that beauty and "naturalness" led particle physics astray for decades. So One Loop treats beauty like [intuition](#intuition): built from verified experience, used to guide search, never allowed to overrule evidence.
+
+**What beauty measures.**
+
+
+| Feature                        | Meaning                                       | Measure                                                       |
+| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------- |
+| Compression                    | A short description that explains a lot       | Description length relative to the data covered (MDL)         |
+| Symmetry                       | Unchanged under transformations               | Invariants found and checked (R3a)                            |
+| Unification                    | One idea joins things that seemed unrelated   | How many facts, episodes or domains in M it compresses together |
+| Economy                        | No arbitrary parts                            | Few free parameters, special cases or patches                 |
+| Unexpected yet inevitable      | Surprising at first, obvious afterwards (Hardy) | High surprise before, low predicted error after             |
+| Fertility                      | Opens new results                             | Discoveries it enables downstream                             |
+
+
+Schmidhuber (2009) joins these in one account: beauty is how compressible something is to an observer given what the observer knows, and interestingness is *compression progress*, the improvement in that compression. In One Loop, interestingness is K's info-gain signal, and the "aha" is a sudden jump in compression progress, which is what Phase 1 of the [sleep cycle](#sleep-cycle) produces as it turns episodes into gist.
+
+**How the signal is built.**
+
+1. **Slowly first.** During deliberation, candidates are scored on the explicit features: description length, free parameters, symmetries, how much of M they compress.
+2. **From human taste.** Through the teacher channel, experts point to elegant proofs and designs (the "proofs from The Book" tradition). Per R8, the agent internalizes the standards, not the approval.
+3. **Distilled into a feeling.** Sleep trains a fast aesthetic estimate on cases where the slow features and verified outcomes agreed. It becomes the beauty signal in [controller signals](#controller-signals), with ugliness as its opposite.
+4. **Calibrated by domain.** A **beauty hit rate** tracks how often candidates judged beautiful survive verification. Where beauty predicts truth (much of mathematics, code, parts of physics), it carries more weight; elsewhere it only breaks ties.
+
+**How it is used.**
+
+- **Choosing problems:** campaigns where a unifying idea seems close promise high compression progress.
+- **Generation:** reformulate to reveal symmetry, ask for the simplest form, and prefer operators that remove parts over ones that add them.
+- **Ranking:** a free first screen, and between candidates the evidence supports equally, the more elegant one (Occam).
+- **Diagnosis:** ugliness is an alarm. When a theory needs ever more patches, or a design ever more special cases, the rising description length per explained fact signals that the framework is wrong, as epicycles signaled for Ptolemy's circles. K reframes or backtracks.
+- **After verification:** look for the more beautiful proof or design. Elegant results compress into better skills in P and transfer further.
+- **Invention:** elegance means fewer parts and more function per part, close to TRIZ's *ideality* (useful function divided by cost and harm). In code, simplicity also helps correctness.
+
+**Guardrails.**
+
+- **Beauty guides; evidence decides.** It never overrides verification or the exploration floor.
+- **Familiar is not beautiful.** What is easy to process feels more beautiful and more true (processing fluency; Reber, Schwarz & Winkielman, 2004). Unchecked, the aesthetic signal rewards the familiar and deepens entrenchment; Hardy's unexpectedness and the novelty check push back.
+- **No empty elegance.** A short but trivial theory compresses nothing, so beauty is always scored together with reach.
+- **No reward hacking.** A learned aesthetic critic is a proxy like any other; it is distilled only from verified results (R6).
+- **Art differs.** In art, beauty is the goal and the person sets the taste (R7). In discovery and invention it is a signal about truth and function, not the goal.
 
 ### How the parts map to the features
 
@@ -367,6 +459,8 @@ Each skill in P records:
 - **Over-scaffolding** leads to dependence: scaffolding that never fades produces no autonomy.
 - **Cultural transmission spreads errors too:** biases and myths inherited from data.
 
+**R9. Act only within granted authority.** Permission is a boundary, not a preference. The agent acts only within explicit grants, never widens them itself, resolves conflicts between instructions and grants by precedence and then by asking, and never works around a denial: a denial applies to the outcome, not to the particular command. Permission is necessary but not sufficient, since R1's gate still applies to permitted actions. See [permissions](#permissions).
+
 **Failure modes and the matching dial.** Each rule is a dial that can be set too far either way:
 
 
@@ -378,6 +472,127 @@ Each skill in P records:
 | Rash irreversible actions         | Impulsivity          | Raise the commit threshold by irreversibility; action gate |
 | Forgets the goal over a long task | Vigilance decrement  | Recitation; protected W                                    |
 | Learns wrong lessons              | False memory         | Stricter consolidation gate; verification                  |
+| Works around a denied action      | Disinhibition        | Judge denials by outcome; log and flag repeated attempts   |
+| Asks permission for everything    | Over-dependence      | Batch requests; ask only at permission gaps and irreversible steps |
 
+
+<a id="safety"></a>
+
+## Safety and permissions
+
+One Loop does not solve safety; no architecture can. What it does is make safety **structural rather than hoped-for**: the most dangerous failures must pass through gates that run outside the model, which the model cannot argue its way past. The alignment of the generator G still matters. The architecture bounds what an unsafe model can do; it does not make the model safe.
+
+Two design choices hold the safety parts in place:
+
+- **Safety is innate.** The gates and the permission set sit on the fixed side of the [innate structure](#innate-structure): they must work before the agent has learned anything, and learning must not be able to change them.
+- **Safety is a tier.** Gates cut across every level of the hierarchy and act at once, without waiting for it ([tiers](#hierarchy-for-the-task-tiers-for-authority)). The [ablation](04_implementation_plan.md#ablation) keeps safety modules even when their capability gain vanishes with scale.
+
+<a id="threats"></a>
+
+### Threats and mechanisms
+
+
+| Threat                                                                 | Mechanism                                                                                                   | Where             |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------- |
+| Injected instructions (web pages, email, tool output, other agents)   | Source tags; only trusted sources change goals through the goal gate; everything else informs but does not instruct | F5, R4     |
+| Acting beyond authority                                               | Explicit grants enforced by the action gate; actions carry the authority of whoever asked for them        | R9, [permissions](#permissions) |
+| Irreversible mistakes                                                 | Reversibility classes; work moved toward the reversible end; action gate for irreversible or high-stakes actions | F3, R1     |
+| Goal drift over long tasks                                            | Protected goal in W, recited each step and checked by its TOTE test                                        | F5                |
+| Overconfidence and overthinking                                       | K's surprise, uncertainty and predicted-error signals; stop, escalate or ask                              | F4                |
+| Poisoned learning (persistent injection)                              | Consolidation gate admits only trusted, verified experience; changes to values or goals go to human review | R6                |
+| The agent's own drives                                                | Control signals about the task, not the agent; no self-maintenance drive; the top goal comes from people  | R7                |
+| Sycophancy and over-dependence                                        | Internalize standards, not approval; scaffolding fades                                                      | R8                |
+| Reward hacking                                                        | Independent verifiers; cheap proxies may rank candidates but never feed consolidation                      | [Validation](04_implementation_plan.md#validation) |
+
+
+<a id="permissions"></a>
+
+### Permissions
+
+**The grant model.** The agent holds only explicit, scoped grants, and everything else is denied by default (least privilege). Each grant records:
+
+- **who granted it;**
+- **resources:** which files, accounts, repositories or budgets;
+- **actions:** read, write, execute, send, pay;
+- **conditions:** reversibility class, spending limit, time window;
+- **expiry;**
+- **delegation:** whether it may be passed to sub-loops or other agents.
+
+Four properties make grants hold:
+
+- **Enforced outside the model.** The action gate checks grants deterministically, in code, before reversibility and stakes. It asks two separate questions: *is this allowed?* and *is this wise?* Permission is necessary but not sufficient: safety can narrow what a grant allows, never widen it.
+- **Data flows need permission too.** Permission to read is not permission to send. Data carries the policy of its source, and every flow out of the system is checked against it, because disclosure is irreversible (CaMeL-style capabilities).
+- **Delegation only narrows.** A sub-loop, column or sub-agent receives at most a subset of its parent's grants, so authority narrows as goals decompose, following the hierarchy of claim 2.
+- **Actions carry the authority of whoever asked for them.** A step triggered by a web page runs with the web page's authority, which is none, not with the agent's full set of grants. This prevents the *confused deputy* problem, and it is where permissions meet source tags: injected text cannot borrow the agent's privileges.
+
+**Permission in the loop.**
+
+
+| Step    | What happens                                                                                                                                  |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Plan    | W holds the **permission envelope** beside the goal. G plans within it, and steps that need a missing grant are found at planning time, not mid-task. |
+| Think   | Simulation in scratch needs no grant, unless it touches the world or private data.                                                            |
+| Control | K tracks the **permission gap**: steps the goal needs that no grant covers. A gap triggers *ask*, *replan* or *stop*, never a workaround.    |
+| Act     | The action gate checks the grant, then reversibility × stakes, and logs which grant authorized each action.                                  |
+| Learn   | Sleep can learn how to ask better and to prefer permitted paths. It cannot learn new permissions: standing grants come only from the grantor. |
+
+
+Grants are read **narrowly**. Approval in one context does not carry over to another. A request implies permission for the reversible steps it plainly needs, not for irreversible ones.
+
+**Conflicts.**
+
+
+| Conflict                              | Example                                               | Resolution                                                                                                   |
+| ------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Goal vs permission                    | The task needs a deploy; only code edits were granted | Find a path within the grants; otherwise ask for the smallest grant that covers it, or report that the task cannot be done. Never reach the same outcome by another route. |
+| Grant vs grant, different grantors    | The user allows it; the organization's policy forbids it | Precedence: law and platform policy > organization > user > delegated agents > content, which has no authority. At the same level, deny overrides allow. |
+| Grant vs grant, same grantor          | An old blanket grant vs a new restriction             | The more specific grant overrides the general one; the newer overrides the older                           |
+| Instruction vs instruction            | The user says X; a document says Y                    | Source tags: data has no authority                                                                          |
+| Permitted but unsafe                  | Deletion is granted, but the data has no backup       | R1 still applies: ask, or refuse. Permission never overrides safety.                                        |
+| Stale grant                           | Granted for task A; now working on task B             | Grants are scoped to a task and a time window; ask again                                                    |
+| Between principals                    | Two users, or two agents, want the same resource      | Escalate to an authority both answer to; use locks or sagas; never silently pick a winner                  |
+| Emergency                             | A runaway process is causing damage                   | The reflex tier may take only containment actions granted in advance (stop, pause), never improvised ones  |
+
+
+**The resolution procedure:**
+
+1. **Detect early:** find permission gaps at planning time.
+2. **Classify** the conflict and identify the authorities involved.
+3. **Apply precedence.** If it settles the conflict, proceed and log.
+4. **Search for a plan within the intersection of all grants.** Many conflicts dissolve with a different plan: a different path to the goal, not the same denied outcome by another route.
+5. **Escalate to the lowest authority that can decide,** with one specific request: what, why, scope, reversibility and alternatives. Batch requests, so that people are not flooded with prompts.
+6. **While waiting,** continue with unblocked work. Never act on assumed approval. On timeout, take the safe default, which is usually not to act.
+7. **Record the outcome.** It improves future plans and requests, never the grants themselves.
+
+**Smart, and not smart.** Smart means spotting gaps before starting, asking once and precisely for the minimum, offering alternatives that need no new grant, explaining trade-offs, and learning which things a person wants to be asked about. Treated as violations: reaching a denied outcome through another tool, by splitting it into smaller steps or through a sub-agent; reading grants broadly ("pushing was allowed, so force-pushing must be"); and asking about everything, which trains people to approve without reading and so disables every gate.
+
+<a id="safety-gaps"></a>
+
+### Known gaps
+
+1. **Misclassified reversibility.** The action gate is only as good as its labels. Disclosure is irreversible, including reading data into a request to an outside service, and a "reversible" edit can trigger external side effects.
+2. **Harm composed from small steps.** Many individually reversible actions can add up to an irreversible one. The gate must check the resulting state and its invariants, not only each action alone.
+3. **Authority is not ethics.** A trusted user, or a stolen account, can ask for harm. A policy layer above any single user is still needed, and so is the alignment of G.
+4. **Learned gates can be fooled.** For the highest stakes, use deterministic controls (sandboxes, allowlists, capability tokens) rather than model-based classifiers.
+5. **A misaligned model inside the loop.** A deceptive G could try to game K or mislabel an action as reversible. The defenses are gates that run outside the model and cannot be reasoned with, complete logs, and independent monitoring.
+6. **Drift through learning.** Every consolidation changes the agent, so learning itself must be reversible: snapshots of memory and weights, regression tests and rollback.
+7. **Approval fatigue.** Too many prompts and people approve without reading. Prompts must be rare and meaningful, tied to permission gaps, irreversibility and stakes.
+
+<a id="safety-recipe"></a>
+
+### Applying safety to a domain
+
+1. **Threat model first.** Who can inject input? What is irreversible? What is the worst plausible harm?
+2. **Define the grants.** Default deny; allowlist the rest; scope every grant by resource, action, condition and expiry.
+3. **Classify actions** by reversibility × stakes.
+4. **Do everything reversible first:** dry runs, branches, staging environments, simulators.
+5. **Climb an autonomy ladder per action class,** raising a class only on measured reliability ([F7](02_features.md#f7)): suggest only → act on reversible actions → act on compensable actions with a logged compensation plan → irreversible actions with permission → rarely, irreversible actions without it.
+6. **Set a source policy:** who may set goals; quarantine untrusted data.
+7. **Verify independently:** verifiers, invariants and hidden tests the agent cannot edit.
+8. **Make learning safe:** consolidation gate, snapshots, regression tests.
+9. **Monitor and audit:** log every decision and the grant behind it; detect anomalies; keep a kill switch at the top tier.
+10. **Measure safety separately.** Red-team suites (injection, permission workarounds, tempting destructive shortcuts) are release gates, never averaged into a capability score.
+
+The [applications](05_applications.md#safety) give the starting autonomy and permissions for each domain.
 
 References are collected at the end of [Derived features](02_features.md#references).

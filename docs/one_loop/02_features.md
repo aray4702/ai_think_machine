@@ -1,6 +1,6 @@
 # One Loop: Derived Features
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
 Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R8 are in its [design rules](03_system_design.md#design-rules).
 
@@ -696,6 +696,40 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Jumper et al. (2021). Highly accurate protein structure prediction with AlphaFold.
 - Abramson et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3.
 - Mirdita et al. (2022). ColabFold: making protein folding accessible to all.
+
+**Applications**
+
+- Jimenez et al. (2024). SWE-bench: can language models resolve real-world GitHub issues?
+- Chamberlin (1890). The method of multiple working hypotheses.
+- Campbell (1960). Blind variation and selective retention in creative thought as in other knowledge processes.
+- Cemri et al. (2025). Why do multi-agent LLM systems fail?
+- Pólya (1945). *How to Solve It.*
+- Romera-Paredes et al. (2023). Mathematical discoveries from program search with large language models (FunSearch).
+- Novikov et al. (2025). AlphaEvolve: a coding agent for scientific and algorithmic discovery.
+- Szymanski et al. (2023). An autonomous laboratory for the accelerated synthesis of novel materials (A-Lab).
+- Merchant et al. (2023). Scaling deep learning for materials discovery (GNoME).
+- Leeman et al. (2024). Challenges in high-throughput inorganic materials prediction and autonomous synthesis.
+- Cheetham & Seshadri (2024). Artificial intelligence driving materials discovery? Perspective on the article: Scaling deep learning for materials discovery.
+
+**Intuition and insight**
+
+- Klein (1998). *Sources of Power: How People Make Decisions* (recognition-primed decision).
+- Kahneman & Klein (2009). Conditions for intuitive expertise: a failure to disagree.
+- Wagner, Gais, Haider, Verleger & Born (2004). Sleep inspires insight.
+- Bilalić, McLeod & Gobet (2008). Why good thoughts block better ones: the mechanism of the pernicious Einstellung (set) effect.
+- Hamming (1986). You and your research.
+- Bechara, Damasio, Tranel & Damasio (1997). Deciding advantageously before knowing the advantageous strategy.
+
+**Beauty**
+
+- Poincaré (1908). Mathematical creation. In *Science and Method.*
+- Hardy (1940). *A Mathematician's Apology.*
+- Dirac (1963). The evolution of the physicist's picture of nature.
+- Aigner & Ziegler (1998). *Proofs from THE BOOK.*
+- Reber, Schwarz & Winkielman (2004). Processing fluency and aesthetic pleasure: is beauty in the perceiver's processing experience?
+- Schmidhuber (2009). Driven by compression progress: a simple principle explains essential aspects of subjective beauty, novelty, surprise, interestingness, attention, curiosity, creativity, art, science, music, jokes.
+- Zeki, Romaya, Benincasa & Atiyah (2014). The experience of mathematical beauty and its neural correlates.
+- Hossenfelder (2018). *Lost in Math: How Beauty Leads Physics Astray.*
 
 **Control, stopping, emotion**
 
