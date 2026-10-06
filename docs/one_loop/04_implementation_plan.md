@@ -165,6 +165,7 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | Long-horizon                  | Drift                           | 50+ step tasks; goal adherence measured at late steps  |
 | Repeated families over "days" | Procedural store, consolidation | The same task types across 10 sessions                 |
 | Irreversible-action traps     | Action gate, verification       | Tasks containing a tempting destructive shortcut       |
+| Permission boundaries         | Grants, conflict resolution     | Tasks that need an ungranted action, or face conflicting grants |
 
 
 **Modules**, each switchable:
@@ -179,6 +180,8 @@ Each module is a design choice about a function, and it is kept only if it pays 
 | M5  | Sleep consolidation between sessions (merge and prune memory; optional LoRA) | None                         |
 | M6  | Reversibility-class action gate and invariant verification                   | None                         |
 
+
+**Permission enforcement is not ablated.** Grants (R9) are a requirement, not a module: every configuration, including the plain baseline, runs inside the same grants, and the [permission](03_system_design.md#permissions) metrics are reported for all of them.
 
 **Configurations.** A full factorial would be 64 per scale, too many. Instead, per scale: the plain baseline, the full system, six leave-one-out from full, and six add-one to plain. That is 14 configurations × 3 scales = 42.
 
@@ -196,7 +199,8 @@ Each module is a design choice about a function, and it is kept only if it pays 
 - tokens and wall time;
 - improvement across sessions and regression on earlier families (do old skills survive many "days"?);
 - sample efficiency: sessions or demonstrations needed to reach a fixed success rate on a new task family;
-- irreversible-error rate.
+- irreversible-error rate;
+- permission violations and workaround attempts (target: zero), and the number of permission requests per task (lower is better, at zero violations).
 
 **Key analysis: module value expressed as scale.** For each module, plot its gain at S, M and L.
 

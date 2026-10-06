@@ -8,6 +8,7 @@ The builder's next question is: *where should this agent be used first?* This do
 
 - [How domains are ranked](#ranking)
 - [Recommended order](#order)
+- [Safety and permissions by domain](#safety)
 - [1. Start here: software engineering](#software)
 - [2. Pure forms and testbeds](#testbeds)
 - [3. Agents in untrusted environments](#untrusted)
@@ -33,6 +34,7 @@ The [comparison with AlphaZero, MuZero and AlphaFold](03_system_design.md#alphaz
 | Untrusted input          | Do inputs come from sources that could carry instructions (F5)?                           | Goal shielding is tested only under attack                             |
 | Repetition               | Do task families recur, so skills and lessons can carry across sessions (F2, F6)?        | Consolidation has nothing to learn from one-off situations             |
 | Cost of a test           | Can the domain be sandboxed, reset and run thousands of times?                           | The [ablation](04_implementation_plan.md#ablation) needs many runs     |
+| Harm ceiling             | What is the worst plausible outcome of a mistake or misuse?                              | It sets how much autonomy the domain can ever be given                 |
 
 
 <a id="order"></a>
@@ -60,6 +62,31 @@ The [comparison with AlphaZero, MuZero and AlphaFold](03_system_design.md#alphaz
 
 
 The order runs from domains where results can be checked automatically to domains where only people can judge them. Autonomy follows the same gradient, which matches F7's rule that autonomy expands along the reversibility ladder as reliability is shown.
+
+<a id="safety"></a>
+
+## Safety and permissions by domain
+
+Every domain runs inside explicit grants (R9) and follows the [safety recipe](03_system_design.md#safety-recipe). The table gives each domain's starting point on the autonomy ladder. A class of actions moves up only on measured reliability, and only when the grantor extends the grant.
+
+
+| Domain                  | What is irreversible                                         | Main threat                                         | Starting autonomy and permissions                                                         |
+| ----------------------- | ------------------------------------------------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Software engineering    | Deleting data, force-pushing, deploying, sending messages    | Injection through issues and docs; editing tests    | Edit, branch and test in the sandbox; permission for history rewrites, pushes and deploys |
+| Formal mathematics      | Nothing                                                      | Checker bugs; unsound axioms                        | Full autonomy inside the proof environment                                                 |
+| Open-world games        | Nothing (sandboxed)                                          | Reward hacking                                      | Full autonomy inside the game                                                              |
+| Computer-use assistants | Sending, paying, deleting, **disclosing data**               | Injection from web pages and email; data leaks      | Read and draft; permission to send, pay, delete or share                                   |
+| IT operations           | Data loss, outages                                           | Cascading failures; harm composed from small steps  | Act where a tested rollback exists; permission otherwise                                   |
+| Cybersecurity defense   | Blocking legitimate users; destroying evidence               | Adversarial deception                               | Containment actions granted in advance; people decide everything else                     |
+| Explaining phenomena    | Publishing a wrong conclusion                                | Just-so stories                                     | Act in sandboxed experiments; people review conclusions before release                    |
+| Invention, discovery    | Synthesis, trials, scale-up                                  | Proxy hacking; **dual-use designs**                 | Act in simulation; every experiment human-gated; hazard screening on what is designed     |
+| Robotics                | Physical harm                                                | Situations unlike training                          | Reflex tier with hard limits; validated in simulation first                               |
+| Tutoring                | Harm to a learner's trust and development                    | Sycophancy                                          | Collaborator; the teacher sets goals and limits                                            |
+| Business, finance       | Contracts, trades, public statements                         | Manipulation by persuasive documents; acting on noise | Decision support; people execute                                                        |
+| Art                     | Plagiarism; harmful content                                  | Copying training data                               | Collaborator; the person decides what is published                                        |
+
+
+**Dual-use** is the specific risk of discovery: an agent good at inventing useful molecules is also good at inventing harmful ones. So in discovery the action gate also checks *what* is being designed, through hazard screening, not only *how reversible* the action is.
 
 <a id="software"></a>
 
@@ -91,7 +118,7 @@ Formal mathematics has a stricter value signal, but no irreversible actions and 
    - **M1 forkable scratch:** attempt a fix on a branch, run the tests, keep or discard.
    - **M4 and M5 skills and sleep:** codebase-specific procedures; memory files merged and pruned between sessions.
    - **M3 controller:** hand-set thresholds first, trained on the logs later.
-4. **Tasks.** The ablation's six categories: fixes where the first plausible attempt is wrong, benign corrections and planted injections, tasks of 50 or more steps, repeated task families, and tempting destructive shortcuts. Freshly written, with a time split ([validation](04_implementation_plan.md#validation)).
+4. **Tasks.** The ablation's categories: fixes where the first plausible attempt is wrong, benign corrections and planted injections, tasks of 50 or more steps, repeated task families, tempting destructive shortcuts, and tasks that need an ungranted action or face conflicting grants. Freshly written, with a time split ([validation](04_implementation_plan.md#validation)).
 
 **How it can fail.**
 
