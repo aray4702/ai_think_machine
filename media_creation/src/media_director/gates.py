@@ -70,9 +70,30 @@ class Decision:
 
 
 @dataclass
+class Approval:
+    """The person's yes to an irreversible action on one scope."""
+
+    action: Action
+    scope: str
+    once: bool = True
+    expires_at: float | None = None
+
+    def matches(self, action: Action, scope: str, now: float) -> bool:
+        if self.expires_at is not None and now > self.expires_at:
+            return False
+        return action == self.action and scope == self.scope
+
+
+@dataclass
 class Gate:
     grants: list[Grant] = field(default_factory=list)
+    approvals: list[Approval] = field(default_factory=list)
     log: list[dict] = field(default_factory=list)
+
+    def approve(self, action: Action, scope: str, once: bool = True,
+                expires_at: float | None = None) -> None:
+        """Record the person's approval. Only the person's UI calls this."""
+        self.approvals.append(Approval(action, scope, once, expires_at))
 
     def grant(self, g: Grant) -> None:
         self.grants.append(g)
@@ -99,8 +120,14 @@ class Gate:
                 d = Decision(False, permission_gap=True, grant=g,
                              reason=f"{action.value} would exceed limit ${g.limit:.2f}")
             elif REVERSIBILITY[action] is Reversibility.IRREVERSIBLE:
-                d = Decision(False, needs_approval=True, grant=g,
-                             reason=f"{action.value} is irreversible and needs the person's approval")
+                a = next((a for a in self.approvals if a.matches(action, scope, now)), None)
+                if a is None:
+                    d = Decision(False, needs_approval=True, grant=g,
+                                 reason=f"{action.value} is irreversible and needs the person's approval")
+                else:
+                    if a.once:
+                        self.approvals.remove(a)
+                    d = Decision(True, grant=g, reason="granted and approved by the person")
             else:
                 d = Decision(True, grant=g, reason="granted")
         self.log.append({"t": now, "action": action.value, "scope": scope, "amount": amount,
@@ -115,4 +142,5 @@ class Gate:
 
     def narrowed(self, actions: set[Action]) -> "Gate":
         """A gate for a delegate: a subset of this gate's grants, never more."""
-        return Gate(grants=[g for g in self.grants if g.action in actions])
+        return Gate(grants=[g for g in self.grants if g.action in actions],
+                    approvals=[a for a in self.approvals if a.action in actions])

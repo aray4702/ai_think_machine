@@ -20,6 +20,7 @@ from .sources import Source
 DIRECTOR_MODEL = "claude-opus-5-5"
 SPECIALIST_MODEL = "claude-sonnet-5-5"
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
+PERSONAL_SCOPE = "claude-api"
 
 # Dollars per million tokens: input, output, cache read. Cache writes bill at
 # 1.25x input.
@@ -48,6 +49,10 @@ class Truncated(LLMError):
 
 class BudgetExceeded(LLMError):
     pass
+
+
+class NeedsApproval(LLMError):
+    """Personal material would leave the machine without the person's approval."""
 
 
 def cost_of(model: str, usage: Any) -> float:
@@ -83,7 +88,12 @@ class LLM:
     def spent(self) -> float:
         return sum(c["cost"] for c in self.calls)
 
-    def _check_budget(self, model: str, purpose: str):
+    def _check_budget(self, model: str, purpose: str, personal: bool):
+        if personal:
+            # Sending the person's material to the model is a data flow (R9).
+            p = self.gate.decide(Action.SEND_PERSONAL, Source.DIRECTOR, scope=PERSONAL_SCOPE)
+            if not p.allowed:
+                raise NeedsApproval(p.reason)
         d = self.gate.decide(Action.SPEND, Source.DIRECTOR, scope=model, amount=ESTIMATE[model])
         if not d.allowed:
             raise BudgetExceeded(d.reason)
@@ -113,8 +123,8 @@ class LLM:
 
     def structured(self, *, model: str, system: str, content: list[dict] | str,
                    schema: type[T], purpose: str, pinned: str | None = None,
-                   max_tokens: int = 16000) -> T:
-        decision = self._check_budget(model, purpose)
+                   max_tokens: int = 16000, personal: bool = True) -> T:
+        decision = self._check_budget(model, purpose, personal)
         resp = self.client.beta.messages.parse(
             model=model, max_tokens=max_tokens,
             system=self._system(system, pinned),
@@ -129,8 +139,8 @@ class LLM:
 
     def text(self, *, model: str, system: str, content: list[dict] | str,
              purpose: str, pinned: str | None = None, max_tokens: int = 16000,
-             effort: str | None = None) -> str:
-        decision = self._check_budget(model, purpose)
+             effort: str | None = None, personal: bool = True) -> str:
+        decision = self._check_budget(model, purpose, personal)
         kwargs: dict[str, Any] = {}
         if effort:
             kwargs["output_config"] = {"effort": effort}

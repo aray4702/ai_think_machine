@@ -161,7 +161,9 @@ class FakeMessages:
 def fake_llm(parsed=None, stop_reason="end_turn", limit=5.0):
     msgs = FakeMessages(parsed, stop_reason)
     client = SimpleNamespace(beta=SimpleNamespace(messages=msgs))
-    return LLM(gate=Gate([Grant(Action.SPEND, limit=limit)]), client=client), msgs
+    gate = Gate([Grant(Action.SPEND, limit=limit), Grant(Action.SEND_PERSONAL, scope="claude-api")])
+    gate.approve(Action.SEND_PERSONAL, "claude-api", once=False)
+    return LLM(gate=gate, client=client), msgs
 
 
 def test_cost_of():
@@ -198,3 +200,15 @@ def test_budget_blocks_calls_before_spending():
     with pytest.raises(BudgetExceeded):
         llm.text(model="claude-opus-5-5", system="s", content="x", purpose="t")
     assert msgs.requests == []
+
+
+def test_personal_material_needs_approval_before_any_call():
+    from media_director.llm import NeedsApproval
+    msgs = FakeMessages()
+    client = SimpleNamespace(beta=SimpleNamespace(messages=msgs))
+    llm = LLM(gate=Gate([Grant(Action.SPEND, limit=5), Grant(Action.SEND_PERSONAL, scope="claude-api")]),
+              client=client)
+    with pytest.raises(NeedsApproval):
+        llm.text(model="claude-opus-5-5", system="s", content="x", purpose="t")
+    llm.text(model="claude-opus-5-5", system="s", content="x", purpose="t", personal=False)
+    assert len(msgs.requests) == 1

@@ -1,7 +1,7 @@
 [project]
 name = "media-director"
 version = "0.1.0"
-description = "Add your description here"
+description = "One Loop as a director for personal media: a poster and slide-deck MVP"
 authors = [
     { name = "David Xu", email = "aray4702@gmail.com" }
 ]
@@ -13,6 +13,9 @@ dependencies = [
     "pydantic>=2.13.5",
     "uvicorn[standard]>=0.54.0",
 ]
+
+[project.scripts]
+media-director = "media_director.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12.0"]
