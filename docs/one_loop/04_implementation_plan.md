@@ -1,6 +1,6 @@
 # One Loop: Implementation Plan
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
 This document turns the [system design](03_system_design.md) into a plan: what current models already provide, the build stages and the development process that orders them, how each module is validated before it is kept, and the assumptions and risks the plan rests on.
 
@@ -301,7 +301,7 @@ The final evaluation uses held-out composite tasks that need all stages, in an e
 
 Recommended sequence:
 
-1. Build stages 0–3 on top of an existing LLM, with hand-coded controller rules and logging.
+1. Build stages 0–3 on top of an existing LLM, with hand-coded controller rules and logging, in the first application domain: software engineering ([applications](05_applications.md#software)).
 2. Run the module ablation to find which modules earn their place.
 3. Build the curriculum environments.
 4. Run the curriculum check with learner (i) to settle the dependency question without human-data inheritance.

@@ -1,6 +1,6 @@
 # One Loop: Derived Features
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md)
 
 Each section below derives one feature of the agent. It starts with a **constraint** that every agent acting in the world faces, derives the **consequence** that follows from it, gathers **evidence** from humans and machines on how the consequence can be met, and ends with the **feature** it adds to the design. Components named in the feature boxes (G, K, W, P and the rest) are specified in [System design](03_system_design.md); rules R1–R8 are in its [design rules](03_system_design.md#design-rules).
 
@@ -696,6 +696,13 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Jumper et al. (2021). Highly accurate protein structure prediction with AlphaFold.
 - Abramson et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3.
 - Mirdita et al. (2022). ColabFold: making protein folding accessible to all.
+
+**Applications**
+
+- Jimenez et al. (2024). SWE-bench: can language models resolve real-world GitHub issues?
+- Chamberlin (1890). The method of multiple working hypotheses.
+- Campbell (1960). Blind variation and selective retention in creative thought as in other knowledge processes.
+- Cemri et al. (2025). Why do multi-agent LLM systems fail?
 
 **Control, stopping, emotion**
 
