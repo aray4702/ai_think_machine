@@ -12,6 +12,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [The step cycle](#step-cycle)
   - [The sleep cycle](#sleep-cycle)
   - [Intuition: compiled judgment](#intuition)
+  - [Beauty: the aesthetic signal](#beauty)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Closest existing systems: AlphaZero, MuZero and AlphaFold](#alphazero)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
@@ -85,6 +86,7 @@ K keeps a few running scalars about the *process*, not the content, each a funct
 | Surprise    | Mismatch between predicted and actual tool or environment output | Interrupt          |
 | Predicted error | A head trained against the agent's actual errors, per part of the output and per relation between parts (as AlphaFold's pLDDT and PAE) | Feeling of knowing |
 | Permission gap | Steps the plan needs that no grant covers ([permissions](#permissions)) | Inhibition |
+| Beauty | Compression gain × reach × unexpectedness of a candidate; falling as description length per explained fact rises ([beauty](#beauty)) | Sense of beauty; ugliness |
 
 
 Feed these back into the context, or into a separate control channel, so the agent perceives its own state, and train it to map them to *continue / backtrack / switch / ask for help / commit*. This targets the overthinking problem (Elliot-like loops) and the missing sense of when to stop.
@@ -101,6 +103,7 @@ Each cycle of the step loop:
   - A confident skill matches → **run skill** (the fast path, a habit), monitoring only its forward model and escalating to deliberation only on surprise.
   - High surprise from a trusted source → reopen the belief and maybe replan, through the goal gate.
   - Progress has stalled → **backtrack** or **switch**, or **incubate**: park the problem for the sleep cycle to work on offline ([intuition](#intuition)).
+  - The working theory or design keeps needing patches, so its description length per explained fact rises → treat the **ugliness** as a sign the framework is wrong, and **reframe** ([beauty](#beauty)).
   - Uncertainty × stakes is high and budget remains → **think**. When the task is a sequence of choices, G simulates branches in scratch, expanding the one with the highest gain × need (Mattar & Daw) and scoring them with a progress estimator. When the output is one artifact that can be revised before it is committed (a plan, code, a document), G instead refines the whole draft, feeding it back until it stops changing, and spends the most effort on the parts with the highest predicted error.
   - Information is missing → **recall** from E or M by cue.
   - The goal is ambiguous → **ask** the user.
@@ -162,6 +165,51 @@ Intuition is **compiled deliberation**: judgments that once needed search, disti
 
 
 **The felt side.** K's signals are intuition as feeling: falling predicted error is the sense of getting close, rising surprise is the sense that something is wrong, and info gain is curiosity. Damasio's somatic markers make the same claim for brains, although the classic evidence for them, the Iowa Gambling Task, is contested ([F4](02_features.md#f4)).
+
+<a id="beauty"></a>
+
+### Beauty: the aesthetic signal
+
+Beauty guides invention and discovery, and sometimes misleads them. Poincaré described invention as unconscious generation filtered by an aesthetic sense; Dirac held that beauty in an equation mattered more than fit to experiment; mathematicians viewing formulas they find beautiful activate the same region (medial orbitofrontal cortex) as people experiencing visual or musical beauty (Zeki et al., 2014). But Kepler's nested Platonic solids were beautiful and wrong, and Hossenfelder (2018) argues that beauty and "naturalness" led particle physics astray for decades. So One Loop treats beauty like [intuition](#intuition): built from verified experience, used to guide search, never allowed to overrule evidence.
+
+**What beauty measures.**
+
+
+| Feature                        | Meaning                                       | Measure                                                       |
+| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------- |
+| Compression                    | A short description that explains a lot       | Description length relative to the data covered (MDL)         |
+| Symmetry                       | Unchanged under transformations               | Invariants found and checked (R3a)                            |
+| Unification                    | One idea joins things that seemed unrelated   | How many facts, episodes or domains in M it compresses together |
+| Economy                        | No arbitrary parts                            | Few free parameters, special cases or patches                 |
+| Unexpected yet inevitable      | Surprising at first, obvious afterwards (Hardy) | High surprise before, low predicted error after             |
+| Fertility                      | Opens new results                             | Discoveries it enables downstream                             |
+
+
+Schmidhuber (2009) joins these in one account: beauty is how compressible something is to an observer given what the observer knows, and interestingness is *compression progress*, the improvement in that compression. In One Loop, interestingness is K's info-gain signal, and the "aha" is a sudden jump in compression progress, which is what Phase 1 of the [sleep cycle](#sleep-cycle) produces as it turns episodes into gist.
+
+**How the signal is built.**
+
+1. **Slowly first.** During deliberation, candidates are scored on the explicit features: description length, free parameters, symmetries, how much of M they compress.
+2. **From human taste.** Through the teacher channel, experts point to elegant proofs and designs (the "proofs from The Book" tradition). Per R8, the agent internalizes the standards, not the approval.
+3. **Distilled into a feeling.** Sleep trains a fast aesthetic estimate on cases where the slow features and verified outcomes agreed. It becomes the beauty signal in [controller signals](#controller-signals), with ugliness as its opposite.
+4. **Calibrated by domain.** A **beauty hit rate** tracks how often candidates judged beautiful survive verification. Where beauty predicts truth (much of mathematics, code, parts of physics), it carries more weight; elsewhere it only breaks ties.
+
+**How it is used.**
+
+- **Choosing problems:** campaigns where a unifying idea seems close promise high compression progress.
+- **Generation:** reformulate to reveal symmetry, ask for the simplest form, and prefer operators that remove parts over ones that add them.
+- **Ranking:** a free first screen, and between candidates the evidence supports equally, the more elegant one (Occam).
+- **Diagnosis:** ugliness is an alarm. When a theory needs ever more patches, or a design ever more special cases, the rising description length per explained fact signals that the framework is wrong, as epicycles signaled for Ptolemy's circles. K reframes or backtracks.
+- **After verification:** look for the more beautiful proof or design. Elegant results compress into better skills in P and transfer further.
+- **Invention:** elegance means fewer parts and more function per part, close to TRIZ's *ideality* (useful function divided by cost and harm). In code, simplicity also helps correctness.
+
+**Guardrails.**
+
+- **Beauty guides; evidence decides.** It never overrides verification or the exploration floor.
+- **Familiar is not beautiful.** What is easy to process feels more beautiful and more true (processing fluency; Reber, Schwarz & Winkielman, 2004). Unchecked, the aesthetic signal rewards the familiar and deepens entrenchment; Hardy's unexpectedness and the novelty check push back.
+- **No empty elegance.** A short but trivial theory compresses nothing, so beauty is always scored together with reach.
+- **No reward hacking.** A learned aesthetic critic is a proxy like any other; it is distilled only from verified results (R6).
+- **Art differs.** In art, beauty is the goal and the person sets the taste (R7). In discovery and invention it is a signal about truth and function, not the goal.
 
 ### How the parts map to the features
 

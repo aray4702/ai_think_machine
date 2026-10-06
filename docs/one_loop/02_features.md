@@ -720,6 +720,17 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Hamming (1986). You and your research.
 - Bechara, Damasio, Tranel & Damasio (1997). Deciding advantageously before knowing the advantageous strategy.
 
+**Beauty**
+
+- Poincaré (1908). Mathematical creation. In *Science and Method.*
+- Hardy (1940). *A Mathematician's Apology.*
+- Dirac (1963). The evolution of the physicist's picture of nature.
+- Aigner & Ziegler (1998). *Proofs from THE BOOK.*
+- Reber, Schwarz & Winkielman (2004). Processing fluency and aesthetic pleasure: is beauty in the perceiver's processing experience?
+- Schmidhuber (2009). Driven by compression progress: a simple principle explains essential aspects of subjective beauty, novelty, surprise, interestingness, attention, curiosity, creativity, art, science, music, jokes.
+- Zeki, Romaya, Benincasa & Atiyah (2014). The experience of mathematical beauty and its neural correlates.
+- Hossenfelder (2018). *Lost in Math: How Beauty Leads Physics Astray.*
+
 **Control, stopping, emotion**
 
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.

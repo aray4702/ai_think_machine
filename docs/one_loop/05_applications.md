@@ -207,7 +207,7 @@ Two rules keep the ladder honest:
 
 A failed candidate thus yields a better model of where the agent's own models are wrong. Across campaigns, that is the main thing that accumulates.
 
-**Intuition.** Across campaigns, consolidation builds [intuition](03_system_design.md#intuition): fast proposals and value estimates distilled from verified results. Intuition chooses promising campaigns, orders candidates and serves as a free first rung of the ladder. It is trusted only as far as its measured hit rate, and it never vetoes the exploration floor. When a campaign stalls, K can incubate it: park it for the sleep cycle and return later.
+**Intuition.** Across campaigns, consolidation builds [intuition](03_system_design.md#intuition): fast proposals and value estimates distilled from verified results. Intuition chooses promising campaigns, orders candidates and serves as a free first rung of the ladder. It is trusted only as far as its measured hit rate, and it never vetoes the exploration floor. When a campaign stalls, K can incubate it: park it for the sleep cycle and return later. A [sense of beauty](03_system_design.md#beauty), built and calibrated the same way, favors candidates that compress and unify, and treats a growing pile of patches as a sign the framework is wrong.
 
 **Consolidation across campaigns.**
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="704" viewBox="0 0 960 704" role="img" aria-labelledby="title desc">
   <title id="title">One Loop architecture</title>
-  <desc id="desc">During a session: controller K tracks process signals (progress, uncertainty, info gain, budget, surprise, predicted error, permission gap) and chooses control actions (run skill, think, recall, backtrack, switch, ask, incubate, commit, stop). It sets the mode of generator G and gates writes to working state W and procedural store P. Input from the user, tools or environment is source-tagged, enters context C and reaches generator G, which perceives, recalls, simulates and acts. G reads and writes the protected working state W: the goal stack with TOTE tests, the belief, the plan and the permission envelope. G simulates in scratch, a forkable inner loop discarded after use; its output passes the action gate, which checks grants and reversibility class, before reaching the world. Between sessions: the salience-tagged episodic log E feeds sleep, which selects episodes, replays them in reverse, extracts gist into M, generates counterfactuals and distills. Only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.</desc>
+  <desc id="desc">During a session: controller K tracks process signals (progress, uncertainty, info gain, budget, surprise, predicted error, permission gap, beauty) and chooses control actions (run skill, think, recall, backtrack, switch, ask, incubate, commit, stop). It sets the mode of generator G and gates writes to working state W and procedural store P. Input from the user, tools or environment is source-tagged, enters context C and reaches generator G, which perceives, recalls, simulates and acts. G reads and writes the protected working state W: the goal stack with TOTE tests, the belief, the plan and the permission envelope. G simulates in scratch, a forkable inner loop discarded after use; its output passes the action gate, which checks grants and reversibility class, before reaching the world. Between sessions: the salience-tagged episodic log E feeds sleep, which selects episodes, replays them in reverse, extracts gist into M, generates counterfactuals and distills. Only trusted, verified experience passes the consolidation gate into the weights θ and new skills in P.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 Z" fill="#465462"/>
@@ -24,7 +24,7 @@
     <rect x="330" y="72" width="592" height="110" rx="6" fill="#202b35"/>
     <text x="626" y="96" font-size="15" font-weight="700" fill="#ffffff">CONTROLLER K</text>
     <text x="626" y="118" font-size="12" fill="#ffffff">signals: progress · uncertainty · info gain · budget · surprise ·</text>
-    <text x="626" y="134" font-size="12" fill="#ffffff">predicted error · permission gap</text>
+    <text x="626" y="134" font-size="12" fill="#ffffff">predicted error · permission gap · beauty</text>
     <text x="626" y="154" font-size="12" fill="#ffffff">actions: RUN SKILL · THINK · RECALL · BACKTRACK · SWITCH ·</text>
     <text x="626" y="170" font-size="12" fill="#ffffff">ASK · INCUBATE · COMMIT · STOP</text>
 
