@@ -13,6 +13,7 @@ The builder's question is: *given the features derived in [Derived features](02_
   - [The sleep cycle](#sleep-cycle)
   - [How the parts map to the features](#how-the-parts-map-to-the-features)
   - [Hierarchy for the task, tiers for authority](#hierarchy-for-the-task-tiers-for-authority)
+  - [Option: one loop per cortical column](#columns)
 - [Design rules](#design-rules)
 
 
@@ -158,6 +159,46 @@ So the design uses both. **What to do** is hierarchical: goals, subgoals and com
 The brain appears to combine them the same way. The prefrontal cortex organizes goals hierarchically (Koechlin; Badre), but it sits on an older layered stack of spinal reflexes, brainstem, basal ganglia and cortex, in which lower layers can act first and higher ones modulate them (Prescott, Redgrave & Gurney, 1999). You pull your hand off the stove before you know why, and a strong feeling can interrupt any level of a plan.
 
 Every piece maps to a brain mechanism, and most can be prototyped with current LLMs ([starting point](04_implementation_plan.md#starting-point)).
+
+<a id="columns"></a>
+
+### Option: one loop per cortical column
+
+*Status: a design option, not part of the core design. It is kept only if it passes the test at the end of this section.*
+
+Hawkins's Thousand Brains theory, building on Mountcastle, holds that the neocortex is made of about 150,000 cortical columns that all run the same algorithm. Each column receives a sensory feature together with its location in a reference frame (grid-cell-like), predicts its next input from the movement about to be made, sends motor output, and learns complete models of objects. That is the step loop of [F1](02_features.md#f1) in miniature: predict, act, observe, update. So the column is a candidate physical unit for the one loop, and a candidate substrate for claim 2.
+
+The unit is the **cortical column, not the minicolumn**. A minicolumn is about 100 neurons that share one input feature, with different cells coding that feature in different contexts. It is closer to one variable in a loop's belief than to a loop.
+
+![One loop per cortical column. Left: one column runs the step loop, with a goal and TOTE test from its parent, a report back of done, surprise and confidence, input as a feature plus a location, its committed step sent to a child or the world, and votes exchanged with peers; inside, a belief in its own reference frame, a forward model and a scratch; its minicolumns are variables inside the loop, not loops. Middle: columns on two axes, a plan, action and perception hierarchy in which goals go down and reports come up, and peers on the same level voting until they agree. Right: the gates, controller K and sleep stay global, not replicated per column, and cut across every level.](../../assets/images/one-loop-columns.svg)
+
+**The column unit.** Each column runs the step cycle on local state (a belief in its own reference frame, a forward model and a scratch) and has five interfaces:
+
+
+| Interface | Direction                     | Carries                                                  |
+| --------- | ----------------------------- | -------------------------------------------------------- |
+| Goal      | From the parent               | A subgoal with its TOTE test                             |
+| Input     | From children or sensors      | A feature plus its location, source-tagged               |
+| Step      | To children, or the world     | The committed step: a child's goal, or an action through the action gate |
+| Report    | To the parent                 | Done or failed, surprise, confidence                     |
+| Votes     | With peers on the same level  | The current belief, until the peers agree                |
+
+
+**Two axes.**
+
+- **Vertical (hierarchy).** A column's committed step becomes the goal of the columns below it, and they report back up. This is the hierarchy of claim 2, built from columns. Hawkins's theory says little about goals, which come from the prefrontal cortex and basal ganglia, so this axis is this design's addition.
+- **Horizontal (voting).** Hawkins's theory is mostly lateral. Columns that sense the same object through different inputs vote until they agree, and the cortical hierarchy is shallow, with many connections that skip levels. Voting gives what a pure hierarchy lacks: fast agreement without climbing the chain, and robustness when one column is wrong.
+- **Disagreement is a signal.** How much peers disagree is a direct uncertainty measure for K, the same role that disagreement across sampled continuations plays in [controller signals](#controller-signals).
+
+**What stays global.** Only the hierarchy is replicated per column; the [tiers](#hierarchy-for-the-task-tiers-for-authority) are not. The gates, K's interrupts and sleep cut across every column. A column holds its local goal, but it can change a goal only through the goal gate and act on the world only through the action gate (R4). Otherwise one compromised column could reset goals or act on its own. The goal stack in W becomes the chain of active columns, one frame per column, still written only through the gate.
+
+**Risks.**
+
+- **Functions, not boxes.** Many small loops is hand-built structure of exactly the kind the bitter lesson warns about, so it must beat a larger plain model ([ablation](04_implementation_plan.md#ablation)).
+- **Earlier attempts.** Capsule networks (Sabour, Frosst & Hinton, 2017) and GLOM (Hinton, 2021) used column-like units that settle on shared answers, and neither has scaled. The closest working build is Monty, from the Thousand Brains Project (Clay, Leadholm & Hawkins, 2024): its learning modules are columns that vote. It works on sensorimotor object recognition but has not been shown on language or planning, so it is the first thing to study.
+- **Cost.** One LLM call per column is too expensive at any real scale. A column should be a small model, or a parallel stream inside one model with shared weights, which also matches the claim that every column runs the same algorithm.
+
+**How to test it.** Run it as a follow-on to the [module ablation](04_implementation_plan.md#ablation), once M1–M6 are settled. Replace the single loop with N column loops that share weights, with voting on and off. Compare at matched compute against the plain baseline and against **N independent samples with a majority vote** (self-consistency). That second baseline is the key control, because voting without the column structure is just self-consistency. Keep the option only if it beats both on the long-horizon and interruption categories, and if peer disagreement predicts errors better than disagreement across sampled continuations.
 
 <a id="design-rules"></a>
 

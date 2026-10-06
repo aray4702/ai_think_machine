@@ -670,6 +670,16 @@ Each row is a design input. Priming argues for clean, source-tagged contexts (F5
 - Gat (1998). On three-layer architectures.
 - Prescott, Redgrave & Gurney (1999). Layered control architectures in robots and vertebrates.
 
+**Cortical columns**
+
+- Mountcastle (1997). The columnar organization of the neocortex.
+- Hawkins, Ahmad & Cui (2017). A theory of how columns in the neocortex enable learning the structure of the world.
+- Hawkins, Lewis, Klukas, Purdy & Ahmad (2019). A framework for intelligence and cortical function based on grid cells in the neocortex.
+- Hawkins (2021). *A Thousand Brains: A New Theory of Intelligence.*
+- Clay, Leadholm & Hawkins (2024). The Thousand Brains Project: a new paradigm for sensorimotor intelligence.
+- Sabour, Frosst & Hinton (2017). Dynamic routing between capsules.
+- Hinton (2021). How to represent part-whole hierarchies in a neural network (GLOM).
+
 **Control, stopping, emotion**
 
 - Ratcliff; Gold & Shadlen. Drift-diffusion and decision neuroscience.
