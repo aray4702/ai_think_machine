@@ -114,6 +114,11 @@ def test_k_prefers_edits_and_escalates_empty_edits():
 def test_k_asks_person_and_respects_budget():
     ask = Issue(part="whole", problem="which name to use?", severity="high", fix="ask_person")
     assert plan_fixes(crit(ask), 0, 3, 5.0, 1.0).stop
+    # with a fixable issue too, K applies the fix first and then asks
+    edit = Issue(part="headline", problem="too big", severity="high", fix="edit",
+                 edits=[EditOp(tool="style", args={"slot": "headline", "css": "font-size: 56px"})])
+    both = plan_fixes(crit(ask, edit), 0, 3, 5.0, 1.0)
+    assert not both.stop and both.has_fixes and both.needs_person
     low = Issue(part="subline", problem="weak", severity="high", fix="regenerate_copy")
     p = plan_fixes(crit(low), 0, 3, 0.5, 1.0)
     assert p.stop and "budget" in p.reason
@@ -141,7 +146,7 @@ def scripted_client():
         IntentDraft: [IntentDraft(intent=intent, summary="A warm star poster for Mira's 10th.")],
         Concepts: [Concepts(concepts=[concept])],
         Briefs: [briefs],
-        Copy: [Copy(texts={"headline": "Ten Orbits", "subline": "Mira, 10"})],
+        Copy: [Copy(texts=[{"slot": "headline", "text": "Ten Orbits"}, {"slot": "subline", "text": "Mira, 10"}])],
         Critique: [crit(fix), crit(serves=True)],
     }
     text_by_purpose = {"agent:illustration": f"Here it is:\n{SVG}", "agent:layout": LAYOUT}
@@ -217,3 +222,20 @@ def test_session_end_to_end(tmp_path):
     assert {p["role"] for p in prov["parts"]} == {"copy", "illustration", "layout"}
     assert s.llm.spent > 0 and (s.dir / "episodes.jsonl").exists()
     assert any(e["action"] == Action.EXPORT.value and e["allowed"] for e in s.gate.log)
+
+
+def test_empty_copy_is_an_error(tmp_path):
+    from media_director.agents import AgentOutputError, CopyBrief, write_copy
+    from media_director.gates import Gate, Grant
+    from media_director.llm import LLM
+
+    class M:
+        def parse(self, **kw):
+            u = SimpleNamespace(input_tokens=1, output_tokens=1, cache_creation_input_tokens=0, cache_read_input_tokens=0)
+            return SimpleNamespace(stop_reason="end_turn", stop_details=None, model=kw["model"], usage=u,
+                                   parsed_output=Copy(texts=[]), content=[])
+    gate = Gate([Grant(Action.SPEND, limit=1), Grant(Action.SEND_PERSONAL, scope="claude-api")])
+    gate.approve(Action.SEND_PERSONAL, "claude-api", once=False)
+    llm = LLM(gate=gate, client=SimpleNamespace(beta=SimpleNamespace(messages=M())))
+    with pytest.raises(AgentOutputError):
+        write_copy(llm, AssetStore(tmp_path), CopyBrief(slots=["headline"], voice="v", content="c", limits="l"))

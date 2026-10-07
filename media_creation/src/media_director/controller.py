@@ -26,6 +26,14 @@ class Plan:
     stop: bool = False
     reason: str = ""
 
+    @property
+    def has_fixes(self) -> bool:
+        return bool(self.edits or self.regenerate)
+
+    @property
+    def needs_person(self) -> bool:
+        return bool(self.ask or self.revise_concept)
+
 
 TEXT_PART_TOOLS = {"set_text"}
 
@@ -43,10 +51,13 @@ def plan_fixes(c: Critique, round_no: int, max_rounds: int, budget_left: float,
     plan = Plan()
     for issue in sorted(serious, key=lambda i: COST_ORDER.index(i.fix)):
         _route(plan, issue)
-    if plan.ask:
-        plan.stop, plan.reason = True, "a question only the person can answer"
-    elif plan.revise_concept:
-        plan.stop, plan.reason = True, "the concept itself needs revising; ask the person"
+    # Apply every fix K can make on its own, then hand questions to the person.
+    if plan.needs_person and not plan.has_fixes:
+        plan.stop = True
+        plan.reason = ("a question only the person can answer" if plan.ask
+                       else "the concept itself needs revising; ask the person")
+    elif plan.needs_person:
+        plan.reason = "applying the fixes K can make, then asking the person"
     return plan
 
 

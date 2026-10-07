@@ -189,6 +189,10 @@ class Session:
                 self._generate(part, note)
             rendered = self.render(renderer, note=f"round {round_no + 1}")
             round_no += 1
+            if plan.needs_person:
+                # Fixes applied; the open questions go to the person before more rounds.
+                plan.stop = True
+                return rendered, c, plan
 
     def _budget_left(self) -> float:
         g = next(g for g in self.gate.grants if g.action is Action.SPEND)

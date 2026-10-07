@@ -44,8 +44,19 @@ class LayoutBrief(BaseModel):
     mood: str
 
 
+class SlotText(BaseModel):
+    slot: str
+    text: str
+
+
 class Copy(BaseModel):
-    texts: dict[str, str] = Field(description="Slot name to text")
+    # A list, not a free-form dict: strict structured outputs need fixed fields,
+    # and a dict with arbitrary keys comes back empty.
+    texts: list[SlotText] = Field(description="One entry per requested slot")
+
+
+class AgentOutputError(ValueError):
+    pass
 
 
 COPY_SYSTEM = """\
@@ -87,7 +98,9 @@ def _store(store: AssetStore, data: str, suffix: str, agent: str, brief: BaseMod
 def write_copy(llm: LLM, store: AssetStore, brief: CopyBrief) -> tuple[str, Tagged]:
     copy = llm.structured(model=SPECIALIST_MODEL, system=COPY_SYSTEM, schema=Copy,
                           content=brief.model_dump_json(indent=2), purpose="agent:copy")
-    texts = {k: v for k, v in copy.texts.items() if k in brief.slots}
+    texts = {t.slot: t.text for t in copy.texts if t.slot in brief.slots and t.text.strip()}
+    if not texts:
+        raise AgentOutputError("copy agent returned no text for the requested slots")
     data = json.dumps(texts, indent=2, ensure_ascii=False)
     return _store(store, data, ".json", "copy", brief), Tagged(Source.AGENT, "copy", data)
 
