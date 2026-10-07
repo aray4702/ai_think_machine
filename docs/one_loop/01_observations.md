@@ -6,9 +6,9 @@
 
 
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
-The design is written as eight documents, following the order of the design process:
+The design is written as nine documents, following the order of the design process:
 
 1. **Observations and design principles** (this document): what was observed, what the design covers, and the constraints the features are derived from.
 2. **[Derived features](02_features.md)**: one section per feature (F1–F7). Each starts from a constraint, derives what the agent must do about it, and gathers evidence from brains and machines on how it can be done.
@@ -18,6 +18,7 @@ The design is written as eight documents, following the order of the design proc
 6. **[Media creation](06_media_creation.md)**: One Loop as a director for AI media: personal intent, specialist agents for generation, tools for editing.
 7. **[Companion](07_companion.md)**: One Loop as a personal companion that serves the person's flourishing, not engagement, and the lines it must not cross.
 8. **[Discovery and invention](08_discovery_invention.md)**: how One Loop discovers and invents, applied to explaining phenomena, engineering design, and drug and materials discovery.
+9. **[Robotics](09_robotics.md)**: One Loop running a robot: tiers from reflexes to deliberation, a simulator as scratch, and an action gate for physical harm.
 
 
 
@@ -127,4 +128,4 @@ Put together, the features give one structure: a hierarchy of goal-conditioned l
 - **The top goal stays with people.** Control signals are about the task, not the agent's own state, and the top of the goal hierarchy is set by the people the agent works for (R7).
 - **Safety value counts separately.** Modules such as the goal gate and the action gate can be kept for the errors they prevent even when their capability gain disappears with scale.
 
-References for all eight documents are collected in [References](references.md).
+References for all nine documents are collected in [References](references.md).

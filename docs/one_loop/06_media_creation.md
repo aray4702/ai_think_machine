@@ -1,6 +1,6 @@
 # One Loop: Director for Personal Media Creation
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
 AI now creates audio, music, speech, posters, slides, web pages, apps, simulations, animation and video. Much of the craft lies in the prompts given to the generating models, and a good prompt has to do two things at once: be **friendly to the model**, so that it renders reliably, and be **personal**, so that the result carries the individual's personality and emotions instead of the generic look of AI output. But the prompt is only a means. This document applies One Loop as a **director**: it holds the person's intent, delegates generation to specialist agents, edits what they produce with tools, and judges the result.
 

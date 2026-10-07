@@ -1,6 +1,6 @@
 # One Loop: Personal Companion
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
 A personal companion has a character and a personality, is smart and empathic, interacts with one person over a long time, learns that person, and builds a bond. One Loop already has most of what this needs: a model of the user, memory across sessions, consolidation, emotion-like control signals and a social interface. But a companion is the application in which the design's safety choices matter most. An agent built to build affection can easily be optimized against the person it is meant to serve. This document describes how One Loop can be a companion that helps, and the lines it must not cross.
 

@@ -1,8 +1,8 @@
 # One Loop: References
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
-References for all eight documents, grouped by topic in the order the documents take them up.
+References for all nine documents, grouped by topic in the order the documents take them up.
 
 ## Contents
 
@@ -24,6 +24,7 @@ References for all eight documents, grouped by topic in the order the documents 
 - [State of the field, 2026](#state-of-the-field-2026)
 - [Media creation](#media-creation)
 - [Companion](#companion)
+- [Robotics](#robotics)
 
 ## Serial order, hierarchy, procedural memory
 
@@ -294,3 +295,15 @@ References for all eight documents, grouped by topic in the order the documents 
 - Fang, Liu, Danry, Lee, Chan, Pataranutaporn, Maes, Phang, Lampe, Ahmad & Agarwal (2025). How AI and human behaviors shape psychosocial effects of chatbot use: a longitudinal randomized controlled study. arXiv:2503.17473.
 - Zhang, Zhao, Wang, Anselmetti, Hancock, Kraut & Yang (2026). Living with AI companions: sustained AI companionship predicts lower well-being through lower human interaction. arXiv:2609.07243.
 - California Senate Bill 243 (2025). Companion chatbots. In force January 1, 2026.
+
+## Robotics
+
+- Brohan et al. (2023). RT-2: vision-language-action models transfer web knowledge to robotic control.
+- Open X-Embodiment Collaboration (2023). Open X-Embodiment: robotic learning datasets and RT-X models.
+- Ahn et al. (2022). Do as I can, not as I say: grounding language in robotic affordances (SayCan).
+- Chi et al. (2023). Diffusion policy: visuomotor policy learning via action diffusion.
+- Zhao et al. (2023). Learning fine-grained bimanual manipulation with low-cost hardware (ACT, ALOHA).
+- Tobin et al. (2017). Domain randomization for transferring deep neural networks from simulation to the real world.
+- Ames et al. (2019). Control barrier functions: theory and applications.
+- ISO 10218-1 and 10218-2. Robots and robotic devices: safety requirements for industrial robots.
+- ISO/TS 15066 (2016). Robots and robotic devices: collaborative robots.

@@ -1,6 +1,6 @@
 # One Loop: Applications
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
 The builder's next question is: *where should this agent be used first?* This document ranks candidate domains by how well they fit the design, and gives them in the recommended order: the first application, the domains that test the design in its purest form, then the domains where its safety and learning parts pay off, and last the domains where it should only support human decisions.
 
@@ -53,7 +53,7 @@ The [comparison with AlphaZero, MuZero and AlphaFold](03_system_design.md#alphaz
 | 7     | Explaining complex phenomena         | Predictions on unseen data; interventions            | Competing hypotheses; experiment choice; compression        | Autonomous where intervention is possible |
 | 8     | Invention and engineering design     | Simulation; prior-art search                         | Divergent search; analogy; reversible prototyping           | Autonomous in simulation |
 | 9     | Drug and materials discovery         | Simulated proxies; lab experiments                   | Reversibility classes; value-of-information experiment choice | Human-gated            |
-| 10    | Robotics                             | Task success; physical safety                        | Tiers and reflexes; action gate; simulation as scratch      | Human-gated             |
+| 10    | Robotics                             | Task success; physical safety                        | Tiers and reflexes; action gate; simulation as scratch      | Human-gated ([robotics](09_robotics.md)) |
 | 11    | Tutoring                             | Student progress                                     | ZPD model of the student; fading scaffolds                  | Collaborator            |
 | 12    | Personal companion                   | The person's wellbeing over time; slow and partly subjective | User model; memory under the person's control; shielded persona; honesty over flattery | Collaborator; very high harm ceiling ([companion](07_companion.md)) |
 | 13    | Business strategy                    | Slow, sparse outcomes                                | Goal shielding; one-way vs two-way doors; scenarios         | Decision support        |
@@ -185,7 +185,7 @@ These domains have their own document, [Discovery and invention](08_discovery_in
 
 ## 5. Physical and social domains
 
-- **Robotics.** The tiers were built for this: reflexes act first, and the action gate covers physical harm. There are no save states in the physical world, so a simulator serves as scratch, and autonomy grows along the reversibility ladder.
+- **[Robotics](09_robotics.md).** The tiers were built for this: reflexes act first, and the action gate covers physical harm. There are no save states in the physical world, so a simulator serves as scratch, and autonomy grows along the reversibility ladder. Robotics has its own document, which maps the parts onto a robot, covers simulation, physical reversibility, safety and skill learning, and describes the [first robotics project](09_robotics.md#first-project).
 - **Tutoring.** [F7](02_features.md#f7) in reverse: the agent keeps a model of the *student's* zone of proximal development, chooses practice at the edge of the student's competence, and fades its scaffolding as the student grows.
 
 <a id="decision-support"></a>
