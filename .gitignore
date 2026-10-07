@@ -1,1 +1,6 @@
 .DS_Store
+workspace/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
