@@ -122,7 +122,8 @@ class ClaudeCodeClient:
         self.beta = SimpleNamespace(messages=_Messages(found, runner or _default_runner, timeout))
 
 
-BACKENDS = ("api", "claude-code")
+BACKENDS = ("claude-code", "api")
+DEFAULT_BACKEND = "claude-code"  # the person's Claude Code login; "api" uses per-token API billing
 
 
 def make_client(backend: str):

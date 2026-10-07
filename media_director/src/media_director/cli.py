@@ -2,8 +2,8 @@
 
 Interactive (the full flow in the terminal; the default):
 
-    uv run media-director
-    uv run media-director start --backend claude-code
+    uv run media-director                       # Claude Code CLI backend (default)
+    uv run media-director start --backend api   # Anthropic API instead
 
 Automatic mode - the director runs specialist agents and renders the poster:
 
@@ -29,15 +29,15 @@ import json
 from pathlib import Path
 
 from .director import INTERVIEW_QUESTIONS, InterviewTurn
-from .claude_cli import BACKENDS
+from .claude_cli import BACKENDS, DEFAULT_BACKEND
 from .prompts import TARGETS
 from .render import Renderer
 from .session import Session
 
 
 def _backend(p: argparse.ArgumentParser) -> None:
-    p.add_argument("--backend", choices=BACKENDS, default="api",
-                   help="api: Anthropic API (per-token billing); claude-code: the `claude` CLI and its login")
+    p.add_argument("--backend", choices=BACKENDS, default=DEFAULT_BACKEND,
+                   help="claude-code (default): the `claude` CLI and its login; api: Anthropic API, per-token billing")
 
 
 def _common(p: argparse.ArgumentParser) -> None:
@@ -97,7 +97,7 @@ def main() -> None:
 
     if args.cmd in (None, "start"):
         from .interactive import run
-        run(getattr(args, "workspace", Path("workspace")), backend=getattr(args, "backend", "api"))
+        run(getattr(args, "workspace", Path("workspace")), backend=getattr(args, "backend", DEFAULT_BACKEND))
         return
     if args.cmd == "serve":
         from .server import serve

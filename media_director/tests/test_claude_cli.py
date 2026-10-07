@@ -70,5 +70,8 @@ def test_errors_are_raised():
         make_client("nope")
 
 
-def test_make_client():
+def test_make_client_and_default_backend():
+    from media_director.claude_cli import DEFAULT_BACKEND
+    from media_director.cli import main  # noqa: F401  (imports cleanly)
+    assert DEFAULT_BACKEND == "claude-code"
     assert make_client("api") is None

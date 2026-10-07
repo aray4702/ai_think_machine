@@ -1,7 +1,7 @@
 """Interactive terminal mode: the web UI's flow, in the terminal.
 
     uv run media-director                      # or: media-director start
-    uv run media-director start --backend claude-code
+    uv run media-director start --backend api  # Anthropic API instead of Claude Code
 
 Every step the web UI offers is here: consent, interview, editing the intent,
 answering open questions, choosing or mixing a concept, then either making the
@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 from typing import Callable
 
-from .claude_cli import ClaudeCLIError
+from .claude_cli import DEFAULT_BACKEND, ClaudeCLIError
 from .director import INTERVIEW_QUESTIONS, IntentDraft, InterviewTurn
 from .llm import LLMError
 from .prompts import TARGETS
@@ -182,7 +182,7 @@ def _manual(term: Terminal, s: Session, medium: str) -> None:
                 term.say(f"  Could not do that: {err}")
 
 
-def run(workspace: Path, backend: str = "api", term: Terminal | None = None, client=None) -> Session | None:
+def run(workspace: Path, backend: str = DEFAULT_BACKEND, term: Terminal | None = None, client=None) -> Session | None:
     term = term or Terminal()
     _rule(term, "Media Director")
     term.say(f"  Backend: {'Claude Code CLI (your Claude Code login)' if backend == 'claude-code' else 'Anthropic API'}")

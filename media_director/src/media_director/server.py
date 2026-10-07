@@ -22,6 +22,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from .claude_cli import DEFAULT_BACKEND
 from .director import INTERVIEW_QUESTIONS, IntentDraft, InterviewTurn
 from .llm import LLMError
 from .prompts import TARGETS
@@ -102,7 +103,7 @@ class ExportRequest(BaseModel):
 
 
 def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None,
-               backend: str = "api") -> FastAPI:
+               backend: str = DEFAULT_BACKEND) -> FastAPI:
     app = FastAPI(title="Media director")
     sessions: dict[str, Entry] = {}
     jobs: dict[str, Job] = {}
@@ -313,7 +314,7 @@ def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None,
     return app
 
 
-def serve(workspace: Path, port: int = 8765, backend: str = "api") -> None:
+def serve(workspace: Path, port: int = 8765, backend: str = DEFAULT_BACKEND) -> None:
     import uvicorn
     print(f"Media director ({backend} backend): http://127.0.0.1:{port}")
     uvicorn.run(create_app(workspace, backend=backend), host="127.0.0.1", port=port, log_level="warning")
