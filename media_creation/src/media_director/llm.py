@@ -21,6 +21,7 @@ DIRECTOR_MODEL = "claude-opus-5-5"
 SPECIALIST_MODEL = "claude-sonnet-5-5"
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 PERSONAL_SCOPE = "claude-api"
+NON_STREAMING_MAX = 16000
 
 # Dollars per million tokens: input, output, cache read. Cache writes bill at
 # 1.25x input.
@@ -156,11 +157,17 @@ class LLM:
         kwargs: dict[str, Any] = {}
         if effort:
             kwargs["output_config"] = {"effort": effort}
-        resp = self.client.beta.messages.create(
+        params = dict(
             model=model, max_tokens=max_tokens,
             system=self._system(system, pinned),
             messages=[{"role": "user", "content": content}],
             betas=[FALLBACK_BETA], fallbacks="default", **kwargs,
         )
+        if max_tokens > NON_STREAMING_MAX:
+            # Long outputs (SVG, HTML) must stream to avoid HTTP timeouts.
+            with self.client.beta.messages.stream(**params) as stream:
+                resp = stream.get_final_message()
+        else:
+            resp = self.client.beta.messages.create(**params)
         self._finish(decision, model, purpose, resp)
         return "".join(b.text for b in resp.content if getattr(b, "type", "") == "text")

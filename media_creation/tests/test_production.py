@@ -164,6 +164,18 @@ def scripted_client():
             return SimpleNamespace(stop_reason="end_turn", stop_details=None, model=kw["model"], usage=usage(),
                                    content=[SimpleNamespace(type="text", text=text)])
 
+        def stream(self, **kw):
+            kw["streamed"] = True
+            msg = self.create(**kw)
+
+            class Ctx:
+                def __enter__(self):
+                    return SimpleNamespace(get_final_message=lambda: msg)
+
+                def __exit__(self, *exc):
+                    return False
+            return Ctx()
+
     return SimpleNamespace(beta=SimpleNamespace(messages=Messages())), requests
 
 
@@ -195,6 +207,8 @@ def test_session_end_to_end(tmp_path):
     for r_ in requests:
         if r_["model"] == "claude-sonnet-5-5":
             assert len(r_["system"]) == 1  # no pinned working state for agents
+            if "output_format" not in r_:
+                assert r_.get("streamed")  # long SVG/HTML outputs stream
     # export is irreversible: refused without approval, allowed with it
     with pytest.raises(PermissionError):
         s.export(tmp_path / "out", approved=False)
