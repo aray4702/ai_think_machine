@@ -1,9 +1,16 @@
-"""Command-line runner for one poster, end to end, without the web UI.
+"""Command-line runner, until the web UI exists.
+
+Automatic mode - the director runs specialist agents and renders the poster:
 
     uv run media-director poster --answers answers.json --budget 3 --consent
 
+Manual mode - the director writes the final prompt for your own tool:
+
+    uv run media-director prompt --answers answers.json --target midjourney --consent
+    uv run media-director revise --session <id> --image result.png --note "too dark" --consent
+
 answers.json holds the interview answers in order, plus optional "concept"
-(index of the concept to pick). The web UI replaces this in a later step.
+(index of the concept to pick) and "medium" ("poster" or "slides").
 """
 
 from __future__ import annotations
@@ -13,40 +20,83 @@ import json
 from pathlib import Path
 
 from .director import INTERVIEW_QUESTIONS, InterviewTurn
+from .prompts import TARGETS
 from .render import Renderer
 from .session import Session
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(prog="media-director")
-    sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("poster", help="make one poster end to end")
-    p.add_argument("--answers", type=Path, required=True)
+def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--budget", type=float, default=3.0, help="spending limit in US dollars")
     p.add_argument("--workspace", type=Path, default=Path("workspace"))
-    p.add_argument("--rounds", type=int, default=2)
     p.add_argument("--consent", action="store_true",
-                   help="I agree that my answers may be sent to Claude for this session")
-    args = ap.parse_args()
+                   help="I agree that my answers and images may be sent to Claude for this session")
 
+
+def _start(args) -> Session:
+    """Interview -> confirmed intent -> concepts -> the chosen concept."""
     spec = json.loads(args.answers.read_text())
-    if not args.consent:
-        raise SystemExit("Your answers are sent to Claude. Re-run with --consent to agree.")
     s = Session(args.workspace, budget=args.budget)
     s.consent_to_send()
+    medium = spec.get("medium", "poster")
     turns = [InterviewTurn(question=q, answer=a) for q, a in zip(INTERVIEW_QUESTIONS, spec["answers"])]
-    draft = s.draft_intent("poster", turns)
+    draft = s.draft_intent(medium, turns)
     print("Intent:", draft.summary)
     if draft.intent.open_questions:
         print("Open questions (answer them in the web UI later):", *draft.intent.open_questions, sep="\n- ")
     s.confirm_intent(draft)
-
     concepts = s.concepts()
     for i, c in enumerate(concepts):
         print(f"[{i}] {c.title}: {c.idea}")
     pick = int(spec.get("concept", 0))
     s.choose(concepts[pick], note="picked in CLI")
+    print(f"Session: {s.id}")
+    return s
 
+
+def main() -> None:
+    ap = argparse.ArgumentParser(prog="media-director")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("poster", help="automatic mode: make one poster end to end")
+    p.add_argument("--answers", type=Path, required=True)
+    p.add_argument("--rounds", type=int, default=2)
+    _common(p)
+    m = sub.add_parser("prompt", help="manual mode: write the final prompt for your own tool")
+    m.add_argument("--answers", type=Path, required=True)
+    m.add_argument("--target", choices=sorted(TARGETS), required=True)
+    _common(m)
+    r = sub.add_parser("revise", help="manual mode: judge your tool's result and revise the prompt")
+    r.add_argument("--session", required=True)
+    r.add_argument("--image", type=Path, required=True, help="the image your tool produced (PNG, JPEG, WebP or GIF)")
+    r.add_argument("--note", default="", help="what you think of the result")
+    _common(r)
+    sub.add_parser("targets", help="list the tools manual mode can write prompts for")
+    args = ap.parse_args()
+
+    if args.cmd == "targets":
+        for t in TARGETS.values():
+            print(f"{t.name:18} {t.label}  ({', '.join(t.media)})")
+        return
+    if not args.consent:
+        raise SystemExit("Your answers and images are sent to Claude. Re-run with --consent to agree.")
+
+    if args.cmd == "prompt":
+        s = _start(args)
+        fp, path = s.manual_prompt(args.target)
+        print("\n" + path.read_text())
+        print(f"Saved to {path}. Spent ${s.llm.spent:.2f}.")
+        print(f"After generating, run: media-director revise --session {s.id} --image result.png --consent")
+        return
+    if args.cmd == "revise":
+        s = Session.load(args.workspace, args.session, budget=args.budget)
+        s.consent_to_send()
+        rev, path = s.revise(args.image.read_bytes(), args.note)
+        print("Works:", *rev.what_works, sep="\n- ")
+        print("Misses the intent:", *rev.what_misses_the_intent, sep="\n- ")
+        print("\n" + path.read_text())
+        print(f"Saved to {path}. Spent ${s.llm.spent:.2f}.")
+        return
+
+    s = _start(args)
     with Renderer() as r:
         first = s.produce(r)
         print(f"First draft: {len(first.defects)} automatic-check defects")

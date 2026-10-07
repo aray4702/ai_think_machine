@@ -66,10 +66,22 @@ def cost_of(model: str, usage: Any) -> float:
     ) / 1_000_000
 
 
-def image_block(png: bytes) -> dict:
+def media_type(data: bytes) -> str:
+    if data[:8] == b"\x89PNG\r\n\x1a\n":
+        return "image/png"
+    if data[:3] == b"\xff\xd8\xff":
+        return "image/jpeg"
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return "image/webp"
+    if data[:6] in (b"GIF87a", b"GIF89a"):
+        return "image/gif"
+    raise ValueError("unsupported image: use PNG, JPEG, WebP or GIF")
+
+
+def image_block(data: bytes) -> dict:
     return {"type": "image",
-            "source": {"type": "base64", "media_type": "image/png",
-                       "data": base64.standard_b64encode(png).decode("ascii")}}
+            "source": {"type": "base64", "media_type": media_type(data),
+                       "data": base64.standard_b64encode(data).decode("ascii")}}
 
 
 @dataclass

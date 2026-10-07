@@ -20,7 +20,8 @@ from .director import (Briefs, Concept, Critique, IntentDraft, InterviewTurn, ad
                        compile_briefs, critique, diverge, extract_intent)
 from .eventlog import EventLog
 from .gates import Action, Gate, Grant
-from .llm import ESTIMATE, LLM, PERSONAL_SCOPE
+from .llm import ESTIMATE, LLM, PERSONAL_SCOPE, media_type
+from .prompts import FinalPrompt, Revision, compile_prompt, revise_prompt, to_markdown
 from .render import Rendered, Renderer
 from .sources import Source
 from .timeline import AssetStore, Part, Timeline
@@ -77,6 +78,41 @@ class Session:
     def choose(self, concept: Concept, note: str = "") -> None:
         self.concept = concept
         self.log.add("choice", salience=["person", "taste"], concept=concept.model_dump(), note=note)
+        (self.dir / "concept.json").write_text(concept.model_dump_json(indent=2))
+
+    # --- manual mode: a prompt for the person's own tool ----------------------------
+    def manual_prompt(self, target: str) -> tuple[FinalPrompt, Path]:
+        assert self.concept, "choose a concept first"
+        fp = compile_prompt(self.llm, self.w, self.concept, target)
+        return fp, self._save_prompt(fp, note="manual prompt")
+
+    def revise(self, result_png: bytes, person_note: str = "") -> tuple[Revision, Path]:
+        """The person brings back what their tool made; the director judges it and revises."""
+        previous = self.last_prompt()
+        rev = revise_prompt(self.llm, self.w, self.concept, previous, result_png, person_note)
+        ext = media_type(result_png).split("/")[1].replace("jpeg", "jpg")
+        n = len(list(self.dir.glob("result-*")))
+        name = f"result-{n:02d}.{ext}"
+        (self.dir / name).write_bytes(result_png)
+        self.log.add("result_feedback", salience=["person", "taste"], target=previous.target,
+                     file=name, note=person_note,
+                     works=rev.what_works, misses=rev.what_misses_the_intent)
+        return rev, self._save_prompt(rev.revised, note="revised prompt")
+
+    def last_prompt(self) -> FinalPrompt:
+        files = sorted(self.dir.glob("prompt-*.json"))
+        if not files:
+            raise FileNotFoundError("no prompt in this session yet")
+        return FinalPrompt.model_validate_json(files[-1].read_text())
+
+    def _save_prompt(self, fp: FinalPrompt, note: str) -> Path:
+        n = len(list(self.dir.glob("prompt-*.json")))
+        (self.dir / f"prompt-{n:02d}.json").write_text(fp.model_dump_json(indent=2))
+        md = self.dir / f"prompt-{n:02d}-{fp.target}.md"
+        md.write_text(to_markdown(fp))
+        self.log.add("prompt", target=fp.target, file=md.name, note=note)
+        self._save()
+        return md
 
     # --- production -------------------------------------------------------------------
     def produce(self, renderer: Renderer) -> Rendered:
@@ -182,6 +218,21 @@ class Session:
         return dest / f"{self.id}.png"
 
     # --- persistence ------------------------------------------------------------------------
+    @classmethod
+    def load(cls, workspace: Path, session_id: str, budget: float, client=None) -> "Session":
+        """Resume a saved session. Consent is not carried over; ask again."""
+        s = cls(workspace, budget=budget, client=client, session_id=session_id)
+        state = s.dir / "working_state.json"
+        if state.exists():
+            s.w = WorkingState.model_validate_json(state.read_text())
+            s.w.envelope = s.gate.envelope()
+        if (s.dir / "timeline.json").exists():
+            s.timeline = Timeline.from_json((s.dir / "timeline.json").read_text())
+        if (s.dir / "concept.json").exists():
+            s.concept = Concept.model_validate_json((s.dir / "concept.json").read_text())
+        s.renders = sorted(p.name for p in s.dir.glob("render-*.png"))
+        return s
+
     def _save(self) -> None:
         (self.dir / "working_state.json").write_text(self.w.model_dump_json(indent=2))
         (self.dir / "timeline.json").write_text(self.timeline.to_json())
