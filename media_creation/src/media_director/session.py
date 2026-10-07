@@ -23,7 +23,7 @@ from .gates import Action, Gate, Grant
 from .llm import ESTIMATE, LLM, PERSONAL_SCOPE, media_type
 from .prompts import FinalPrompt, Revision, compile_prompt, revise_prompt, to_markdown
 from .render import Rendered, Renderer
-from .sources import Source
+from .sources import Source, Tagged
 from .timeline import AssetStore, Part, Timeline
 from .tools import assemble
 from .working import Goal, WorkingState
@@ -62,8 +62,13 @@ class Session:
         self.log.add("intent_draft", draft=draft.model_dump())
         return draft
 
-    def confirm_intent(self, draft: IntentDraft) -> None:
+    def confirm_intent(self, draft: IntentDraft, answers: list[tuple[str, str]] | None = None) -> None:
+        """The person confirmed (and may have edited) the draft. Their answers to
+        open questions become standing constraints, set by the person."""
         adopt_intent(self.w, draft)
+        for q, a in answers or []:
+            if a.strip():
+                self.w.add_constraint(f"{q} -> {a.strip()}", Tagged(Source.PERSON, "open-question", a))
         self.w.push(Goal(id="piece", description=f"A {draft.intent.medium} for: {draft.intent.purpose}",
                          test="The person approves it for export"))
         self.log.add("intent_confirmed", salience=["person"], summary=draft.summary)
@@ -77,6 +82,10 @@ class Session:
 
     def choose(self, concept: Concept, note: str = "") -> None:
         self.concept = concept
+        if note.strip():
+            # A person's note on the choice, such as mixing in another concept's palette.
+            self.w.add_constraint(f"About the chosen concept: {note.strip()}",
+                                  Tagged(Source.PERSON, "concept-note", note))
         self.log.add("choice", salience=["person", "taste"], concept=concept.model_dump(), note=note)
         (self.dir / "concept.json").write_text(concept.model_dump_json(indent=2))
 
@@ -193,6 +202,37 @@ class Session:
                 # Fixes applied; the open questions go to the person before more rounds.
                 plan.stop = True
                 return rendered, c, plan
+
+    def feedback(self, renderer: Renderer, text: str, max_rounds: int = 2) -> tuple[Rendered, Critique, Plan]:
+        """The person's answer or direction becomes a constraint; then K refines again."""
+        self.w.add_constraint(text.strip(), Tagged(Source.PERSON, "feedback", text))
+        self.log.add("feedback", salience=["person", "taste"], text=text)
+        rendered = self.render(renderer, note="after your feedback")
+        return self.refine(renderer, rendered, max_rounds=max_rounds)
+
+    def undo(self, renderer: Renderer) -> Rendered:
+        self.timeline.undo()
+        return self.render(renderer, note="undo")
+
+    def redo(self, renderer: Renderer) -> Rendered:
+        self.timeline.redo()
+        return self.render(renderer, note="redo")
+
+    def summary(self) -> dict:
+        spend = next(g for g in self.gate.grants if g.action is Action.SPEND)
+        return {
+            "id": self.id,
+            "intent": self.w.intent.model_dump() if self.w.intent else None,
+            "constraints": self.w.constraints,
+            "concept": self.concept.model_dump() if self.concept else None,
+            "renders": self.renders,
+            "versions": [v.note for v in self.timeline.versions],
+            "cursor": self.timeline.cursor,
+            "spent": round(self.llm.spent, 4),
+            "budget": spend.limit,
+            "prompts": sorted(p.name for p in self.dir.glob("prompt-*.md")),
+            "consented": any(a.action is Action.SEND_PERSONAL for a in self.gate.approvals),
+        }
 
     def _budget_left(self) -> float:
         g = next(g for g in self.gate.grants if g.action is Action.SPEND)

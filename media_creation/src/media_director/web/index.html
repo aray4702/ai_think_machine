@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Media Director</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Media Director</h1>
+  <div id="meter" hidden><span id="spent">$0.00</span> of <span id="budget">$0</span> spent</div>
+</header>
+
+<main>
+  <!-- 1. Start -->
+  <section id="s-start" class="step">
+    <h2>1. Start</h2>
+    <p>The director interviews you, proposes concepts, and either makes the poster with
+      specialist agents (automatic) or writes a prompt for your own tool (manual).</p>
+    <label>Spending limit for this session (US$)
+      <input id="budget-in" type="number" min="0.5" max="20" step="0.5" value="3">
+    </label>
+    <label class="check"><input id="consent" type="checkbox">
+      I agree that my answers, and any image I upload, are sent to Claude (Anthropic) for this session.</label>
+    <button id="btn-start">Start a session</button>
+  </section>
+
+  <!-- 2. Interview -->
+  <section id="s-interview" class="step" hidden>
+    <h2>2. Tell the director about it</h2>
+    <label>What are you making?
+      <select id="medium"><option value="poster">Poster</option><option value="slides">Slides (manual mode)</option></select>
+    </label>
+    <div id="questions"></div>
+    <button id="btn-intent">Draft my intent</button>
+  </section>
+
+  <!-- 3. Intent -->
+  <section id="s-intent" class="step" hidden>
+    <h2>3. Check the intent</h2>
+    <p class="summary" id="intent-summary"></p>
+    <div id="intent-fields" class="grid2"></div>
+    <div id="open-questions"></div>
+    <button id="btn-confirm">This is right</button>
+  </section>
+
+  <!-- 4. Concepts -->
+  <section id="s-concepts" class="step" hidden>
+    <h2>4. Choose a concept</h2>
+    <button id="btn-concepts">Propose concepts</button>
+    <div id="concepts" class="cards"></div>
+    <label>Anything to change or mix in? (optional)
+      <input id="concept-note" placeholder="e.g. use the palette from the second one">
+    </label>
+  </section>
+
+  <!-- 5. Make -->
+  <section id="s-make" class="step" hidden>
+    <h2>5. Make it</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="auto">Automatic</button>
+      <button class="tab" data-tab="manual">Manual: prompt for your tool</button>
+    </div>
+
+    <div id="tab-auto" class="tabpane">
+      <label>Refinement rounds <select id="rounds"><option>1</option><option selected>2</option><option>3</option></select></label>
+      <button id="btn-produce">Make the poster</button>
+      <div id="result" hidden>
+        <div class="result">
+          <figure><img id="render" alt="Current render of the poster"><figcaption id="render-cap"></figcaption></figure>
+          <div class="critique">
+            <p id="stopped" class="note"></p>
+            <h3>What works</h3><ul id="strengths"></ul>
+            <h3>Issues</h3><ul id="issues"></ul>
+            <div id="ask" hidden>
+              <h3>The director asks you</h3><ul id="ask-list"></ul>
+            </div>
+            <label>Your feedback or answers
+              <textarea id="feedback" rows="3" placeholder="e.g. Add 'Pepper keeps watch' under the date. Party is at 4pm."></textarea>
+            </label>
+            <div class="row">
+              <button id="btn-feedback">Refine with my feedback</button>
+              <button id="btn-undo" class="secondary">Undo</button>
+              <button id="btn-redo" class="secondary">Redo</button>
+              <button id="btn-export" class="danger">Export…</button>
+            </div>
+          </div>
+        </div>
+        <h3>Versions</h3><div id="thumbs" class="thumbs"></div>
+      </div>
+    </div>
+
+    <div id="tab-manual" class="tabpane" hidden>
+      <label>Your tool <select id="target"></select></label>
+      <button id="btn-prompt">Write the prompt</button>
+      <div id="prompt-out" hidden>
+        <div class="row"><button id="btn-copy" class="secondary">Copy prompt</button><span id="copied" class="note"></span></div>
+        <pre id="prompt-md"></pre>
+        <h3>Bring back what your tool made</h3>
+        <input id="result-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+        <label>What do you think of it? <input id="result-note" placeholder="e.g. too bright, love the paper texture"></label>
+        <button id="btn-revise">Judge it and revise the prompt</button>
+        <div id="revision" hidden>
+          <h3>What works</h3><ul id="rev-works"></ul>
+          <h3>What misses your intent</h3><ul id="rev-misses"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Working indicator -->
+  <div id="working" hidden>
+    <div class="spinner"></div>
+    <div><strong id="working-title">Working…</strong><ol id="working-steps"></ol></div>
+  </div>
+  <div id="error" class="error" hidden></div>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

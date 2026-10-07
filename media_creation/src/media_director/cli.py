@@ -9,6 +9,10 @@ Manual mode - the director writes the final prompt for your own tool:
     uv run media-director prompt --answers answers.json --target midjourney --consent
     uv run media-director revise --session <id> --image result.png --note "too dark" --consent
 
+Web UI (both modes, in the browser):
+
+    uv run media-director serve
+
 answers.json holds the interview answers in order, plus optional "concept"
 (index of the concept to pick) and "medium" ("poster" or "slides").
 """
@@ -70,8 +74,15 @@ def main() -> None:
     r.add_argument("--note", default="", help="what you think of the result")
     _common(r)
     sub.add_parser("targets", help="list the tools manual mode can write prompts for")
+    w = sub.add_parser("serve", help="open the web UI on 127.0.0.1")
+    w.add_argument("--port", type=int, default=8765)
+    w.add_argument("--workspace", type=Path, default=Path("workspace"))
     args = ap.parse_args()
 
+    if args.cmd == "serve":
+        from .server import serve
+        serve(args.workspace, args.port)
+        return
     if args.cmd == "targets":
         for t in TARGETS.values():
             print(f"{t.name:18} {t.label}  ({', '.join(t.media)})")
