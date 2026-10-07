@@ -44,8 +44,8 @@ def piece(tmp_path, copy=None, edits=()):
 # --- tools ---------------------------------------------------------------------------
 
 def test_assemble_fills_slots_sanitizes_and_applies_edits(tmp_path):
-    state, store = piece(tmp_path, edits=[EditOp(tool="set_var", args={"name": "accent", "value": "#e05050"}),
-                                          EditOp(tool="style", args={"slot": "headline", "css": "font-size: 60px"})])
+    state, store = piece(tmp_path, edits=[EditOp(tool="set_var", name="accent", value="#e05050"),
+                                          EditOp(tool="style", slot="headline", css="font-size: 60px")])
     html = assemble(state, store)
     assert "Ten Orbits" in html and "for Mira" in html and "<circle" in html
     assert "<script" not in html and "onload" not in html
@@ -54,14 +54,14 @@ def test_assemble_fills_slots_sanitizes_and_applies_edits(tmp_path):
 
 def test_text_edits_escape_markup(tmp_path):
     state, store = piece(tmp_path)
-    state.parts[1].edits.append(EditOp(tool="set_text", args={"slot": "headline", "text": "<b>hi</b>"}))
+    state.parts[1].edits.append(EditOp(tool="set_text", slot="headline", text="<b>hi</b>"))
     assert "&lt;b&gt;hi&lt;/b&gt;" in assemble(state, store)
 
 
 def test_validate_rejects_injection():
-    for op in (EditOp(tool="style", args={"slot": "headline", "css": "} body { display:none"}),
-               EditOp(tool="set_var", args={"name": "accent", "value": "red;}</style><script>"}),
-               EditOp(tool="exec", args={})):
+    for op in (EditOp(tool="style", slot="headline", css="} body { display:none"),
+               EditOp(tool="set_var", name="accent", value="red;}</style><script>"),
+               EditOp(tool="exec")):
         with pytest.raises(EditError):
             validate(op)
 
@@ -84,7 +84,7 @@ def test_render_and_checks(tmp_path):
         assert ok.defects == []
         long = "An extremely long headline that cannot possibly fit in a single 120 pixel tall box at 72px"
         bad_state, _ = piece(tmp_path, copy={"headline": long, "subline": ""},
-                             edits=[EditOp(tool="set_var", args={"name": "fg", "value": "#1a2a3a"})])
+                             edits=[EditOp(tool="set_var", name="fg", value="#1a2a3a")])
         bad = r.render(assemble(bad_state, store))
     kinds = {(d.slot, d.kind) for d in bad.defects}
     assert ("headline", "overflow") in kinds
@@ -104,7 +104,7 @@ def test_k_stops_when_done():
 
 def test_k_prefers_edits_and_escalates_empty_edits():
     edit = Issue(part="headline", problem="too big", severity="high", fix="edit",
-                 edits=[EditOp(tool="style", args={"slot": "headline", "css": "font-size: 56px"})])
+                 edits=[EditOp(tool="style", slot="headline", css="font-size: 56px")])
     empty = Issue(part="illustration", problem="generic", severity="medium", fix="edit")
     plan = plan_fixes(crit(edit, empty), 0, 3, 5.0, 1.0)
     assert plan.edits[0][0] == "layout" and plan.edits[0][1].tool == "style"
@@ -116,7 +116,7 @@ def test_k_asks_person_and_respects_budget():
     assert plan_fixes(crit(ask), 0, 3, 5.0, 1.0).stop
     # with a fixable issue too, K applies the fix first and then asks
     edit = Issue(part="headline", problem="too big", severity="high", fix="edit",
-                 edits=[EditOp(tool="style", args={"slot": "headline", "css": "font-size: 56px"})])
+                 edits=[EditOp(tool="style", slot="headline", css="font-size: 56px")])
     both = plan_fixes(crit(ask, edit), 0, 3, 5.0, 1.0)
     assert not both.stop and both.has_fixes and both.needs_person
     low = Issue(part="subline", problem="weak", severity="high", fix="regenerate_copy")
@@ -141,7 +141,7 @@ def scripted_client():
                    "palette": {"bg": "#102030", "fg": "#f5efe6", "accent": "#f0a030", "muted": "#8899aa"},
                    "mood": "quiet"}})
     fix = Issue(part="headline", problem="slightly heavy", severity="medium", fix="edit",
-                edits=[EditOp(tool="style", args={"slot": "headline", "css": "font-size: 64px"})])
+                edits=[EditOp(tool="style", slot="headline", css="font-size: 64px")])
     by_schema = {
         IntentDraft: [IntentDraft(intent=intent, summary="A warm star poster for Mira's 10th.")],
         Concepts: [Concepts(concepts=[concept])],
@@ -239,3 +239,26 @@ def test_empty_copy_is_an_error(tmp_path):
     llm = LLM(gate=gate, client=SimpleNamespace(beta=SimpleNamespace(messages=M())))
     with pytest.raises(AgentOutputError):
         write_copy(llm, AssetStore(tmp_path), CopyBrief(slots=["headline"], voice="v", content="c", limits="l"))
+
+
+def test_model_facing_schemas_have_no_free_form_objects():
+    """Strict structured outputs return {} for dicts with arbitrary keys."""
+    from media_director.prompts import FinalPrompt, Revision
+
+    def walk(node, path, defs):
+        if isinstance(node, dict):
+            if "$ref" in node:
+                return walk(defs[node["$ref"].split("/")[-1]], path, defs)
+            if node.get("type") == "object" or "additionalProperties" in node:
+                assert node.get("properties"), f"free-form object at {path}"
+                assert not isinstance(node.get("additionalProperties"), dict), f"dict-valued object at {path}"
+            for k, v in node.items():
+                if k != "$defs":
+                    walk(v, f"{path}.{k}", defs)
+        elif isinstance(node, list):
+            for i, v in enumerate(node):
+                walk(v, f"{path}[{i}]", defs)
+
+    for model in (IntentDraft, Concepts, Briefs, Copy, Critique, FinalPrompt, Revision):
+        schema = model.model_json_schema()
+        walk(schema, model.__name__, schema.get("$defs", {}))

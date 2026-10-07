@@ -154,7 +154,7 @@ class Session:
         texts = json.loads(self.store.get(parts["copy"].asset_id))
         for op in parts["copy"].edits:
             if op.tool == "set_text":
-                texts[op.args["slot"]] = op.args["text"]
+                texts[op.slot] = op.text
         return texts
 
     def render(self, renderer: Renderer, note: str = "") -> Rendered:

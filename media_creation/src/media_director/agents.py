@@ -36,10 +36,17 @@ class IllustrationBrief(BaseModel):
     avoid: list[str] = Field(default_factory=list)
 
 
+class Palette(BaseModel):
+    bg: str = Field(description="Background, hex")
+    fg: str = Field(description="Main text, hex, strong contrast with bg")
+    accent: str = Field(description="Accent, hex")
+    muted: str = Field(description="Secondary, hex")
+
+
 class LayoutBrief(BaseModel):
     composition: str = Field(description="Arrangement, hierarchy and use of space")
     typography: str = Field(description="Typefaces and treatment; Google Fonts or system stacks only")
-    palette: dict[str, str] = Field(description="Values for the CSS variables bg, fg, accent, muted")
+    palette: Palette = Field(description="Values for the CSS variables bg, fg, accent, muted")
     slots: list[str] = Field(description="Text slots plus 'illustration'")
     mood: str
 

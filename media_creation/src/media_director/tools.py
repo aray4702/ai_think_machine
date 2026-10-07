@@ -29,19 +29,18 @@ class EditError(ValueError):
 
 def validate(op: EditOp) -> EditOp:
     """Reject edit operations that could inject markup or script."""
-    a = op.args
     if op.tool not in EDIT_TOOLS:
         raise EditError(f"unknown tool {op.tool}")
     if op.tool == "set_var":
-        if not _SAFE_NAME.match(a.get("name", "")) or not _SAFE_CSS.match(str(a.get("value", ""))):
+        if not _SAFE_NAME.match(op.name) or not op.value or not _SAFE_CSS.match(op.value):
             raise EditError("bad set_var")
     elif op.tool in ("style", "hide"):
-        if not _SAFE_NAME.match(a.get("slot", "")):
+        if not _SAFE_NAME.match(op.slot):
             raise EditError("bad slot")
-        if op.tool == "style" and not _SAFE_CSS.match(str(a.get("css", ""))):
+        if op.tool == "style" and (not op.css.strip() or not _SAFE_CSS.match(op.css)):
             raise EditError("bad css")
     elif op.tool == "set_text":
-        if not _SAFE_NAME.match(a.get("slot", "")) or not isinstance(a.get("text"), str):
+        if not _SAFE_NAME.match(op.slot) or not op.text.strip():
             raise EditError("bad set_text")
     return op
 
@@ -96,7 +95,7 @@ def assemble(state: PieceState, store: AssetStore) -> str:
         copy = json.loads(store.get(parts["copy"].asset_id))
         for op in parts["copy"].edits:
             if op.tool == "set_text":
-                copy[op.args["slot"]] = op.args["text"]
+                copy[op.slot] = op.text
     for slot, text in copy.items():
         lines = "<br>".join(html.escape(line) for line in str(text).split("\n"))
         page = fill_slot(page, slot, lines)
@@ -108,13 +107,12 @@ def assemble(state: PieceState, store: AssetStore) -> str:
     rules: list[str] = []
     for p in state.parts:
         for op in p.edits:
-            a = op.args
             if op.tool == "set_var":
-                rules.append(f":root {{ --{a['name']}: {a['value']}; }}")
+                rules.append(f":root {{ --{op.name}: {op.value}; }}")
             elif op.tool == "style":
-                rules.append(f'[data-slot="{a["slot"]}"] {{ {a["css"]} }}')
+                rules.append(f'[data-slot="{op.slot}"] {{ {op.css} }}')
             elif op.tool == "hide":
-                rules.append(f'[data-slot="{a["slot"]}"] {{ display: none !important; }}')
+                rules.append(f'[data-slot="{op.slot}"] {{ display: none !important; }}')
     if rules:
         style = '<style id="edits">\n' + "\n".join(rules) + "\n</style>"
         page = page.replace("</head>", style + "\n</head>", 1) if "</head>" in page else style + page

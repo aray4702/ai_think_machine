@@ -108,14 +108,14 @@ def test_assets_are_immutable_and_content_addressed(tmp_path):
 def test_timeline_edit_undo_redo_fork():
     t = Timeline("poster")
     t.set_part(Part(id="p", role="poster", asset_id="a1"), "first draft")
-    t.edit("p", EditOp(tool="palette", args={"accent": "#f80"}))
+    t.edit("p", EditOp(tool="set_var", name="accent", value="#f80"))
     assert len(t.state.parts[0].edits) == 1
     t.undo()
     assert t.state.parts[0].edits == []
     t.redo()
     assert len(t.state.parts[0].edits) == 1
     f = t.fork("alt")
-    f.edit("p", EditOp(tool="font", args={"family": "Georgia"}))
+    f.edit("p", EditOp(tool="set_var", name="font-head", value="Georgia"))
     assert len(f.state.parts[0].edits) == 2 and len(t.state.parts[0].edits) == 1
     assert Timeline.from_json(t.to_json()).state == t.state
 

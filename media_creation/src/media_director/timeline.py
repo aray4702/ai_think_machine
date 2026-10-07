@@ -38,8 +38,15 @@ class AssetStore:
 
 
 class EditOp(BaseModel):
-    tool: str
-    args: dict = Field(default_factory=dict)
+    """One edit. Fixed fields rather than a free-form dict, so that strict
+    structured outputs can carry it; unused fields stay empty."""
+
+    tool: str = Field(description="set_var, style, hide or set_text")
+    slot: str = Field(default="", description="For style, hide, set_text: the data-slot name")
+    name: str = Field(default="", description="For set_var: the CSS variable name without --")
+    value: str = Field(default="", description="For set_var: the new value")
+    css: str = Field(default="", description="For style: CSS declarations, e.g. 'font-size: 64px'")
+    text: str = Field(default="", description="For set_text: the new text")
 
 
 class Part(BaseModel):
