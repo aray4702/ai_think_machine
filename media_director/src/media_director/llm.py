@@ -118,7 +118,8 @@ class LLM:
         if resp.stop_reason == "max_tokens":
             raise Truncated(f"{purpose}: output hit max_tokens")
         served = getattr(resp, "model", model) or model
-        cost = cost_of(served, resp.usage)
+        reported = getattr(resp, "cost_usd", None)  # the Claude Code CLI reports its own cost
+        cost = reported if isinstance(reported, (int, float)) else cost_of(served, resp.usage)
         self.gate.charge(decision, cost)
         self.calls.append({"purpose": purpose, "model": served, "cost": cost,
                            "input_tokens": getattr(resp.usage, "input_tokens", 0),

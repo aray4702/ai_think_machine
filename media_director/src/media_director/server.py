@@ -101,7 +101,8 @@ class ExportRequest(BaseModel):
     approved: bool
 
 
-def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None) -> FastAPI:
+def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None,
+               backend: str = "api") -> FastAPI:
     app = FastAPI(title="Media director")
     sessions: dict[str, Entry] = {}
     jobs: dict[str, Job] = {}
@@ -148,7 +149,7 @@ def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None)
         if not 0 < body.budget <= 20:
             raise HTTPException(400, "budget must be between $0 and $20")
         client = client_factory() if client_factory else None
-        s = Session(workspace, budget=body.budget, client=client)
+        s = Session(workspace, budget=body.budget, client=client, backend=backend)
         sessions[s.id] = Entry(session=s)
         return {"id": s.id, "questions": INTERVIEW_QUESTIONS, "targets": {k: t.label for k, t in TARGETS.items()}}
 
@@ -312,7 +313,7 @@ def create_app(workspace: Path, client_factory: Callable[[], Any] | None = None)
     return app
 
 
-def serve(workspace: Path, port: int = 8765) -> None:
+def serve(workspace: Path, port: int = 8765, backend: str = "api") -> None:
     import uvicorn
-    print(f"Media director: http://127.0.0.1:{port}")
-    uvicorn.run(create_app(workspace), host="127.0.0.1", port=port, log_level="warning")
+    print(f"Media director ({backend} backend): http://127.0.0.1:{port}")
+    uvicorn.run(create_app(workspace, backend=backend), host="127.0.0.1", port=port, log_level="warning")

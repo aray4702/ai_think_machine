@@ -18,6 +18,7 @@ from . import agents
 from .controller import Plan, plan_fixes
 from .director import (Briefs, Concept, Critique, IntentDraft, InterviewTurn, adopt_intent,
                        compile_briefs, critique, diverge, extract_intent)
+from .claude_cli import make_client
 from .eventlog import EventLog
 from .gates import Action, Gate, Grant
 from .llm import ESTIMATE, LLM, PERSONAL_SCOPE, media_type
@@ -32,7 +33,8 @@ ROUND_COST = ESTIMATE["claude-opus-5-5"] + 3 * ESTIMATE["claude-sonnet-5-5"]
 
 
 class Session:
-    def __init__(self, workspace: Path, budget: float, client=None, session_id: str | None = None):
+    def __init__(self, workspace: Path, budget: float, client=None, session_id: str | None = None,
+                 backend: str = "api"):
         self.id = session_id or time.strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:6]
         self.dir = Path(workspace) / "sessions" / self.id
         self.dir.mkdir(parents=True, exist_ok=True)
@@ -42,7 +44,8 @@ class Session:
             Grant(Action.SEND_PERSONAL, scope=PERSONAL_SCOPE),
             Grant(Action.EXPORT),
         ])
-        self.llm = LLM(gate=self.gate, client=client)
+        self.backend = backend
+        self.llm = LLM(gate=self.gate, client=client if client is not None else make_client(backend))
         self.w = WorkingState(envelope=self.gate.envelope())
         self.store = AssetStore(Path(workspace) / "assets")
         self.timeline = Timeline("poster")
@@ -263,9 +266,10 @@ class Session:
 
     # --- persistence ------------------------------------------------------------------------
     @classmethod
-    def load(cls, workspace: Path, session_id: str, budget: float, client=None) -> "Session":
+    def load(cls, workspace: Path, session_id: str, budget: float, client=None,
+             backend: str = "api") -> "Session":
         """Resume a saved session. Consent is not carried over; ask again."""
-        s = cls(workspace, budget=budget, client=client, session_id=session_id)
+        s = cls(workspace, budget=budget, client=client, session_id=session_id, backend=backend)
         state = s.dir / "working_state.json"
         if state.exists():
             s.w = WorkingState.model_validate_json(state.read_text())

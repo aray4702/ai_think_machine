@@ -1,4 +1,9 @@
-"""Command-line runner, until the web UI exists.
+"""Command-line interface.
+
+Interactive (the full flow in the terminal; the default):
+
+    uv run media-director
+    uv run media-director start --backend claude-code
 
 Automatic mode - the director runs specialist agents and renders the poster:
 
@@ -24,14 +29,21 @@ import json
 from pathlib import Path
 
 from .director import INTERVIEW_QUESTIONS, InterviewTurn
+from .claude_cli import BACKENDS
 from .prompts import TARGETS
 from .render import Renderer
 from .session import Session
 
 
+def _backend(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--backend", choices=BACKENDS, default="api",
+                   help="api: Anthropic API (per-token billing); claude-code: the `claude` CLI and its login")
+
+
 def _common(p: argparse.ArgumentParser) -> None:
     p.add_argument("--budget", type=float, default=3.0, help="spending limit in US dollars")
     p.add_argument("--workspace", type=Path, default=Path("workspace"))
+    _backend(p)
     p.add_argument("--consent", action="store_true",
                    help="I agree that my answers and images may be sent to Claude for this session")
 
@@ -39,7 +51,7 @@ def _common(p: argparse.ArgumentParser) -> None:
 def _start(args) -> Session:
     """Interview -> confirmed intent -> concepts -> the chosen concept."""
     spec = json.loads(args.answers.read_text())
-    s = Session(args.workspace, budget=args.budget)
+    s = Session(args.workspace, budget=args.budget, backend=args.backend)
     s.consent_to_send()
     medium = spec.get("medium", "poster")
     turns = [InterviewTurn(question=q, answer=a) for q, a in zip(INTERVIEW_QUESTIONS, spec["answers"])]
@@ -59,7 +71,10 @@ def _start(args) -> Session:
 
 def main() -> None:
     ap = argparse.ArgumentParser(prog="media-director")
-    sub = ap.add_subparsers(dest="cmd", required=True)
+    sub = ap.add_subparsers(dest="cmd")
+    st = sub.add_parser("start", help="interactive: the whole flow in the terminal (default)")
+    st.add_argument("--workspace", type=Path, default=Path("workspace"))
+    _backend(st)
     p = sub.add_parser("poster", help="automatic mode: make one poster end to end")
     p.add_argument("--answers", type=Path, required=True)
     p.add_argument("--rounds", type=int, default=2)
@@ -77,11 +92,16 @@ def main() -> None:
     w = sub.add_parser("serve", help="open the web UI on 127.0.0.1")
     w.add_argument("--port", type=int, default=8765)
     w.add_argument("--workspace", type=Path, default=Path("workspace"))
+    _backend(w)
     args = ap.parse_args()
 
+    if args.cmd in (None, "start"):
+        from .interactive import run
+        run(getattr(args, "workspace", Path("workspace")), backend=getattr(args, "backend", "api"))
+        return
     if args.cmd == "serve":
         from .server import serve
-        serve(args.workspace, args.port)
+        serve(args.workspace, args.port, backend=args.backend)
         return
     if args.cmd == "targets":
         for t in TARGETS.values():
@@ -98,7 +118,7 @@ def main() -> None:
         print(f"After generating, run: media-director revise --session {s.id} --image result.png --consent")
         return
     if args.cmd == "revise":
-        s = Session.load(args.workspace, args.session, budget=args.budget)
+        s = Session.load(args.workspace, args.session, budget=args.budget, backend=args.backend)
         s.consent_to_send()
         rev, path = s.revise(args.image.read_bytes(), args.note)
         print("Works:", *rev.what_works, sep="\n- ")
