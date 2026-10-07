@@ -1,8 +1,6 @@
-# <img src="assets/images/next-step-icon.svg" alt="Next Step icon: a rising path of committed steps leading to a glowing next step" width="128"> **Thinking About Thinking Machines**
+# ![Next Step icon: a rising path of committed steps leading to a glowing next step](assets/images/next-step-icon.svg) **Thinking About Thinking Machines**
 
-<br/>
-
-My understanding of AI: how minds and machines decide what comes next.
+*"What I cannot create, I do not understand."* (Richard Feynman). And I try to understand thinking machines by designing one: how minds and machines decide what comes next.
 
 ## One Loop: design of a brain-inspired agent
 
