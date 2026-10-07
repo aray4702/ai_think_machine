@@ -16,6 +16,7 @@ The design of an agent built around a control structure that brains and transfor
 6. **[Media creation](docs/one_loop/06_media_creation.md).** One Loop as a director for AI-generated audio, images, slides, web pages, apps and video: it keeps the person's intent and personality, delegates generation to specialist agents, and edits the results with tools.
 7. **[Companion](docs/one_loop/07_companion.md).** One Loop as a personal companion with a stable character, empathy and memory the person controls, aimed at the person's flourishing rather than engagement.
 8. **[Discovery and invention](docs/one_loop/08_discovery_invention.md).** How One Loop discovers and invents: generation beyond the prior, a ladder of verifiers, surprise-driven explanation and consolidation across campaigns, applied to explaining phenomena, engineering design, and drug and materials discovery.
+9. **[Robotics](docs/one_loop/09_robotics.md).** One Loop running a robot: reflexes, skills and deliberation as tiers, a simulator as the reversible inner loop, physical dry runs, and hard limits enforced outside the model.
 
 References for the series are collected in [References](docs/one_loop/references.md).
 

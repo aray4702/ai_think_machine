@@ -1,6 +1,6 @@
 # One Loop: Discovery and Invention
 
-**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [References](references.md)
+**One Loop design docs:** [1. Observations and principles](01_observations.md) · [2. Derived features](02_features.md) · [3. System design](03_system_design.md) · [4. Implementation plan](04_implementation_plan.md) · [5. Applications](05_applications.md) · [6. Media creation](06_media_creation.md) · [7. Companion](07_companion.md) · [8. Discovery and invention](08_discovery_invention.md) · [9. Robotics](09_robotics.md) · [References](references.md)
 
 Discovery seeks a true belief: an explanation, a law, a mechanism. Invention seeks an artifact that meets a goal: a molecule, a material, a design, an algorithm. This document describes how One Loop does both with one loop, then applies it to three domains: explaining complex phenomena, invention and engineering design, and drug and materials discovery. Among the [applications](05_applications.md#order) they come after software engineering, the testbeds and agents in untrusted environments, because their value signals range from exact (computation) to slow and costly (the laboratory).
 
