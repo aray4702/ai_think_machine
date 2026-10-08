@@ -12,7 +12,7 @@ The design is written as nine documents, following the order of the design proce
 
 1. **Observations and design principles** (this document): what was observed, what the design covers, and the constraints the features are derived from.
 2. **[Derived features](02_features.md)**: one section per feature (F1–F7). Each starts from a constraint, derives what the agent must do about it, and gathers evidence from brains and machines on how it can be done.
-3. **[System design](03_system_design.md)**: requirements, the architecture and its components, and the design rules (R1–R9).
+3. **[System design](03_system_design.md)**: requirements, the architecture and its components, and the design rules (R1–R10).
 4. **[Implementation plan](04_implementation_plan.md)**: where current models stand, the build stages and development process, validation of each module, and the design's assumptions and risks.
 5. **[Applications](05_applications.md)**: candidate domains ranked by fit, in the recommended order, starting with software engineering.
 6. **[Media creation](06_media_creation.md)**: One Loop as a director for AI media: personal intent, specialist agents for generation, tools for editing.

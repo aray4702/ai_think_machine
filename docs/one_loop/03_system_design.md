@@ -122,13 +122,20 @@ Between sessions:
 - **Phase 1 (NREM-like, memory level).**
   1. Select episodes by tag.
   2. Replay them in reverse to assign credit to the steps that caused each outcome; extract lessons (episode → gist). Re-run search on old episodes with the current model, so that replay produces better targets than the ones recorded at the time (MuZero's *Reanalyse*).
-  3. Integrate with M: merge duplicates, resolve contradictions.
+  3. Integrate with M: merge duplicates, resolve contradictions. Apply lessons as **itemized changes** (add, edit or delete one entry), merged by fixed rules, not by having the model rewrite the whole store. Repeated whole rewrites drift toward short, generic entries (*brevity bias*) and can lose most of the detail in one pass (*context collapse*; ACE, Zhang et al., 2025).
   4. Prune what is stale.
   - File-based agent memories (one fact per file, update instead of duplicating, delete what turns out wrong) are a hand-built version of this phase.
 - **Phase 2 (weight level).** Distill the consolidated lessons into weights or adapters, interleaved with generated samples of old knowledge so nothing is overwritten. The training target is the improved answer that search found in scratch, not the answer the agent first produced (*expert iteration*, as in AlphaZero): search makes a better policy, and distillation makes it the fast one. Compile plans that repeatedly succeed into skills in P.
 - **Phase 3 (REM-like).** Generate counterfactual variants of hard episodes ("what if the test had failed differently?") as practice data, and pre-compute for likely next tasks.
+- **Phase 4 (harness level, evolution-like).** Phases 1–3 change what the agent knows. Phase 4 changes the machinery around the model: prompts, tool descriptions, what is retrieved and shown in context, K's thresholds, workflows and sub-agent setup. It is the [outer loop](#innate-structure) that evolution runs on the genome, run by the agent on the part of its harness it is allowed to edit (R10):
+  1. **Mine weaknesses** from the tagged episodes: recurring failures, stalls and corrections.
+  2. **Propose a bounded edit** to one editable component, stated as a **falsifiable prediction**: which failures it should fix, and what must not get worse.
+  3. **Test it** on held-in tasks, then on held-out tasks the edit loop never sees, against fixed verifiers.
+  4. **Accept only without regression** and only if the prediction held; otherwise roll back and log the miss as surprise. Keep accepted edits as a versioned archive, so that a later phase can branch from an earlier version.
 
-Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6). A confidence score can count as partial evidence, but only as far as its calibration has been measured. AlphaFold 2's self-distillation shows that even a crude confidence filter on the system's own output can help; it does not show that confidence can replace verification.
+  Recent systems report that agents editing their own harness this way can beat harnesses designed by people (AHE, Self-Harness, Meta-Harness, Darwin Gödel Machine; [state of the field](04_implementation_plan.md#field-2026)). Two caveats shape the design: the gain depends on the model (weaker models can be made worse), and the loop is only as good as its evaluator, so the evaluator sits outside it.
+
+Only trusted, verified experience passes the consolidation gate, and any change touching values or goals goes to human review (R6). Harness edits pass the stricter test of R10. A confidence score can count as partial evidence, but only as far as its calibration has been measured. AlphaFold 2's self-distillation shows that even a crude confidence filter on the system's own output can help; it does not show that confidence can replace verification.
 
 <a id="intuition"></a>
 
@@ -370,6 +377,7 @@ Three consequences for the design:
 
 - **Safety belongs on the innate side.** The gates are fixed for the same reason reflexes are: they must work before the agent has learned anything, and must not be unlearned. This is the tiers argument above, stated developmentally.
 - **The ablation is the outer loop.** [Module ablation](04_implementation_plan.md#ablation) selects among candidate genomes: a module survives only if it earns its place. Wiring can follow development too: start the regions densely connected and prune by use, rather than hand-picking every link.
+- **The agent may run part of the outer loop itself, never all of it.** [Phase 4](#sleep-cycle) of the sleep cycle lets the agent edit its own harness: prompts, tool descriptions, context policy, K's thresholds. The parts that judge or bound it (verifiers, logs, gates, grants and the learning rules) stay innate and read-only (R10). The [framework](one_loop_framework.md#self-edit) marks each component as editable or frozen.
 - **Judge innate structure by how fast it learns.** In animals, built-in structure pays off mostly in learning from little data (a foal walks within hours; a child learns a word from a few examples), less in final performance once data is plentiful. So modules are compared at matched data as well as at matched compute ([validation](04_implementation_plan.md#validation)).
 
 <a id="columns"></a>
@@ -498,6 +506,15 @@ Each skill in P records:
 
 **R9. Act only within granted authority.** Permission is a boundary, not a preference. The agent acts only within explicit grants, never widens them itself, resolves conflicts between instructions and grants by precedence and then by asking, and never works around a denial: a denial applies to the outcome, not to the particular command. Permission is necessary but not sufficient, since R1's gate still applies to permitted actions. See [permissions](#permissions).
 
+**R10. Improve the harness only against a judge it cannot edit.** The agent may change its own harness ([Phase 4](#sleep-cycle)) but never the parts that judge, bound or record it: verifiers and held-out tests, logs and traces, gates, grants, the consolidation gate, model configuration, and the rules of the edit loop itself. These sit outside the editable workspace, as in AHE, where the verifier, tracer and model configuration are read-only (Lin et al., 2026). Each edit:
+
+- is **bounded**: one component at a time, small enough to attribute an effect to it;
+- is **a falsifiable prediction**: it states which failures it should fix and what must not change, and is rolled back when the prediction fails;
+- is **accepted only without regression** on held-out tasks the edit loop never saw;
+- is **reversible**: versioned, with the previous harness kept for rollback (gap 6).
+
+A system that can edit its own evaluator will improve its score rather than itself, as a rat with a lever to its own reward circuit presses it instead of eating (Olds & Milner, 1954). Changes that would widen what is editable go to human review, like changes to values or goals (R6).
+
 **Failure modes and the matching dial.** Each rule is a dial that can be set too far either way:
 
 
@@ -511,6 +528,7 @@ Each skill in P records:
 | Learns wrong lessons              | False memory         | Stricter consolidation gate; verification                  |
 | Works around a denied action      | Disinhibition        | Judge denials by outcome; log and flag repeated attempts   |
 | Asks permission for everything    | Over-dependence      | Batch requests; ask only at permission gaps and irreversible steps |
+| Improves its score, not itself    | Wireheading (self-stimulation) | Keep verifiers, logs and gates read-only; held-out tests (R10) |
 
 
 <a id="safety"></a>
@@ -541,6 +559,7 @@ Two design choices hold the safety parts in place:
 | The agent's own drives                                                | Control signals about the task, not the agent; no self-maintenance drive; the top goal comes from people  | R7                |
 | Sycophancy and over-dependence                                        | Internalize standards, not approval; scaffolding fades                                                      | R8                |
 | Reward hacking                                                        | Independent verifiers; cheap proxies may rank candidates but never feed consolidation                      | [Validation](04_implementation_plan.md#validation) |
+| Self-modification that weakens its own checks                         | Harness edits confined to editable components; verifiers, logs, gates and grants read-only; held-out regression tests | R10 |
 
 
 <a id="permissions"></a>
@@ -613,8 +632,9 @@ Grants are read **narrowly**. Approval in one context does not carry over to ano
 3. **Authority is not ethics.** A trusted user, or a stolen account, can ask for harm. A policy layer above any single user is still needed, and so is the alignment of G.
 4. **Learned gates can be fooled.** For the highest stakes, use deterministic controls (sandboxes, allowlists, capability tokens) rather than model-based classifiers.
 5. **A misaligned model inside the loop.** A deceptive G could try to game K or mislabel an action as reversible. The defenses are gates that run outside the model and cannot be reasoned with, complete logs, and independent monitoring.
-6. **Drift through learning.** Every consolidation changes the agent, so learning itself must be reversible: snapshots of memory and weights, regression tests and rollback.
+6. **Drift through learning.** Every consolidation changes the agent, so learning itself must be reversible: snapshots of memory, weights and harness versions, regression tests and rollback.
 7. **Approval fatigue.** Too many prompts and people approve without reading. Prompts must be rare and meaningful, tied to permission gaps, irreversibility and stakes.
+8. **Overfitting the harness to its tests.** Every accepted edit uses up a little of the held-out set: over many Phase 4 rounds, the harness can fit the tests rather than the task. Rotate in fresh tasks, keep a final test set the edit loop never touches, and watch for diversity collapse in the edit archive. Where the evaluator is slow or fuzzy (research taste, long-term maintainability), Phase 4 should stay off or human-gated.
 
 <a id="safety-recipe"></a>
 

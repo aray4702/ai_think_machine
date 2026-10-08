@@ -22,6 +22,7 @@ References for all nine documents, grouped by topic in the order the documents t
 - [Bootstrapping](#bootstrapping)
 - [Applications](#applications)
 - [State of the field, 2026](#state-of-the-field-2026)
+- [Harness engineering and self-improvement](#harness-engineering-and-self-improvement)
 - [Media creation](#media-creation)
 - [Companion](#companion)
 - [Robotics](#robotics)
@@ -279,6 +280,27 @@ References for all nine documents, grouped by topic in the order the documents t
 - Axiom Math (2026). IMO 2026 Lean 4 solutions. github.com/AxiomMath/IMO2026
 - Digital Applied (2026). Four AIs scored a perfect 42/42 on IMO 2026. So what? (secondary source for the grading status of IMO 2026 results)
 - Thousand-brains systems: sensorimotor intelligence for rapid, robust learning and inference. *Neural Computation*. doi:10.1162/NECO.a.1508.
+
+## Harness engineering and self-improvement
+
+- Weng (2026). Harness engineering for self-improvement. lilianweng.github.io/posts/2026-07-04-harness
+- Good (1965). Speculations concerning the first ultraintelligent machine.
+- Olds & Milner (1954). Positive reinforcement produced by electrical stimulation of septal area and other regions of rat brain.
+- Zhang et al. (2025). Agentic context engineering: evolving contexts for self-improving language models (ACE). arXiv:2510.04618.
+- Ye et al. (2026). Meta context engineering via agentic skill evolution. arXiv:2601.21557.
+- Lee et al. (2026). Meta-Harness: end-to-end optimization of model harnesses. arXiv:2603.28052.
+- Lin et al. (2026). Agentic harness engineering: observability-driven automatic evolution of coding-agent harnesses (AHE). arXiv:2604.25850.
+- Zhang et al. (2026). Self-Harness: harnesses that improve themselves. arXiv:2606.09498.
+- Lin et al. (2026). Harness updating is not harness benefit: disentangling evolution capabilities in self-evolving LLM agents. arXiv:2605.30621.
+- Zelikman et al. (2023). Self-taught optimizer (STOP): recursively self-improving code generation. arXiv:2310.02304.
+- Hu, Lu & Clune (2025). Automated design of agentic systems (ADAS). arXiv:2408.08435.
+- Zhang et al. (2025). AFlow: automating agentic workflow generation. arXiv:2410.10762.
+- Zhang et al. (2025). Darwin Gödel Machine: open-ended evolution of self-improving agents. arXiv:2505.22954.
+- Lange, Imajuku & Cetin (2025). ShinkaEvolve: towards open-ended and sample-efficient program evolution. arXiv:2509.19349.
+- Kulikov et al. (2026). Autodata: an agentic data scientist to create high quality synthetic data. arXiv:2606.25996.
+- Lu et al. (2026). Towards end-to-end automation of AI research (the AI Scientist). *Nature* 651:914–919.
+- Meng et al. (2026). ScientistOne: towards human-level autonomous research via chain-of-evidence. arXiv:2605.26340.
+- Trehan & Chopra (2026). Why LLMs aren't scientists yet: lessons from four autonomous research attempts. arXiv:2601.03315.
 
 ## Media creation
 

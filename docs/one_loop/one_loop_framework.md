@@ -34,7 +34,7 @@ Project    goal              the overall outcome            spans many sessions
 | **Lifetime** | 13 | Initialization / shutdown | Setup and cleanup; loads and saves project memory |
 | | 14 | Configuration | Settings, model selection and fallbacks, effort level |
 | **Extension** | 15 | Hooks | User scripts run on events; can block actions |
-| | 16 | Subagents | Delegating tasks to separate agents with fresh context |
+| | 16 | Subagents | Delegating tasks to separate agents with fresh context: spawn, wait, resume, interrupt, close |
 | | 17 | MCP / plugins / skills / commands | Adding capabilities without changing the core |
 
 **How the groups divide:** Core does the work and checks it. Control keeps the loop in bounds. Runtime and Lifetime host the loop. Extension adds capabilities from outside.
@@ -61,8 +61,37 @@ Project    goal              the overall outcome            spans many sessions
 3. **The project plan lives outside any session.** Splitting the project goal into subgoals spans sessions, so the plan and its progress must be saved in project memory.
 4. **Sessions end with a handoff.** Shutdown writes which subgoal was met, what's left and what was learned. The next session's initialization reads it.
 5. **Budgets are the backstop, not the goal.** A loop should stop because its goal was verified. Budgets only cover failure to get there.
+6. **The judge never edits itself.** The agent may improve its own harness, but not the components that check, bound or record it (section 5).
 
-## 5. Terminology
+<a id="self-edit"></a>
+
+## 5. What the agent may change about itself
+
+The harness is an optimization target too: between sessions, the agent can propose edits to its own harness, test them and keep those that help ([Phase 4 of the sleep cycle](03_system_design.md#sleep-cycle)). The split below decides what it may touch. **Rule: anything that checks, bounds or records the agent is frozen** ([R10](03_system_design.md#design-rules)). A component it could edit would let it raise its score without getting better.
+
+| # | Component | Self-edit | What the agent may change |
+|---|---|---|---|
+| 1 | Orchestration | Editable, in part | Workflows, plan templates and task decomposition; the core loop stays fixed |
+| 2 | Context | Editable | System-prompt text, what is retrieved, kept and shown; never the pinned goal and permission envelope |
+| 3 | Memory | Editable, gated | Entries, through the consolidation gate, as itemized changes |
+| 4 | Tools | Editable, in part | Descriptions and implementations of ordinary tools, tested in a sandbox; never a tool that enforces a check |
+| 5 | Verification | **Frozen** | — |
+| 6 | Termination / budgets | Editable, in part | Controller thresholds within fixed hard caps |
+| 7 | Permissions | **Frozen** | — (grants come only from people) |
+| 8 | Safety | **Frozen** | — |
+| 9 | Observability | **Frozen** | — (logs are the evidence that edits are judged on) |
+| 10 | Error handling | Editable | Retry, re-plan and escalation policies |
+| 11 | Interface | Out of scope | — |
+| 12 | Session | **Frozen** | — (checkpoints are what rollback depends on) |
+| 13 | Initialization / shutdown | Editable, in part | The handoff format; loading grants and memory stays fixed |
+| 14 | Configuration | **Frozen** | — (model choice and effort are set by people) |
+| 15 | Hooks | **Frozen** | — (they belong to the user) |
+| 16 | Subagents | Editable | Sub-agent prompts, roles and tool sets, within the parent's grants |
+| 17 | MCP / plugins / skills / commands | Editable, in part | Skills and commands; adding a new plugin or server is a new capability and needs permission |
+
+Every accepted edit is a bounded change to one component, states a falsifiable prediction, passes held-out tests without regression, and is versioned for rollback.
+
+## 6. Terminology
 
 | Category | Term | Definition |
 |---|---|---|
@@ -77,6 +106,10 @@ Project    goal              the overall outcome            spans many sessions
 | | Expected result | What a single action should produce (exit code, valid output) |
 | | Project plan | The split of the project goal into subgoals, with progress |
 | | Handoff | What a session writes at shutdown: subgoal status, what's left, what was learned |
+| **Self-improvement** | Harness | Everything around the model that runs it: the 17 components |
+| | Harness edit | A bounded, versioned change to one editable component, with a falsifiable prediction of its effect |
+| | Frozen component | A component the agent cannot edit, because it checks, bounds or records the agent |
+| | Held-out tests | Tasks the edit loop never sees, used to accept or reject harness edits |
 | **Core** | Orchestration | Runs the loop (model → tool calls → results → repeat), plans, and sequences tasks and actions |
 | | Context | Everything the model sees on a turn: system prompt, goal, environment, files, history |
 | | Memory | Information that persists: working memory within a session, project memory across sessions |
