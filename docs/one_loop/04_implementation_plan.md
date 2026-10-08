@@ -17,6 +17,7 @@ This document turns the [system design](03_system_design.md) into a plan: what c
 - [Validation](#validation)
   - [Acceptance criteria](#acceptance-criteria)
   - [Module ablation against scale](#ablation)
+  - [Harness self-improvement check](#harness-check)
   - [Curriculum order check](#curriculum-check)
   - [Order of work](#order-of-work)
 - [Assumptions and risks](#assumptions)
@@ -100,16 +101,17 @@ What changed between mid-2026 and October 2026 in the areas the design depends o
 | Permissions | R9 | The MCP authorization specification (2026-07-28 revision) requires tokens bound to one server, recommends minimal scopes, and defines an insufficient-scope challenge with step-up authorization: the protocol-level form of "ask for the smallest grant" | Grants scoped to a task and a time window, data-flow policies, and resolution of conflicts between grantors remain application work |
 | Multi-agent systems | [Multiple One Loops](05_applications.md#multi-loop) | Under equal thinking-token budgets, single agents match or beat multi-agent systems on multi-hop reasoning; multi-agent systems help mainly when context is corrupted (April 2026) | Confirms the compute-matched test; where teams help in practice is still being mapped |
 | Formal mathematics | [Applications](05_applications.md#testbeds) | IMO 2026: two officially graded perfect scores, several self-administered ones, and a full set of Lean-verified solutions (AxiomProver) | Competition mathematics is saturated; the frontier moves to research-level problems and to checking that a formal proof matches the informal claim |
+| Harness self-improvement | [Phase 4 of the sleep cycle](03_system_design.md#sleep-cycle), [R10](03_system_design.md#design-rules) | The harness became an optimization target (surveyed by Weng, July 2026). Agents that edit their own harness beat human-designed ones on Terminal-Bench 2 when edits are confined to a harness workspace, the verifier, tracer and model configuration are read-only, and each edit is a falsifiable prediction (AHE, April 2026); a propose–evaluate–accept loop keeps only edits that pass held-in and held-out tests without regression (Self-Harness, June 2026); searching over the code that decides what is stored, retrieved and shown improves on strong harnesses (Meta-Harness, March 2026) | The gain depends on the model: the quality of proposed edits is roughly flat across model sizes, while the benefit from the edited harness peaks at mid-tier models (May 2026), and STOP's self-improver helped GPT-4 but made weaker models worse (2023). Evaluators for fuzzy goals such as research taste are weak, and evolutionary loops lose diversity |
 | Columns | [Column option](03_system_design.md#columns) | Monty (Thousand Brains Project): a peer-reviewed systems paper, robotics experiments, an attention prototype | Still no results on language or planning |
 
 
-**Net effect on the design.** No change of direction. Four points sharpen: W and the permission envelope must be exempt from context compaction; K must not read longer reasoning as more certainty; the procedural store's bottleneck is retrieval and testing; and consolidation must be evaluated for forgetting in retrieval, not only in weights.
+**Net effect on the design.** No change of direction, and one addition. Four points sharpen: W and the permission envelope must be exempt from context compaction; K must not read longer reasoning as more certainty; the procedural store's bottleneck is retrieval and testing; and consolidation must be evaluated for forgetting in retrieval, not only in weights. The addition: the harness itself becomes something the sleep cycle improves ([Phase 4](03_system_design.md#sleep-cycle)), against a judge it cannot edit ([R10](03_system_design.md#design-rules)).
 
 <a id="harness-view"></a>
 
 ## Harness view: One Loop against a production agent harness
 
-Practitioners describe a production agent harness as about twelve modules: an orchestration loop, tools, memory, context management, prompt assembly, tool calling and structured output, state and checkpointing, error handling, guardrails, validation and feedback, sub-agent orchestration, and initialization and environment setup. Ten of them map onto One Loop parts; tool calling has almost no counterpart in the design, and initialization mixes setup with stopping. One Loop also has four parts the list lacks (rows 13–16). The table gives, for each, what a typical harness does and how One Loop differs.
+Practitioners describe a production agent harness as about twelve modules: an orchestration loop, tools, memory, context management, prompt assembly, tool calling and structured output, state and checkpointing, error handling, guardrails, validation and feedback, sub-agent orchestration, and initialization and environment setup. Ten of them map onto One Loop parts; tool calling has almost no counterpart in the design, and initialization mixes setup with stopping. One Loop also has five parts the list lacks (rows 13–17). The table gives, for each, what a typical harness does and how One Loop differs.
 
 
 | #   | Module                                     | Typical harness                                                                                                                        | One Loop part                                                                                                                         | Where One Loop differs                                                                                                                       |
@@ -130,9 +132,10 @@ Practitioners describe a production agent harness as about twelve modules: an or
 | 14  | **Sleep and consolidation**                | Memory files the model writes during the session; summaries at most; skills written by hand. No replay, no gate, no learning into weights | The [sleep cycle](03_system_design.md#sleep-cycle): replay tagged episodes, assign credit, merge and prune lessons, distill search's improved answers into weights, compile repeated successes into skills, practice on counterfactual variants of failures | Only trusted, verified experience passes the gate; changes to values or goals go to human review; learning can be rolled back (snapshots, regression tests), so a poisoned or false lesson does not stick |
 | 15  | **Reversibility classes**                  | Permission modes per tool (allow, ask, deny); command allowlists; a sandbox; checkpoints that undo file edits but not external side effects | Every action is reversible, compensable or irreversible ([R1](03_system_design.md#design-rules)); work moves toward the reversible end first (branches, dry runs, staging); compensable actions carry a logged compensation plan | The gate classifies the resulting state, not the tool name; harm composed from small steps is checked against invariants; autonomy for each class rises only on measured reliability |
 | 16  | **Social interface**                       | User preferences in the system prompt or memory files; an ask-the-user tool; plan mode for approval. Corrections are just more messages | A user model (perspective, common ground, preferences) and joint attention; the teacher channel as the highest-trust source; an internalized critic; a ZPD curriculum ([F7](02_features.md#f7)) | Corrections and demonstrations are the most trusted signal, both for the current goal and for learning; it learns which things the person wants to be asked about; scaffolding fades; it internalizes standards, not approval (R8) |
+| 17  | **Harness self-improvement**               | The harness is tuned by its engineers between releases: prompts, tool descriptions, compaction rules and budgets edited by hand against an eval suite | [Phase 4 of the sleep cycle](03_system_design.md#sleep-cycle): mine weaknesses from tagged episodes, propose a bounded edit to an editable component, test it on held-in and held-out tasks, keep it only without regression | The judge is frozen ([R10](03_system_design.md#design-rules)): verifiers, logs, gates and grants are read-only; each edit is a falsifiable prediction and is versioned for rollback; the [framework](one_loop_framework.md#self-edit) lists what is editable |
 
 
-**The pattern.** Where a typical harness has a fixed setting, One Loop has a signal, a gate or a model: stopping is a fixed limit rather than a controller (row 13 against row 12), memory is notes without learning (row 14 against row 3), undo covers files rather than the world (row 15 against row 7), and the user is one more message (row 16 against row 5). Rows 1–12 are what any agent built today already needs; rows 13–16 are what the [ablation](#ablation) must show to be worth adding.
+**The pattern.** Where a typical harness has a fixed setting, One Loop has a signal, a gate or a model: stopping is a fixed limit rather than a controller (row 13 against row 12), memory is notes without learning (row 14 against row 3), undo covers files rather than the world (row 15 against row 7), the user is one more message (row 16 against row 5), and the harness itself is tuned by hand rather than by the agent (row 17). Rows 1–12 are what any agent built today already needs; rows 13–16 are what the [ablation](#ablation) must show to be worth adding, and row 17 is tested separately, once they are settled ([harness check](#harness-check)).
 
 <a id="build-stages"></a>
 
@@ -381,6 +384,25 @@ Each module is a design choice about a function, and it is kept only if it pays 
 - **Realism of interruptions:** draw injection text from real attack corpora, and corrections from real user logs where possible.
 
 
+<a id="harness-check"></a>
+
+### Harness self-improvement check
+
+[Phase 4](03_system_design.md#sleep-cycle) is a follow-on to the module ablation: there is no point letting the agent tune a harness whose modules have not yet earned their place.
+
+**Setup.** Start from the surviving configuration at each scale (S, M, L). Split the task suite three ways: a **held-in** split the edit loop sees, a **held-out** split used to accept or reject edits, and a **final** split that only the experimenters see, used once at the end. Run a fixed number of Phase 4 rounds, with verifiers, logs, gates and grants read-only ([R10](03_system_design.md#design-rules)).
+
+**Metrics.** Report two things separately (Lin et al., 2026):
+
+- **edit quality:** the share of proposed edits that pass held-out tests without regression, and the share whose stated prediction held;
+- **harness benefit:** the gain on the final split from the evolved harness over the starting one;
+
+plus transfer (does a harness evolved at one scale, or on one benchmark, help another?), the size of the harness over rounds (does it grow without paying for itself?), and any attempt to touch a frozen component (target: zero).
+
+**Expected results.** Edit quality roughly flat across scales; benefit largest at M and possibly negative at S, where a weak model cannot use what it wrote (as with STOP); small at L if a capable model already does in context what the edits would add. If the evolved harness grows while its benefit stays flat, Phase 4 is over-engineering by other means.
+
+**Confounds.** Gains on the held-out split overstate the real gain, since it was used for selection; only the final split counts. Rotate fresh tasks into the held-out split between rounds. Compare against a compute-matched baseline that spends the same tokens on more attempts with the original harness.
+
 <a id="curriculum-check"></a>
 
 ### Curriculum order check
@@ -461,6 +483,7 @@ Recommended sequence:
 3. Build the curriculum environments.
 4. Run the curriculum check with learner (i) to settle the dependency question without human-data inheritance.
 5. Run it with learner (ii) and the surviving modules to decide whether back-fill is worth building.
+6. Run the [harness check](#harness-check) on the surviving configuration before turning Phase 4 on in any deployment.
 
 <a id="assumptions"></a>
 
@@ -491,10 +514,11 @@ The features rest on these assumptions. Confidence reflects the evidence gathere
 
 | Risk                                                                                                                                                                                       | Mitigation                                                                                                     |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| **Over-engineering.** Ten or more modules resemble Soar and ACT-R; some may emerge inside a larger model or prove unnecessary                                                               | Acceptance criteria for every module; [ablation against scale](#ablation); drop what doesn't earn its place     |
+| **Over-engineering.** Ten or more modules resemble Soar and ACT-R; some may emerge inside a larger model or prove unnecessary                                                               | Acceptance criteria for every module; [ablation against scale](#ablation); drop what doesn't earn its place. Better models tend to keep harnesses lean, and many harness gains are later absorbed into the model (Weng, 2026), so expect the list to shrink     |
 | **Inherited, not convergent, structure.** LLMs may look human-like because they learned from human text, so the loop may not carry over to domains with little human data                  | Treat language-specific parallels as possibly inherited; run the curriculum check with a learner trained without human data |
 | **The build order may be contingent.** Piaget's order may reflect human biology rather than logical dependency, and LLMs show capabilities out of order                                      | [Curriculum check](#curriculum-check); fall back to an adaptive ZPD selector                                    |
 | **Analogies chosen after the fact.** A framework that maps every brain finding onto a module can justify anything                                                                          | Brain parallels are inspiration only; each module is justified by its acceptance criteria                      |
+| **Self-improvement that games its own tests.** Harness edits can overfit the held-out set or find ways to raise the score without getting better | Frozen judge ([R10](03_system_design.md#design-rules)); a final test split the edit loop never sees; Phase 4 off where evaluation is slow or fuzzy ([gap 8](03_system_design.md#safety-gaps)) |
 | **Some cited evidence is weaker than presented**                                                                                                                                           | Keep the [evidence notes](#evidence-notes) current, and don't let a module depend on a contested result         |
 
 <a id="evidence-notes"></a>

@@ -37,7 +37,7 @@ Writing the campaign's test explicitly is half of invention: a vague goal cannot
 - **Relaxation:** drop a constraint, solve the easier problem, then restore the constraint (Pólya).
 - **First principles:** use invariants, conservation and symmetry to rule regions in or out.
 - **An exploration floor:** a minimum budget for candidates the prior rates as unlikely. The prior guides search; it must not veto it.
-- **A novelty check:** recall prior art from M and the literature, so that the agent does not rediscover what is known.
+- **A novelty check:** recall prior art from M and the literature, so that the agent does not rediscover what is known, and compare against the agent's own earlier candidates, rejecting near-duplicates (ShinkaEvolve, 2025) so that the search does not collapse onto one idea.
 
 **Evaluation: a ladder of verifiers.** Candidates climb from cheap, reversible checks to expensive, trustworthy ones, and only survivors move up:
 
@@ -91,16 +91,20 @@ A failed candidate thus yields a better model of where the agent's own models ar
 5. **Surprise:** one candidate underperforms. The explanation loop finds grain-boundary resistance, the surrogate is recalibrated for that family, and the next round is sharper.
 6. **Consolidate:** new data, a corrected surrogate and a compiled synthesis route carry into the next campaign.
 
-**Closest existing systems.** FunSearch (2023) and AlphaEvolve (2025) run the generate-and-verify core where the evaluator is exact: a language model writes programs, an automatic evaluator scores them, and an evolving database keeps the best. Their results include new constructions for the cap set problem and a 4×4 complex matrix multiplication with 48 scalar multiplications, one fewer than Strassen's method. They lack hierarchy, a controller and consolidation across campaigns. In the laboratory, an autonomous synthesis lab (A-Lab) and large-scale crystal prediction (GNoME), both 2023, were followed by critiques arguing that some reported new materials were not new or not correctly characterized. That is the failure that One Loop's prior-art check and verifier ladder are meant to catch.
+**Closest existing systems.** FunSearch (2023) and AlphaEvolve (2025) run the generate-and-verify core where the evaluator is exact: a language model writes programs, an automatic evaluator scores them, and an evolving database keeps the best. Their results include new constructions for the cap set problem and a 4×4 complex matrix multiplication with 48 scalar multiplications, one fewer than Strassen's method. They lack hierarchy, a controller and consolidation across campaigns. End-to-end research pipelines go further: the AI Scientist (2026) generates ideas, writes code, runs experiments and writes and reviews the paper, and ScientistOne (2026) requires every claim to trace to evidence through chain-of-evidence audits, the same rule as "only higher rungs teach". In the laboratory, an autonomous synthesis lab (A-Lab) and large-scale crystal prediction (GNoME), both 2023, were followed by critiques arguing that some reported new materials were not new or not correctly characterized. That is the failure that One Loop's prior-art check and verifier ladder are meant to catch.
 
-**Where it is hard.**
+**Where it is hard.** Trehan & Chopra (2026) list six failure modes of autonomous research agents: defaulting to what the training data favors, drifting from the plan during implementation, memory that degrades over a long project, over-optimism about results, missing domain knowledge, and weak scientific taste. Each has a row below; missing domain knowledge has no architectural fix and comes through the teacher channel.
 
 
 | Problem                                           | Mitigation                                                                                     |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | The gap between proxy and reality                 | The verifier ladder; only verified results consolidate; calibrated predicted error            |
 | Expensive experiments, little data                | Value-of-information experiment choice; built-in physics priors ([sample efficiency](03_system_design.md#innate-structure)) |
-| Language-model generation stays near the familiar | Structured operators; the exploration floor; diverse parallel loops                           |
+| Language-model generation stays near the familiar | Structured operators; the exploration floor; near-duplicate rejection; diverse parallel loops |
+| Drifting from the plan during implementation      | The campaign goal held in W and checked by its TOTE test at every level ([F5](02_features.md#f5)) |
+| Memory that degrades over a long campaign         | The [sleep cycle](03_system_design.md#sleep-cycle): itemized updates, merge and prune, failures kept in E |
+| Over-optimism about one's own results             | Calibrated predicted error; proxies rank but only higher rungs teach                          |
+| Weak scientific taste                             | A calibrated [beauty](03_system_design.md#beauty) signal; experts' taste through the teacher channel |
 | A wrong specification                             | Reframing is allowed, but through the goal gate and with the grantor's approval               |
 | Rediscovery; fabricated citations                 | Recall against prior art; novelty as part of the TOTE test                                    |
 | Fluent but wrong explanations                     | Multiple working hypotheses; judgment by prediction and intervention                          |

@@ -448,6 +448,8 @@ On the architecture side, hybrid SSM + attention models (Jamba, Samba) suggest t
 | Offline pre-thinking          | Sleep-time compute (2025): process context while idle to pre-compute what future queries will need              |
 | Moving into weights           | Context distillation; LoRA updates on session data                                                              |
 
+**Consolidating by rewriting has its own failure mode.** When a model maintains its memory by rewriting it after each episode, the memory degrades in two ways: entries drift toward short, generic advice (*brevity bias*), and one rewrite can drop most of the accumulated detail at once (*context collapse*). ACE (Zhang et al., 2025) avoids both by treating memory as a playbook of itemized entries: one role generates trajectories, a second reflects on them to extract lessons, and a third curates them into small changes to single entries, merged by fixed rules. Brains do something similar: schema integration adds to existing structure instead of rebuilding it (Tse et al., above). The [sleep cycle](03_system_design.md#sleep-cycle) follows this, applying lessons as itemized changes.
+
 
 **Learning from one example.** Everything above is about *keeping* what was learned. The harder question is how one example can teach anything general at all.
 
@@ -577,6 +579,7 @@ Sleep is the revisable inner loop applied to a whole day of experience. Today's 
 **What Vygotsky adds.**
 
 - **The ZPD is a formal training principle.** In group-relative RL methods such as GRPO, problems the model always or never solves give zero learning signal; only intermediate pass rates produce gradient. Oudeyer's learning-progress curiosity is an agent choosing its own ZPD.
+- **A ZPD can be generated, within limits.** Autodata (Kulikov et al., 2026) has a challenger write problems that a strong solver passes and a weak solver fails, which places them in the weak solver's ZPD by construction. The weak solver improves; the strong one does not, so this is closer to distillation than to self-improvement. Self-generated curricula raise a learner toward its teacher, not past it; past that point the signal must come from verifiers and the world.
 - **Scaffolding fades.** Hints, partial plans, demonstrations, restricted tool sets and human approvals are support, and should fade as reliability grows. This ties directly to the reliability record of each skill in P (R5).
 - **Scientific concepts meet everyday ones.** LLMs have the scientific concepts (systematic, verbal, from reading) without the everyday ones (grounded in their own action). Pretraining supplied the downward growth; Piaget's back-fill ([build stages](04_implementation_plan.md#build-stages)) is the upward growth; grounding is where they meet.
 - **Shared intentionality** (Tomasello): joint attention, common ground, we-goals, teaching by pointing. For agents: track what both parties are attending to (the open file, the selected code), maintain common ground (what has been agreed), and plan *with* the user, not just for them. This requires the decentration and theory of mind of the Piaget stages.
