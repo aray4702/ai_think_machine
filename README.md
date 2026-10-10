@@ -18,6 +18,6 @@ The design of an agent built around a control structure that brains and transfor
 
 References for the series are collected in [References](docs/one_loop/references.md).
 
-## Copyright
+## License
 
-© 2026 David Xu. All rights reserved.
+Licensed under the [Apache License, Version 2.0](LICENSE).
